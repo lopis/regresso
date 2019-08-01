@@ -3,6 +3,6 @@
   "description": "A big puzzle game and a long journey to find a lossst kid.",
   "images" : {
     "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg",
+    "image_thumbnail": "image-small.jpg"
   }
 }
