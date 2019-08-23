@@ -59,10 +59,10 @@ gulp.task('build-ts', function () {
     return gulp.src('./src/ts/*.ts')
 	.pipe(ts({
 		// noImplicitAny: true,
-		outFile: 'output.js',
+		outFile: 'main.js',
 		removeComments: true,
 	}))
-	.pipe(gulp.dest('build/js'));
+	.pipe(gulp.dest('build'));
 });
 
 gulp.task('build-html', (done) => {

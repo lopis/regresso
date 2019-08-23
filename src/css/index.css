@@ -1,3 +1,6 @@
+html {
+  background: #404a4d;
+}
 body {
   margin: 0;
   font-family: sans;
@@ -154,11 +157,26 @@ input#projects-checkbox:not(:checked) + .projects {
   display: none;
 }
 
-#trail1 {
+.trail {
   transition: stroke-dasharray 5s linear;
   stroke-dasharray: 0,0%,1,100%;
 }
 
 #crosses g {
   display: none;
+}
+
+
+#sky, svg {
+  transition: filter 1s linear;
+}
+
+svg, svg.night #sky {
+  filter: brightness(1.0) contrast(1.0);
+}
+svg.night {
+  filter: brightness(0.8) contrast(1.3) saturate(0.5);
+}
+svg.night #sky {
+  filter: brightness(0.2) contrast(2.0);
 }

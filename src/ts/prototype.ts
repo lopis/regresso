@@ -115,3 +115,6 @@ const nextDay = () => {
   updateView()
 }
 
+const dayCycle = () => {
+  $('svg').classList.toggle('night')
+}
