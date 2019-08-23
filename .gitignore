@@ -4,3 +4,4 @@ dist
 build
 closure.txt
 package-lock.json
+.tscache

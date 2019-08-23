@@ -1,0 +1,164 @@
+body {
+  margin: 0;
+  font-family: sans;
+}
+
+.resources {
+  display: flex;
+  background: #666;
+  padding: 5px 7px;
+}
+
+.resource {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background: #2d2929;
+  color: white;
+  margin: 0 2px;
+  padding: 7px;
+  border-radius: 5px;
+  transition: background-color 1s;
+}
+.resource.green {
+  background: #4b9d4b;
+  transition: background-color 100ms;
+}
+.resource.red {
+  background: #c62929;
+  transition: background-color 100ms;
+}
+
+.resource#hungry {
+  background: #c62929;
+}
+.resource-group {
+  display: flex;
+  background: #2d2929;
+  border-radius: 5px;
+  margin: 0 2px;
+}
+.resource-group .resource {
+  margin: 0;
+}
+
+#log {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#log p {
+  margin: 0;
+  line-height: 2;
+  transition: margin-top 0.2s;
+  height: 60px;
+  padding: 0 10px;
+  background: #1a272b;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+#log p.new {
+  margin-top: -60px;
+  transition: margin-top 0s;
+}
+
+#log p.red {
+  background: #b05656;
+}
+#log p.green {
+  background: #4b9d4b;
+}
+
+.hidden {
+  display: none;
+}
+
+button, .btn {
+    border-radius: 2px;
+    font-size: 20px;
+    padding: 0.6em 1em;
+    font-variant: small-caps;
+    border: 1px solid #666;
+    background: #c5d680;
+    cursor: pointer;
+    line-height: 25px;
+    color: #333;
+}
+button:hover {
+  background: white;
+}
+
+.actions {
+    padding: 8px;
+    text-align: center;
+    background: #9aad4d;
+}
+
+#projects {
+  background: #80bbd6;
+}
+.projects {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  overflow: hidden;
+  max-height: 900px;
+  transition: max-height 500ms;
+  background: #fdd85c;
+}
+.project {
+  background: #ffefb9;
+  padding: 15px;
+  margin: 5px;
+  cursor: pointer;
+}
+.project:hover {
+  background: white;
+}
+.icon {
+  font-size: 30px;
+  background: white;
+  height: 1.4em;
+  width: 1.4em;
+  text-align: center;
+  border-radius: 60px;
+  line-height: 1.4em;
+  float: left;
+  margin-right: 15px;
+  color: #333;
+}
+.title {
+  margin-left: 16px;
+  text-transform: capitalize;
+  font-variant: small-caps;
+  margin-bottom: 5px;
+}
+.description {
+  font-size: 80%;
+}
+input#projects-checkbox:not(:checked) + .projects {
+  max-height: 0;
+}
+
+#main-image {
+	width: 100%;
+}
+#main-image svg {
+	width: 100%;
+	height: auto;
+}
+
+#trailTemplate {
+  stroke-dasharray: 0,0%,1,100%;
+  display: none;
+}
+
+#trail1 {
+  transition: stroke-dasharray 5s linear;
+  stroke-dasharray: 0,0%,1,100%;
+}
+
+#crosses g {
+  display: none;
+}

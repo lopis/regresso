@@ -1,0 +1,51 @@
+<html>
+<head>
+  <link href="index.css?__inline=true" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+  <div class="resources">
+    <div class="resource" id="days">
+      <span class="label">Date</span>
+      <span class="value">0</span>
+    </div>
+    <div class="resource" id="wood">
+      <span class="label">🌳 Wood</span>
+      <span class="value">0</span>
+    </div>
+    <div class="resource" id="food">
+      <span class="label">🍒 Food</span>
+      <span class="value">0</span>
+    </div>
+    <div class="resource-group">
+      <div class="resource" id="population">
+        <span class="label">👫 People</span>
+        <span class="value">0</span>
+      </div>
+      <div class="resource" id="ready">
+        <span class="label">Ready</span>
+        <span class="value">0</span>
+      </div>
+      <div class="resource hidden" id="hungry">
+        <span class="label">Starving</span>
+        <span class="value">0</span>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="chop-wood">Chop Wood</button>
+    <button id="forage">Forage</button>
+    <button id="hunt">Hunt</button>
+    <label id="projects" class="btn" for="projects-checkbox">Projects</label>
+  </div>
+  <input type="checkbox" id="projects-checkbox" class="hidden" value="false" autocomplete="off">
+  <div class="projects"></div>
+
+  <div id="main-image"></div>
+  <div id="log"></div>
+
+  <script type="text/javascript" src="main.js"></script>
+</body>
+
+</html>

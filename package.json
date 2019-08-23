@@ -1,35 +1,32 @@
 {
-  "name": "js13k2019",
+  "name": "regresso",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Regresso",
+  "main": "index.html",
+  "scripts": {
+    "grunt": "gulp",
+    "watch": "gulp build-dev; gulp watch",
+    "build": "gulp build-dev",
+    "prod": "gulp build-prod"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/madmaw/js13k2019.git"
-  },
-  "scripts": {
-    "build": "grunt"
+    "url": "https://github.com/lopis/regresso"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/madmaw/js13k2019/issues"
-  },
-  "homepage": "https://github.com/madmaw/js13k2019#readme",
+  "license": "MIT",
   "devDependencies": {
-    "grunt": "^1.0.3",
-    "grunt-closure-compiler": "0.0.21",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-connect": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^3.0.0",
-    "grunt-contrib-htmlmin": "^3.0.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-dev-update": "^2.3.0",
-    "grunt-inline": "^0.3.6",
-    "grunt-text-replace": "^0.4.0",
-    "grunt-ts": "^6.0.0-beta.19",
-    "typescript": "^3.0.1"
+    "gulp": "4",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-watch": "^5.0.1",
+    "gulp-zip": "^5.0.0",
+    "mkdirp": "^0.5.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "gulp-typescript": "^5.0.1",
+    "typescript": "^3.5.3"
+  }
 }
