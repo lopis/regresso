@@ -6,6 +6,9 @@
     "image_thumbnail": "image-small.jpg"
   },
   "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
-  "website_url": "",
-  "twitter_handle": ""
+  "user" : {
+    "name": "optional",
+    "website": "optional",
+    "twitter": "optional"
+  }
 }
