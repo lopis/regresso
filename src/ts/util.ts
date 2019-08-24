@@ -8,16 +8,6 @@ const $$ = (tag, className, innerText) => {
   return el
 }
 
-const setImage = () => {
-  fetch('island.svg')
-  .then(data => {
-    return data.text()
-  })
-  .then(text => {
-    $('#main-image').innerHTML = text
-  })
-}
-
 const log = (text, color, emoji) => {
   if ($('#log .new')) {
     setTimeout(() => log(text, color, emoji), 500)

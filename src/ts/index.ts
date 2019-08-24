@@ -9,7 +9,6 @@ const stopGame = () => {
     clearInterval(dayCycleInterval)
 }
 window.onload = () => {
-    setImage()
     dayInterval = setInterval(nextDay, DAY)
     dayCycleInterval = setInterval(dayCycle, DAY/2)
     updateDate()

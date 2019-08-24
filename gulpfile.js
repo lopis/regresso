@@ -9,6 +9,7 @@ var uglify = require('gulp-uglify-es').default;
 var watch = require('gulp-watch');
 var zip = require('gulp-zip');
 var ts = require('gulp-typescript');
+var inject = require('gulp-inject');
 
 //Chalk colors
 var error = chalk.bold.red;
@@ -83,7 +84,12 @@ gulp.task('build-assets', (done) => {
 });
 
 gulp.task('zip', (done) => {
-	return gulp.src('./build/**/*')
+	return gulp.src([
+    './build/*.html',
+    './build/*.js',
+    './build/*.css',
+    './build/*.png',
+  ])
 		.pipe(zip('entry.zip')) //gulp-zip performs compression by default
 		.pipe(gulp.dest('dist'));
 });
@@ -100,8 +106,20 @@ gulp.task('check', gulp.series('zip', (done) => {
 	done();
 }));
 
+gulp.task('inject-svg', function () {
+  return gulp.src('./build/index.html')
+    .pipe(inject(gulp.src(['./src/assets/island.svg']), {
+      transform: function (filePath, file) {
+        // return file contents as string
+        return file.contents.toString('utf8')
+      }
+    }))
+    .pipe(gulp.dest('./build'));
+});
+
 gulp.task('build-prod', gulp.series(
-	'build-html',
+  'build-html',
+  'inject-svg',
 	'build-ts',
 	'build-js',
 	'build-css',
@@ -112,6 +130,7 @@ gulp.task('build-prod', gulp.series(
 ));
 gulp.task('build-dev', gulp.series(
 	'build-html',
+  'inject-svg',
 	'build-ts',
 	'build-js',
 	'check',
