@@ -4,7 +4,7 @@
   "description": "Regresso",
   "main": "index.html",
   "scripts": {
-    "grunt": "gulp",
+    "clean": "rm -rf build dist",
     "watch": "gulp build-dev; gulp watch",
     "build": "gulp build-dev",
     "prod": "gulp build-prod"

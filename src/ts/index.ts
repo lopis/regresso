@@ -1,6 +1,7 @@
 ///<reference path="util.ts"/>
+///<reference path="data.ts"/>
 ///<reference path="draw.ts"/>
-///<reference path="prototype.ts"/>
+///<reference path="actions.ts"/>
 ///<reference path="projects.ts"/>
 let dayInterval, dayCycleInterval
 const stopGame = () => {
