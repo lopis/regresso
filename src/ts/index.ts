@@ -13,6 +13,15 @@ window.onload = () => {
     dayCycleInterval = setInterval(dayCycle, DAY/2)
     updateDate()
     updateView()
-    createProjects()
     log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝')
+    setTimeout(() => {
+      log('A scouting team has found good foraging grounds nearby.', null, '🌾')
+      show('#forage')
+    }, 2000)
+
+    setTimeout(() => {
+      log('The river delta could provide you with food if you would develop fishing.', null, '🐟')
+      renderProject('fishing')
+      show('#projects')
+    }, DAY)
 };

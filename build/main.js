@@ -21,6 +21,9 @@ var log = function (text, color, emoji) {
         newLog.classList.remove('new');
     }, 200);
 };
+var show = function (q) {
+    $(q).style.display = 'initial';
+};
 on($('#chop-wood'), 'click', function () { return fetchWood(); });
 on($('#forage'), 'click', function () { return forage(); });
 on($('#hunt'), 'click', function () { return hunt(); });
@@ -152,6 +155,7 @@ var bury = function () {
 var projects = {
     carpentry: {
         emoji: '🔨',
+        unlocked: true,
         cost: {
             wood: 10,
             food: 10,
@@ -162,6 +166,7 @@ var projects = {
     },
     fishing: {
         emoji: '🎣',
+        unlocked: true,
         cost: {
             wood: 10,
             food: 10,
@@ -172,6 +177,7 @@ var projects = {
     },
     shipyard: {
         emoji: '⚓',
+        unlocked: false,
         requires: [
             'carpentry'
         ],
@@ -185,6 +191,7 @@ var projects = {
     },
     high_sea_fishing: {
         emoji: '⛵️',
+        unlocked: false,
         requires: [
             'shipyard',
             'fishing'
@@ -199,19 +206,26 @@ var projects = {
     }
 };
 var createProjects = function () {
-    var container = $('.projects');
     Object.keys(projects).forEach(function (key) {
-        var newProject = $$('div', 'project', null);
-        newProject.id = key;
-        var icon = $$('div', 'icon', projects[key].emoji);
-        var title = $$('div', 'title', key.replace(/_/g, ' '));
-        var description = $$('div', 'description', projects[key].description);
-        newProject.append(icon);
-        newProject.append(title);
-        newProject.append(description);
-        container.append(newProject);
-        on(newProject, 'click', selectProject(key));
+        if (projects[key].unlocked) {
+            renderProject(key);
+        }
     });
+};
+var renderProject = function (key) {
+    var project = projects[key];
+    var $newProject = $$('div', 'project', null);
+    $newProject.id = key;
+    var icon = $$('div', 'icon', project.emoji);
+    var title = $$('div', 'title', key.replace(/_/g, ' '));
+    var description = $$('div', 'description', project.description);
+    $newProject.append(icon);
+    $newProject.append(title);
+    $newProject.append(description);
+    $('.projects').append($newProject);
+    on($newProject, 'click', selectProject(key));
+};
+var updateProjects = function () {
 };
 var selectProject = function (projectName) { return function () {
     var project = projects[projectName];
@@ -228,6 +242,7 @@ var selectProject = function (projectName) { return function () {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
         $project.style.transition = null;
+        updateProjects();
     }, duration);
 }; };
 var dayInterval, dayCycleInterval;
@@ -240,6 +255,14 @@ window.onload = function () {
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     updateDate();
     updateView();
-    createProjects();
     log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝');
+    setTimeout(function () {
+        log('A scouting team has found good foraging grounds nearby.', null, '🌾');
+        show('#forage');
+    }, 2000);
+    setTimeout(function () {
+        log('The river delta could provide you with food if you would develop fishing.', null, '🐟');
+        renderProject('fishing');
+        show('#projects');
+    }, DAY);
 };

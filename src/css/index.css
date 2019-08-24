@@ -97,9 +97,13 @@ button:hover {
 }
 
 .actions {
-    padding: 8px;
-    text-align: center;
-    background: #9aad4d;
+  height: 50px;
+  padding: 8px;
+  text-align: center;
+  background: #9aad4d;
+}
+.actions button {
+  display: none;
 }
 
 .title {

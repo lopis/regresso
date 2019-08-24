@@ -1,6 +1,7 @@
 const projects = {
   carpentry: {
     emoji: '🔨',
+    unlocked: true,
     cost: {
       wood: 10,
       food: 10,
@@ -11,6 +12,7 @@ const projects = {
   },
   fishing: {
     emoji: '🎣',
+    unlocked: true,
     cost: {
       wood: 10,
       food: 10,
@@ -21,6 +23,7 @@ const projects = {
   },
   shipyard: {
     emoji: '⚓',
+    unlocked: false,
     requires: [
       'carpentry'
     ],
@@ -34,6 +37,7 @@ const projects = {
   },
   high_sea_fishing: {
     emoji: '⛵️',
+    unlocked: false,
     requires: [
       'shipyard',
       'fishing'
@@ -46,23 +50,32 @@ const projects = {
     },
     description: 'Build a fishing boat, bringing 10 extra food per day.'
   }
-
 }
 
 const createProjects = () => {
-  const container = $('.projects')
   Object.keys(projects).forEach(key => {
-    const newProject = $$('div', 'project', null)
-    newProject.id = key
-    const icon = $$('div', 'icon', projects[key].emoji)
-    const title = $$('div', 'title', key.replace(/_/g, ' '))
-    const description = $$('div', 'description', projects[key].description)
-    newProject.append(icon)
-    newProject.append(title)
-    newProject.append(description)
-    container.append(newProject)
-    on(newProject, 'click', selectProject(key))
+    if (projects[key].unlocked) {
+      renderProject(key)
+    }
   })
+}
+
+const renderProject = (key) => {
+  const project = projects[key]
+  const $newProject = $$('div', 'project', null)
+  $newProject.id = key
+  const icon = $$('div', 'icon', project.emoji)
+  const title = $$('div', 'title', key.replace(/_/g, ' '))
+  const description = $$('div', 'description', project.description)
+  $newProject.append(icon)
+  $newProject.append(title)
+  $newProject.append(description)
+  $('.projects').append($newProject)
+  on($newProject, 'click', selectProject(key))
+}
+
+const updateProjects = () => {
+
 }
 
 const selectProject = (projectName) => () => {
@@ -82,5 +95,7 @@ const selectProject = (projectName) => () => {
     $project.classList.add('done')
     $project.classList.remove('in-progress')
     $project.style.transition = null
+
+    updateProjects()
   }, duration)
 }

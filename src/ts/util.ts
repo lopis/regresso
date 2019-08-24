@@ -23,3 +23,7 @@ const log = (text, color, emoji) => {
     newLog.classList.remove('new')
   }, 200)
 }
+
+const show = (q) => {
+  $(q).style.display = 'initial'
+}
