@@ -155,7 +155,8 @@ var projects = {
         cost: {
             wood: 10,
             food: 10,
-            people: 4
+            people: 4,
+            days: 2
         },
         description: 'Recycle and process wood more efficiently (+1 wood per day)'
     },
@@ -188,6 +189,12 @@ var projects = {
             'shipyard',
             'fishing'
         ],
+        cost: {
+            wood: 25,
+            food: 10,
+            people: 5,
+            days: 5
+        },
         description: 'Build a fishing boat, bringing 10 extra food per day.'
     }
 };
@@ -195,6 +202,7 @@ var createProjects = function () {
     var container = $('.projects');
     Object.keys(projects).forEach(function (key) {
         var newProject = $$('div', 'project', null);
+        newProject.id = key;
         var icon = $$('div', 'icon', projects[key].emoji);
         var title = $$('div', 'title', key.replace(/_/g, ' '));
         var description = $$('div', 'description', projects[key].description);
@@ -202,8 +210,26 @@ var createProjects = function () {
         newProject.append(title);
         newProject.append(description);
         container.append(newProject);
+        on(newProject, 'click', selectProject(key));
     });
 };
+var selectProject = function (projectName) { return function () {
+    var project = projects[projectName];
+    if (project.done) {
+        return;
+    }
+    project.done = true;
+    var $project = $(".project#" + projectName);
+    var duration = project.cost.days * DAY;
+    $project.style.transition = "height " + duration + "ms linear";
+    $project.classList.add('in-progress');
+    setTimeout(function () {
+        log("Project " + projectName.toUpperCase() + " has has been completed", 'blue', project.emoji);
+        $project.classList.add('done');
+        $project.classList.remove('in-progress');
+        $project.style.transition = null;
+    }, duration);
+}; };
 var dayInterval, dayCycleInterval;
 var stopGame = function () {
     clearInterval(dayInterval);

@@ -5,6 +5,7 @@ const projects = {
       wood: 10,
       food: 10,
       people: 4,
+      days: 2,
     },
     description: 'Recycle and process wood more efficiently (+1 wood per day)'
   },
@@ -37,21 +38,49 @@ const projects = {
       'shipyard',
       'fishing'
     ],
+    cost: {
+      wood: 25,
+      food: 10,
+      people: 5,
+      days: 5
+    },
     description: 'Build a fishing boat, bringing 10 extra food per day.'
   }
-  
+
 }
 
 const createProjects = () => {
-    const container = $('.projects')
-    Object.keys(projects).forEach(key => {
-        const newProject = $$('div', 'project', null)
-        const icon = $$('div', 'icon', projects[key].emoji)
-        const title = $$('div', 'title', key.replace(/_/g, ' '))
-        const description = $$('div', 'description', projects[key].description)
-        newProject.append(icon)
-        newProject.append(title)
-        newProject.append(description)
-        container.append(newProject)
-    })
+  const container = $('.projects')
+  Object.keys(projects).forEach(key => {
+    const newProject = $$('div', 'project', null)
+    newProject.id = key
+    const icon = $$('div', 'icon', projects[key].emoji)
+    const title = $$('div', 'title', key.replace(/_/g, ' '))
+    const description = $$('div', 'description', projects[key].description)
+    newProject.append(icon)
+    newProject.append(title)
+    newProject.append(description)
+    container.append(newProject)
+    on(newProject, 'click', selectProject(key))
+  })
+}
+
+const selectProject = (projectName) => () => {
+  const project = projects[projectName]
+  if (project.done) {
+    return
+  }
+  
+  project.done = true
+  const $project = $(`.project#${projectName}`)
+  const duration = project.cost.days * DAY
+  $project.style.transition = `height ${duration}ms linear`
+  $project.classList.add('in-progress')
+
+  setTimeout(() => {
+    log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
+    $project.classList.add('done')
+    $project.classList.remove('in-progress')
+    $project.style.transition = null
+  }, duration)
 }
