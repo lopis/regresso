@@ -24,7 +24,7 @@ const startTrail = (time, trail, clone) => {
 }
 
 const bury = () => {
-  const index = $('#crosses').children.length - population.total + 1
+  const index = $('#crosses').children.length - population.total
   if ($('#crosses').children[index]) {
     $('#crosses').children[index].style.display = 'initial'
   }

@@ -8,9 +8,9 @@ const $$ = (tag, className, innerText) => {
   return el
 }
 
-const log = (text, color, emoji) => {
-  if ($('#log .new')) {
-    setTimeout(() => log(text, color, emoji), 500)
+const log = (text, color, emoji, type) => {
+  if ($(`.log#${type} .new`)) {
+    setTimeout(() => log(text, color, emoji, type), 500)
     return
   }
 
@@ -18,7 +18,7 @@ const log = (text, color, emoji) => {
   newLog.innerHTML = `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`
   if (color) newLog.classList.add(color)
   newLog.classList.add('new')
-  $('#log').prepend(newLog)
+  $(`.log#${type}`).prepend(newLog)
   setTimeout(() => {
     newLog.classList.remove('new')
   }, 200)

@@ -1,4 +1,16 @@
 const projects = {
+  caravela: {
+    description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
+    emoji: '⚓️',
+    unlocked: true,
+    cost: {
+      wood: 100,
+      food: 200,
+      people: 10,
+      days: 8,
+    },
+    callback: () => {}
+  },
   fishing: {
     emoji: '🎣',
     unlocked: true,
@@ -10,7 +22,7 @@ const projects = {
     },
     description: 'Develop fishing tools (+5 food per day)',
     callback: () => {
-      log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣')
+      log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣', 'info')
       show('#fh') // Fishing house
       population.ready -= 1
 
@@ -25,7 +37,7 @@ const projects = {
   },
   carpentry: {
     emoji: '🔨',
-    unlocked: true,
+    unlocked: false,
     cost: {
       wood: 10,
       food: 10,
@@ -62,7 +74,7 @@ const projects = {
       days: 5
     },
     description: 'Build a fishing boat, bringing 10 extra food per day.'
-  }
+  },
 }
 
 const createProjects = () => {

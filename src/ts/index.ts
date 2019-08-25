@@ -13,20 +13,23 @@ window.onload = () => {
     dayCycleInterval = setInterval(dayCycle, DAY/2)
     updateDate()
     updateView()
-    log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝')
+    renderProject('caravela')
+
+    log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝', 'info')
     setTimeout(() => {
-      log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾')
+      log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
       show('#forage')
+      blink('forage', 'blink')
     }, 2000)
 
     setTimeout(() => {
-      log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳')
+      log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳', 'info')
       show('#chop-wood')
+      blink('chop-wood', 'blink')
     }, DAY)
 
     setTimeout(() => {
-      log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟')
+      log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info')
       renderProject('fishing')
-      show('#projects')
     }, DAY * 2)
 };

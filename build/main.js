@@ -6,9 +6,9 @@ var $$ = function (tag, className, innerText) {
     el.innerText = innerText;
     return el;
 };
-var log = function (text, color, emoji) {
-    if ($('#log .new')) {
-        setTimeout(function () { return log(text, color, emoji); }, 500);
+var log = function (text, color, emoji, type) {
+    if ($(".log#" + type + " .new")) {
+        setTimeout(function () { return log(text, color, emoji, type); }, 500);
         return;
     }
     var newLog = document.createElement('p');
@@ -16,7 +16,7 @@ var log = function (text, color, emoji) {
     if (color)
         newLog.classList.add(color);
     newLog.classList.add('new');
-    $('#log').prepend(newLog);
+    $(".log#" + type).prepend(newLog);
     setTimeout(function () {
         newLog.classList.remove('new');
     }, 200);
@@ -40,39 +40,47 @@ var fetchWood = function () {
     population.ready -= 2;
     var time = DAY * 0.6;
     setTimeout(bring('wood', 2, 5, 0.05), time);
-    log('2 people set off to bring wood.', null, '🌳');
+    log('2 people set off to bring wood.', null, '🌳', 'tasks');
     updateView();
     startTrail(time, 'forageTemplate', true);
+    if (!projects.carpentry.unlocked && resources.wood > 5) {
+        projects.carpentry.unlocked = true;
+        log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info');
+        renderProject('carpentry');
+        blink('projects', 'blink');
+    }
 };
 var huntingEnabled = false;
 var forage = function () {
     population.ready -= 2;
     var time = DAY * 0.4;
     setTimeout(bring('food', 2, 4, 0), time);
-    log('2 people have gone foraging.', null, '🌾');
+    log('2 people have gone foraging.', null, '🌾', 'tasks');
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (resources.food > 100 && !huntingEnabled) {
         show('#hunt');
+        blink('hunt', 'blink');
         huntingEnabled = true;
-        log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹');
+        log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info');
     }
 };
 var hunt = function () {
     population.ready -= 4;
     var time = DAY * 1.2;
     setTimeout(bring('food', 4, 12, 0.1), time);
-    log('4 hunters left to bring food.', null, '🏹');
+    log('4 hunters left to bring food.', null, '🏹', 'tasks');
     updateView();
     startTrail(time, 'trailTemplate', true);
 };
 var bring = function (resource, partySize, amount, risk) { return function () {
     if (Math.random() > risk) {
+        log("A party of " + partySize + " has returned with " + amount + " " + resource + " successfully.", 'green', '🌟', 'tasks');
         resources[resource] += amount;
         population.ready += partySize;
     }
     else {
-        log("A party of " + partySize + " returned from fetching " + resource + ", but got attacked by wild animals. 1 person died", 'red', '💀');
+        log("A party of " + partySize + " returned from fetching " + resource + ", but got attacked by wild animals. 1 person died", 'red', '💀', 'info');
         resources[resource] += Math.floor(amount / 2);
         population.ready += partySize - 1;
         population.total -= 1;
@@ -110,14 +118,14 @@ var updateDate = function () {
 };
 var nextDay = function () {
     updateDate();
-    if ((population.ready + population.hungry) < 1) {
-        log("Your population was decimated", 'red', '☠️');
+    if ((population.total) < 1) {
+        log("Your population was decimated", 'red', '☠️', 'info');
         stopGame();
     }
     if (population.hungry > 0) {
         population.hungry -= 1;
         population.total -= 1;
-        log("One person has died from starvation. +5 food.", 'red', '💀');
+        log("One person has died from starvation. +5 food.", 'red', '💀', 'info');
         resources.food += 5;
         blink('food', 'green');
         blink('population', 'red');
@@ -130,7 +138,7 @@ var nextDay = function () {
         population.ready += resources.food;
         population.hungry += -resources.food;
         resources.food = 0;
-        log("Due to lack of food, " + population.hungry + " are starving and can't work.", 'red', '😔');
+        log("Due to lack of food, " + population.hungry + " are starving and can't work.", 'red', '😔', 'info');
     }
     dayEvents.forEach(function (event) { return event(); });
     updateView();
@@ -222,12 +230,24 @@ var startTrail = function (time, trail, clone) {
     }
 };
 var bury = function () {
-    var index = $('#crosses').children.length - population.total + 1;
+    var index = $('#crosses').children.length - population.total;
     if ($('#crosses').children[index]) {
         $('#crosses').children[index].style.display = 'initial';
     }
 };
 var projects = {
+    caravela: {
+        description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
+        emoji: '⚓️',
+        unlocked: true,
+        cost: {
+            wood: 100,
+            food: 200,
+            people: 10,
+            days: 8
+        },
+        callback: function () { }
+    },
     fishing: {
         emoji: '🎣',
         unlocked: true,
@@ -239,7 +259,7 @@ var projects = {
         },
         description: 'Develop fishing tools (+5 food per day)',
         callback: function () {
-            log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣');
+            log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣', 'info');
             show('#fh');
             population.ready -= 1;
             setInterval(function () {
@@ -252,7 +272,7 @@ var projects = {
     },
     carpentry: {
         emoji: '🔨',
-        unlocked: true,
+        unlocked: false,
         cost: {
             wood: 10,
             food: 10,
@@ -343,18 +363,20 @@ window.onload = function () {
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     updateDate();
     updateView();
-    log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝');
+    renderProject('caravela');
+    log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝', 'info');
     setTimeout(function () {
-        log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾');
+        log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
         show('#forage');
+        blink('forage', 'blink');
     }, 2000);
     setTimeout(function () {
-        log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳');
+        log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳', 'info');
         show('#chop-wood');
+        blink('chop-wood', 'blink');
     }, DAY);
     setTimeout(function () {
-        log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟');
+        log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');
         renderProject('fishing');
-        show('#projects');
     }, DAY * 2);
 };

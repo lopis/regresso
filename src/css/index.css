@@ -4,6 +4,9 @@ html {
 body {
   margin: 0;
   font-family: sans;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .resources {
@@ -45,37 +48,6 @@ body {
   margin: 0;
 }
 
-#log {
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#log p {
-  margin: 0;
-  line-height: 2;
-  transition: margin-top 0.2s;
-  height: 60px;
-  padding: 0 10px;
-  background: #1a272b;
-  color: white;
-  display: flex;
-  align-items: center;
-}
-#log p.new {
-  margin-top: -60px;
-  transition: margin-top 0s;
-}
-
-#log p.red {
-  background: #b05656;
-}
-#log p.green {
-  background: #4b9d4b;
-}
-#log p.blue {
-  background: #0785ea;
-}
 
 .hidden {
   display: none;
@@ -102,9 +74,16 @@ button:hover {
   text-align: center;
   background: #9aad4d;
 }
+.actions button {
+  visibility: hidden;
+}
 .actions button,
 .actions label {
-  visibility: hidden;
+  transition: transform 300ms ease-out;
+}
+
+.blink {
+  transform: scale(1.8);
 }
 
 .title {
@@ -123,6 +102,7 @@ input#projects-checkbox:not(:checked) + .projects {
 #main-image {
   width: 100%;
   overflow: hidden;
+  flex-shrink: 0;
 }
 #main-image svg {
 	width: 100%;
@@ -152,7 +132,6 @@ input#projects-checkbox:not(:checked) + .projects {
   display: none;
 }
 
-
 #sky, svg {
   transition: filter 1s linear;
 }
@@ -165,4 +144,8 @@ svg.night {
 }
 svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
+}
+
+#sy, #fh, #ship, #hull {
+  visibility: hidden;
 }

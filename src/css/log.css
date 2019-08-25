@@ -1,0 +1,44 @@
+#logs {
+  display: flex;
+  overflow: hidden;
+}
+
+.log {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  flex-basis: 0;
+  flex-shrink: 0;
+}
+
+.log p {
+  margin: 0;
+  line-height: 2;
+  transition: margin-top 0.3s, height 0.3s 0.2s, font-size 0.3s 0.2s;
+  height: 60px;
+  padding: 0 10px;
+  background: #1a272b;
+  color: white;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 12px solid #404a4d;
+  border-radius: 20px;
+}
+.log p.new {
+  margin-top: -120px;
+  transition: margin-top 0s, height 0.3s 0.2s, font-size 0.3s 0.2s;
+}
+.log p:first-child {
+  height: 120px;
+  font-size: 120%;
+}
+.log p.red {
+  background: #b05656;
+}
+.log p.green {
+  background: #4b9d4b;
+}
+.log p.blue {
+  background: #0785ea;
+}
