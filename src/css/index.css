@@ -64,9 +64,6 @@ button, .btn {
     line-height: 25px;
     color: #333;
 }
-button:hover {
-  background: white;
-}
 
 .actions {
   height: 50px;
@@ -80,6 +77,18 @@ button:hover {
 .actions button,
 .actions .btn {
   transition: transform 300ms ease-out;
+}
+
+button:disabled {
+  background: #cccccc;
+  color: #444;
+}
+button:hover:not(:disabled) {
+  background: #ecff9a;
+}
+button:hover:not(:active):not(:disabled) {
+	top: -2px;
+	position: relative;
 }
 
 .blink {

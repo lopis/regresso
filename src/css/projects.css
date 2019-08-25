@@ -61,6 +61,9 @@
   color: #333;
   cursor: default;
 }
+.project.done .cost {
+  display: none;
+}
 
 .project.no {
 	animation: nudge 200ms infinite;

@@ -350,17 +350,23 @@ var selectProject = function (projectName) { return function () {
         return;
     }
     var missing = ['wood', 'food'].filter(function (resource) { return resources[resource] < project.cost[resource]; });
-    if (missing.length > 0) {
-        blink(projectName, 'no');
-        log("There is not enough " + missing + " to start the " + projectName + " project", null, '❌', 'info');
+    if (population.ready < project.cost.people) {
+        log("Not enough people ready to start the " + projectName + " project", null, '❌', 'info');
         return;
     }
+    if (missing.length > 0) {
+        blink(projectName, 'no');
+        log("There is not enough " + missing.join(' and ') + " to start the " + projectName + " project", null, '❌', 'info');
+        return;
+    }
+    resources.wood -= project.cost.wood;
+    resources.food -= project.cost.food;
+    population.ready -= project.cost.people;
     project.done = true;
     var $project = $(".project#" + projectName);
     var duration = project.cost.days * DAY;
     $project.style.transition = "height " + duration + "ms linear";
     $project.classList.add('in-progress');
-    population.ready -= project.cost.people;
     setTimeout(function () {
         $project.classList.add('done');
         $project.classList.remove('in-progress');

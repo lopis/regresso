@@ -129,18 +129,25 @@ const selectProject = (projectName) => () => {
   const missing = ['wood', 'food'].filter(
     resource => resources[resource] < project.cost[resource]
   )
+  if (population.ready < project.cost.people) {
+    log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info')
+    return 
+  }
   if (missing.length > 0) {
     blink(projectName, 'no')
-    log(`There is not enough ${missing} to start the ${projectName} project`, null, '❌', 'info')
+    log(`There is not enough ${missing.join(' and ')} to start the ${projectName} project`, null, '❌', 'info')
     return
   }
+
+  resources.wood -= project.cost.wood
+  resources.food -= project.cost.food
+  population.ready -= project.cost.people
   
   project.done = true
   const $project = $(`.project#${projectName}`)
   const duration = project.cost.days * DAY
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
-  population.ready -= project.cost.people
 
   setTimeout(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
