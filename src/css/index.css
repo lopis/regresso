@@ -102,8 +102,9 @@ button:hover {
   text-align: center;
   background: #9aad4d;
 }
-.actions button {
-  display: none;
+.actions button,
+.actions label {
+  visibility: hidden;
 }
 
 .title {
@@ -120,11 +121,15 @@ input#projects-checkbox:not(:checked) + .projects {
 }
 
 #main-image {
-	width: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 #main-image svg {
 	width: 100%;
-	height: auto;
+  height: auto;
+}
+#main-image svg:hover {
+  transition: transform 200ms cubic-bezier(.22,.61,.36,1) 200ms;
 }
 
 #trailTemplate {
@@ -135,6 +140,12 @@ input#projects-checkbox:not(:checked) + .projects {
 .trail {
   transition: stroke-dasharray 5s linear;
   stroke-dasharray: 0,0%,1,100%;
+}
+.forageTrail {
+  transition-duration: 1.5s;
+}
+#fishTrail {
+  transition-duration: 0.5s;
 }
 
 #crosses g {

@@ -1,15 +1,4 @@
 const projects = {
-  carpentry: {
-    emoji: '🔨',
-    unlocked: true,
-    cost: {
-      wood: 10,
-      food: 10,
-      people: 4,
-      days: 2,
-    },
-    description: 'Recycle and process wood more efficiently (+1 wood per day)'
-  },
   fishing: {
     emoji: '🎣',
     unlocked: true,
@@ -20,6 +9,30 @@ const projects = {
       days: 2,
     },
     description: 'Develop fishing tools (+5 food per day)',
+    callback: () => {
+      log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣')
+      show('#fh') // Fishing house
+      population.ready -= 1
+
+      setInterval(() => {
+        startTrail(DAY / 2, 'fishTrail', false)
+      }, DAY / 2)
+
+      dayEvents.push(() => {
+        resources.food += 5
+      })
+    }
+  },
+  carpentry: {
+    emoji: '🔨',
+    unlocked: true,
+    cost: {
+      wood: 10,
+      food: 10,
+      people: 4,
+      days: 2,
+    },
+    description: 'Recycle and process wood more efficiently (+1 wood per day)'
   },
   shipyard: {
     emoji: '⚓',
@@ -89,13 +102,16 @@ const selectProject = (projectName) => () => {
   const duration = project.cost.days * DAY
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
+  population.ready -= project.cost.people
 
   setTimeout(() => {
-    log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
+    // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
     $project.classList.add('done')
     $project.classList.remove('in-progress')
     $project.style.transition = null
+    population.ready += project.cost.people
 
+    project.callback()
     updateProjects()
   }, duration)
 }

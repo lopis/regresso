@@ -5,16 +5,27 @@ on($('#hunt'), 'click', () => hunt())
 
 const fetchWood = () => {
   population.ready -= 2
-  setTimeout(bring('wood', 2, 5, 0.05), DAY * 0.5)
+  const time = DAY * 0.6
+  setTimeout(bring('wood', 2, 5, 0.05), time)
   log('2 people set off to bring wood.', null, '🌳')
   updateView()
+  startTrail(time, 'forageTemplate', true)
 }
 
+let huntingEnabled = false
 const forage = () => {
   population.ready -= 2
-  setTimeout(bring('food', 2, 4, 0), DAY * 0.3)
+  const time = DAY * 0.4
+  setTimeout(bring('food', 2, 4, 0), time)
   log('2 people have gone foraging.', null, '🌾')
   updateView()
+  startTrail(time, 'forageTemplate', true)
+
+  if (resources.food > 100 && !huntingEnabled) {
+    show('#hunt')
+    huntingEnabled = true
+    log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹')
+  }
 }
 
 const hunt = () => {
@@ -23,18 +34,20 @@ const hunt = () => {
   setTimeout(bring('food', 4, 12, 0.1), time)
   log('4 hunters left to bring food.', null, '🏹')
   updateView()
-  startTrail(time)
+  startTrail(time, 'trailTemplate', true)
 }
 
 const bring = (resource, partySize, amount, risk) => () => {
   if (Math.random() > risk) {
-    log(`A party of ${partySize} has returned with ${amount} ${resource} successfully.`, 'green', '🌟')
+    // log(`A party of ${partySize} has returned with ${amount} ${resource} successfully.`, 'green', '🌟')
     resources[resource] += amount
     population.ready += partySize
   } else {
     log(`A party of ${partySize} returned from fetching ${resource}, but got attacked by wild animals. 1 person died`, 'red', '💀')
     resources[resource] += Math.floor(amount / 2)
     population.ready += partySize - 1
+    population.total -= 1
+    bury()
     blink('population', 'red')
   }
   updateView()
@@ -98,6 +111,9 @@ const nextDay = () => {
     resources.food = 0
     log(`Due to lack of food, ${population.hungry} are starving and can't work.`, 'red', '😔')
   }
+
+  dayEvents.forEach(event => event())
+
   updateView()
 }
 

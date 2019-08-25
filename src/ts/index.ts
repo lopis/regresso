@@ -15,13 +15,18 @@ window.onload = () => {
     updateView()
     log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝')
     setTimeout(() => {
-      log('A scouting team has found good foraging grounds nearby.', null, '🌾')
+      log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾')
       show('#forage')
     }, 2000)
 
     setTimeout(() => {
-      log('The river delta could provide you with food if you would develop fishing.', null, '🐟')
+      log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳')
+      show('#chop-wood')
+    }, DAY)
+
+    setTimeout(() => {
+      log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟')
       renderProject('fishing')
       show('#projects')
-    }, DAY)
+    }, DAY * 2)
 };

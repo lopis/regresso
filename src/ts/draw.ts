@@ -1,20 +1,26 @@
 let trailCount = 0
-const startTrail = (time) => {
-  const newTrail = $('#trailTemplate').cloneNode()
-  const id = 'trail' + (++trailCount)
-  newTrail.id = id
-  $('#trailTemplate').after(newTrail)
+const startTrail = (time, trail, clone) => {
+  const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`)
+  let id = trail
+  if (clone) {
+    id = 'trail' + (++trailCount)
+    newTrail.id = id
+    $(`#${trail}`).after(newTrail)
+  }
   setTimeout(() => {
-    newTrail.style.strokeDasharray = '0,100%,1,100%'
+    const pathLength = Math.round($(`#${trail}`).getTotalLength())
+    newTrail.style.strokeDasharray = `0,${pathLength}px,1`
   }, 100)
 
   setTimeout(() => {
     $(`#${id}`).style.strokeDasharray = null
   }, time/2)
 
-  setTimeout(() => {
-    $(`#${id}`).remove()
-  }, time)
+  if (clone) {
+    setTimeout(() => {
+      $(`#${id}`).remove()
+    }, time)
+  }
 }
 
 const bury = () => {
