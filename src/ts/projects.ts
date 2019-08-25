@@ -2,7 +2,7 @@ const projects = {
   caravela: {
     description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
     emoji: '⚓️',
-    unlocked: true,
+    unlocked: false,
     cost: {
       wood: 100,
       food: 200,
@@ -85,16 +85,28 @@ const createProjects = () => {
   })
 }
 
+const resourceEmoji = {
+  wood: '🌳',
+  food: '🍒',
+  days: 'days ⏳',
+  people: '👫'
+}
+const getCostString = (cost) => {
+  return Object.keys(cost)
+    .map(key => `${cost[key]} ${resourceEmoji[key]}`)
+    .join('  ')
+}
+
 const renderProject = (key) => {
   const project = projects[key]
   const $newProject = $$('div', 'project', null)
   $newProject.id = key
-  const icon = $$('div', 'icon', project.emoji)
-  const title = $$('div', 'title', key.replace(/_/g, ' '))
-  const description = $$('div', 'description', project.description)
-  $newProject.append(icon)
-  $newProject.append(title)
-  $newProject.append(description)
+  $newProject.innerHTML = `
+  <div class="icon">${project.emoji}</div>
+  <div class="title">${key}</div>
+  <div class="description">${project.description}</div>
+  <div class="cost">${getCostString(project.cost)}</div>`
+
   $('.projects').append($newProject)
   on($newProject, 'click', selectProject(key))
 }
@@ -106,6 +118,20 @@ const updateProjects = () => {
 const selectProject = (projectName) => () => {
   const project = projects[projectName]
   if (project.done) {
+    return
+  }
+  if (!project.unlocked) {
+    blink(projectName, 'no')
+    log('Conditions for construction of the new caravela have not been met.', null, '❌', 'info')
+    return
+  }
+  
+  const missing = ['wood', 'food'].filter(
+    resource => resources[resource] < project.cost[resource]
+  )
+  if (missing.length > 0) {
+    blink(projectName, 'no')
+    log(`There is not enough ${missing} to start the ${projectName} project`, null, '❌', 'info')
     return
   }
   

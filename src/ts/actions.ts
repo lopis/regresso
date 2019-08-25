@@ -62,11 +62,11 @@ const bring = (resource, partySize, amount, risk) => () => {
   blink(resource, 'green')
 }
 
-const blink = (resource, color) => {
-  $(`#${resource}`).classList.add(color)
+const blink = (resource, name) => {
+  $(`#${resource}`).classList.add(name)
   setTimeout(() => {
-    $(`#${resource}`).classList.remove(color)
-  }, 100);
+    $(`#${resource}`).classList.remove(name)
+  }, name === 'no' ? 400 : 100);
 }
 
 const updateView = () => {

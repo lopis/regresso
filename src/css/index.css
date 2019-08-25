@@ -78,7 +78,7 @@ button:hover {
   visibility: hidden;
 }
 .actions button,
-.actions label {
+.actions .btn {
   transition: transform 300ms ease-out;
 }
 

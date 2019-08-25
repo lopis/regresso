@@ -1,5 +1,6 @@
 #projects {
   background: #80bbd6;
+  display: inline-block;
 }
 .projects {
   display: grid;
@@ -15,6 +16,8 @@
   padding: 15px;
   margin: 5px;
   cursor: pointer;
+  position: relative;
+  padding-bottom: 30px;
 }
 .project:not(.in-progress):not(.done):hover {
   background: white;
@@ -57,4 +60,31 @@
   background: none;
   color: #333;
   cursor: default;
+}
+
+.project.no {
+	animation: nudge 200ms infinite;
+}
+@keyframes nudge {
+  0% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+
+.cost {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: white;
+  padding: 4px;
 }

@@ -90,11 +90,11 @@ var bring = function (resource, partySize, amount, risk) { return function () {
     updateView();
     blink(resource, 'green');
 }; };
-var blink = function (resource, color) {
-    $("#" + resource).classList.add(color);
+var blink = function (resource, name) {
+    $("#" + resource).classList.add(name);
     setTimeout(function () {
-        $("#" + resource).classList.remove(color);
-    }, 100);
+        $("#" + resource).classList.remove(name);
+    }, name === 'no' ? 400 : 100);
 };
 var updateView = function () {
     $('#wood .value').innerText = resources.wood;
@@ -239,7 +239,7 @@ var projects = {
     caravela: {
         description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
         emoji: '⚓️',
-        unlocked: true,
+        unlocked: false,
         cost: {
             wood: 100,
             food: 200,
@@ -318,16 +318,22 @@ var createProjects = function () {
         }
     });
 };
+var resourceEmoji = {
+    wood: '🌳',
+    food: '🍒',
+    days: 'days ⏳',
+    people: '👫'
+};
+var getCostString = function (cost) {
+    return Object.keys(cost)
+        .map(function (key) { return cost[key] + " " + resourceEmoji[key]; })
+        .join('  ');
+};
 var renderProject = function (key) {
     var project = projects[key];
     var $newProject = $$('div', 'project', null);
     $newProject.id = key;
-    var icon = $$('div', 'icon', project.emoji);
-    var title = $$('div', 'title', key.replace(/_/g, ' '));
-    var description = $$('div', 'description', project.description);
-    $newProject.append(icon);
-    $newProject.append(title);
-    $newProject.append(description);
+    $newProject.innerHTML = "\n  <div class=\"icon\">" + project.emoji + "</div>\n  <div class=\"title\">" + key + "</div>\n  <div class=\"description\">" + project.description + "</div>\n  <div class=\"cost\">" + getCostString(project.cost) + "</div>";
     $('.projects').append($newProject);
     on($newProject, 'click', selectProject(key));
 };
@@ -336,6 +342,17 @@ var updateProjects = function () {
 var selectProject = function (projectName) { return function () {
     var project = projects[projectName];
     if (project.done) {
+        return;
+    }
+    if (!project.unlocked) {
+        blink(projectName, 'no');
+        log('Conditions for construction of the new caravela have not been met.', null, '❌', 'info');
+        return;
+    }
+    var missing = ['wood', 'food'].filter(function (resource) { return resources[resource] < project.cost[resource]; });
+    if (missing.length > 0) {
+        blink(projectName, 'no');
+        log("There is not enough " + missing + " to start the " + projectName + " project", null, '❌', 'info');
         return;
     }
     project.done = true;
@@ -357,6 +374,7 @@ var dayInterval, dayCycleInterval;
 var stopGame = function () {
     clearInterval(dayInterval);
     clearInterval(dayCycleInterval);
+    $('svg').style.filter = 'brightness(.5) contrast(1.0) saturate(0)';
 };
 window.onload = function () {
     dayInterval = setInterval(nextDay, DAY);
@@ -377,6 +395,7 @@ window.onload = function () {
     }, DAY);
     setTimeout(function () {
         log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');
+        blink('projects', 'blink');
         renderProject('fishing');
     }, DAY * 2);
 };
