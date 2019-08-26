@@ -9,7 +9,11 @@ const startTrail = (time, trail, clone) => {
   }
   setTimeout(() => {
     const pathLength = Math.round($(`#${trail}`).getTotalLength())
-    newTrail.style.strokeDasharray = `0,${pathLength}px,1`
+    if (trail == 'huntTrail') {
+      newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
+    } else {
+      newTrail.style.strokeDasharray = `0,${pathLength}px,1`
+    }
   }, 100)
 
   setTimeout(() => {

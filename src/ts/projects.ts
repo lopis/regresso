@@ -44,7 +44,24 @@ const projects = {
       people: 4,
       days: 2,
     },
-    description: 'Recycle and process wood more efficiently (+1 wood per day)'
+    description: 'Recycle and process wood more efficiently (+1 wood per day)',
+    callback: () => {
+      renderProject('shipyard')
+    }
+  },
+  weapons: {
+    emoji: '🛡',
+    unlocked: false,
+    description: 'Produce weapons and armor (-75% chance of animal attacks)',
+    cost: {
+      wood: 50,
+      food: 15,
+      people: 4,
+      days: 2,
+    },
+    callback: () => {
+      attackChance = attackChance * 0.5
+    }
   },
   shipyard: {
     emoji: '⚓',

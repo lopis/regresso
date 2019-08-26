@@ -4,9 +4,9 @@ on($('#forage'), 'click', () => forage())
 on($('#hunt'), 'click', () => hunt())
 
 const fetchWood = () => {
-  population.ready -= 2
+  population.ready -= -1
   const time = DAY * 0.6
-  setTimeout(bring('wood', 2, 5, 0.05), time)
+  setTimeout(bring('wood', 1, 3, 0.05), time)
   log('2 people set off to bring wood.', null, '🌳', 'tasks')
   updateView()
   startTrail(time, 'forageTemplate', true)
@@ -21,10 +21,10 @@ const fetchWood = () => {
 
 let huntingEnabled = false
 const forage = () => {
-  population.ready -= 2
+  population.ready -= 1
   const time = DAY * 0.4
-  setTimeout(bring('food', 2, 4, 0), time)
-  log('2 people have gone foraging.', null, '🌾', 'tasks')
+  setTimeout(bring('food', 1, 2, 0), time)
+  log('1 person have gone foraging.', null, '🌾', 'tasks')
   updateView()
   startTrail(time, 'forageTemplate', true)
 
@@ -37,16 +37,24 @@ const forage = () => {
 }
 
 const hunt = () => {
-  population.ready -= 4
+  population.ready -= 1
   const time = DAY * 1.2
-  setTimeout(bring('food', 4, 12, 0.1), time)
+  setTimeout(bring('food', 1, 4, 0.1), time)
   log('4 hunters left to bring food.', null, '🏹', 'tasks')
   updateView()
-  startTrail(time, 'trailTemplate', true)
+  startTrail(time, 'huntTrail', true)
+
+  if (!projects.weapons.unlocked) {
+    projects.weapons.unlocked = true
+    log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info')
+    blink('projects', 'blink')
+    renderProject('weapons')
+  }
 }
 
+let attackChance = 1.0
 const bring = (resource, partySize, amount, risk) => () => {
-  if (Math.random() > risk) {
+  if (Math.random() > risk * attackChance) {
     log(`A party of ${partySize} has returned with ${amount} ${resource} successfully.`, 'green', '🌟', 'tasks')
     resources[resource] += amount
     population.ready += partySize

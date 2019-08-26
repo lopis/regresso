@@ -37,9 +37,9 @@ on($('#chop-wood'), 'click', function () { return fetchWood(); });
 on($('#forage'), 'click', function () { return forage(); });
 on($('#hunt'), 'click', function () { return hunt(); });
 var fetchWood = function () {
-    population.ready -= 2;
+    population.ready -= -1;
     var time = DAY * 0.6;
-    setTimeout(bring('wood', 2, 5, 0.05), time);
+    setTimeout(bring('wood', 1, 3, 0.05), time);
     log('2 people set off to bring wood.', null, '🌳', 'tasks');
     updateView();
     startTrail(time, 'forageTemplate', true);
@@ -52,10 +52,10 @@ var fetchWood = function () {
 };
 var huntingEnabled = false;
 var forage = function () {
-    population.ready -= 2;
+    population.ready -= 1;
     var time = DAY * 0.4;
-    setTimeout(bring('food', 2, 4, 0), time);
-    log('2 people have gone foraging.', null, '🌾', 'tasks');
+    setTimeout(bring('food', 1, 2, 0), time);
+    log('1 person have gone foraging.', null, '🌾', 'tasks');
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (resources.food > 100 && !huntingEnabled) {
@@ -66,15 +66,22 @@ var forage = function () {
     }
 };
 var hunt = function () {
-    population.ready -= 4;
+    population.ready -= 1;
     var time = DAY * 1.2;
-    setTimeout(bring('food', 4, 12, 0.1), time);
+    setTimeout(bring('food', 1, 4, 0.1), time);
     log('4 hunters left to bring food.', null, '🏹', 'tasks');
     updateView();
-    startTrail(time, 'trailTemplate', true);
+    startTrail(time, 'huntTrail', true);
+    if (!projects.weapons.unlocked) {
+        projects.weapons.unlocked = true;
+        log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info');
+        blink('projects', 'blink');
+        renderProject('weapons');
+    }
 };
+var attackChance = 1.0;
 var bring = function (resource, partySize, amount, risk) { return function () {
-    if (Math.random() > risk) {
+    if (Math.random() > risk * attackChance) {
         log("A party of " + partySize + " has returned with " + amount + " " + resource + " successfully.", 'green', '🌟', 'tasks');
         resources[resource] += amount;
         population.ready += partySize;
@@ -147,8 +154,8 @@ var dayCycle = function () {
     $('svg').classList.toggle('night');
 };
 var resources = {
-    wood: 3,
-    food: 35
+    wood: 0,
+    food: 0
 };
 var population = {
     total: 15,
@@ -206,7 +213,7 @@ var people = shuffle([
 ]);
 var dayEvents = [];
 var DAY = 10000;
-var date = new Date('1499/05/13');
+var date = new Date('1549/05/13');
 var trailCount = 0;
 var startTrail = function (time, trail, clone) {
     var newTrail = clone ? $("#" + trail).cloneNode() : $("#" + trail);
@@ -218,7 +225,12 @@ var startTrail = function (time, trail, clone) {
     }
     setTimeout(function () {
         var pathLength = Math.round($("#" + trail).getTotalLength());
-        newTrail.style.strokeDasharray = "0," + pathLength + "px,1";
+        if (trail == 'huntTrail') {
+            newTrail.style.strokeDasharray = "0," + pathLength + "px,0.5,1,0.5,1,0.5,1,0.5,100%";
+        }
+        else {
+            newTrail.style.strokeDasharray = "0," + pathLength + "px,1";
+        }
     }, 100);
     setTimeout(function () {
         $("#" + id).style.strokeDasharray = null;
@@ -279,7 +291,24 @@ var projects = {
             people: 4,
             days: 2
         },
-        description: 'Recycle and process wood more efficiently (+1 wood per day)'
+        description: 'Recycle and process wood more efficiently (+1 wood per day)',
+        callback: function () {
+            renderProject('shipyard');
+        }
+    },
+    weapons: {
+        emoji: '🛡',
+        unlocked: false,
+        description: 'Produce weapons and armor (-75% chance of animal attacks)',
+        cost: {
+            wood: 50,
+            food: 15,
+            people: 4,
+            days: 2
+        },
+        callback: function () {
+            attackChance = attackChance * 0.5;
+        }
     },
     shipyard: {
         emoji: '⚓',

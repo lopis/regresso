@@ -3,7 +3,7 @@ html {
 }
 body {
   margin: 0;
-  font-family: sans;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -121,14 +121,15 @@ input#projects-checkbox:not(:checked) + .projects {
   transition: transform 200ms cubic-bezier(.22,.61,.36,1) 200ms;
 }
 
-#trailTemplate {
-  stroke-dasharray: 0,0%,1,100%;
-  display: none;
-}
-
 .trail {
   transition: stroke-dasharray 5s linear;
   stroke-dasharray: 0,0%,1,100%;
+}
+#huntTrail {
+  display: none;
+}
+.huntTrail {
+  stroke-dasharray: 0,0,0.5px,2px,0.5px,100%;
 }
 .forageTrail {
   transition-duration: 1.5s;

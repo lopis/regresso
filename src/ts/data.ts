@@ -1,6 +1,6 @@
 const resources = {
-  wood: 3,
-  food: 35,
+  wood: 0,
+  food: 0,
 }
 const population = {
   total: 15,
@@ -59,4 +59,4 @@ const people = shuffle([
 
 const dayEvents = []
 const DAY = 10000
-let date = new Date('1499/05/13')
+let date = new Date('1549/05/13')
