@@ -156,6 +156,13 @@ svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
 }
 
-#sy, #fh, #ship, #hull {
+#sy, #fh, #hull {
   visibility: hidden;
+}
+
+#ship {
+	position: relative;
+	top: 8vh;
+  left: -5vw;
+  transition: 
 }

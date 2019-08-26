@@ -1,31 +1,31 @@
-var $ = function (q) { return document.querySelector(q); };
-var on = function (elem, event, callback) { return elem.addEventListener(event, callback); };
-var $$ = function (tag, className, innerText) {
-    var el = document.createElement(tag);
+const $ = q => document.querySelector(q);
+const on = (elem, event, callback) => elem.addEventListener(event, callback);
+const $$ = (tag, className, innerText) => {
+    const el = document.createElement(tag);
     el.classList.add(className);
     el.innerText = innerText;
     return el;
 };
-var log = function (text, color, emoji, type) {
-    if ($(".log#" + type + " .new")) {
-        setTimeout(function () { return log(text, color, emoji, type); }, 500);
+const log = (text, color, emoji, type) => {
+    if ($(`.log#${type} .new`)) {
+        setTimeout(() => log(text, color, emoji, type), 500);
         return;
     }
-    var newLog = document.createElement('p');
-    newLog.innerHTML = "<span class=\"icon\">" + emoji + "</span><span class=\"" + color + "\">" + text + "</span>";
+    const newLog = document.createElement('p');
+    newLog.innerHTML = `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`;
     if (color)
         newLog.classList.add(color);
     newLog.classList.add('new');
-    $(".log#" + type).prepend(newLog);
-    setTimeout(function () {
+    $(`.log#${type}`).prepend(newLog);
+    setTimeout(() => {
         newLog.classList.remove('new');
     }, 200);
 };
-var show = function (q) {
+const show = (q) => {
     $(q).style.visibility = 'visible';
 };
-var shuffle = function (array) {
-    var i = 0, j = 0, temp = null;
+const shuffle = (array) => {
+    let i = 0, j = 0, temp = null;
     for (i = array.length - 1; i > 0; i -= 1) {
         j = Math.floor(Math.random() * (i + 1));
         temp = array[i];
@@ -33,14 +33,22 @@ var shuffle = function (array) {
         array[j] = temp;
     }
 };
-on($('#chop-wood'), 'click', function () { return fetchWood(); });
-on($('#forage'), 'click', function () { return forage(); });
-on($('#hunt'), 'click', function () { return hunt(); });
-var fetchWood = function () {
+on($('#chop-wood'), 'click', () => fetchWood());
+on($('#forage'), 'click', () => forage());
+on($('#hunt'), 'click', () => hunt());
+const buffer = {
+    foragers: 0,
+    foraging: 0,
+    hunters: 0,
+    hunting: 0,
+    loggers: 0,
+    wood: 0,
+};
+const fetchWood = () => {
     population.ready -= -1;
-    var time = DAY * 0.6;
+    const time = DAY * 0.6;
     setTimeout(bring('wood', 1, 3, 0.05), time);
-    log('2 people set off to bring wood.', null, '🌳', 'tasks');
+    buffer.loggers++;
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (!projects.carpentry.unlocked && resources.wood > 5) {
@@ -50,12 +58,12 @@ var fetchWood = function () {
         blink('projects', 'blink');
     }
 };
-var huntingEnabled = false;
-var forage = function () {
+let huntingEnabled = false;
+const forage = () => {
     population.ready -= 1;
-    var time = DAY * 0.4;
-    setTimeout(bring('food', 1, 2, 0), time);
-    log('1 person have gone foraging.', null, '🌾', 'tasks');
+    const time = DAY * 0.4;
+    setTimeout(bring('foraging', 1, 2, 0), time);
+    buffer.foragers++;
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (resources.food > 100 && !huntingEnabled) {
@@ -65,11 +73,11 @@ var forage = function () {
         log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info');
     }
 };
-var hunt = function () {
+const hunt = () => {
     population.ready -= 1;
-    var time = DAY * 1.2;
-    setTimeout(bring('food', 1, 4, 0.1), time);
-    log('4 hunters left to bring food.', null, '🏹', 'tasks');
+    const time = DAY * 1.2;
+    setTimeout(bring('hunting', 1, 4, 0.1), time);
+    buffer.hunters++;
     updateView();
     startTrail(time, 'huntTrail', true);
     if (!projects.weapons.unlocked) {
@@ -79,31 +87,60 @@ var hunt = function () {
         renderProject('weapons');
     }
 };
-var attackChance = 1.0;
-var bring = function (resource, partySize, amount, risk) { return function () {
+let attackChance = 1.0;
+const bring = (resource, partySize, amount, risk) => () => {
+    buffer[resource] += amount;
     if (Math.random() > risk * attackChance) {
-        log("A party of " + partySize + " has returned with " + amount + " " + resource + " successfully.", 'green', '🌟', 'tasks');
-        resources[resource] += amount;
         population.ready += partySize;
     }
     else {
-        log("A party of " + partySize + " returned from fetching " + resource + ", but got attacked by wild animals. 1 person died", 'red', '💀', 'info');
-        resources[resource] += Math.floor(amount / 2);
+        log(`A party got attacked by wild animals while ${resource == 'wood' ? 'logging' : resource}. 1 person died`, 'red', '💀', 'info');
         population.ready += partySize - 1;
         population.total -= 1;
         bury();
         blink('population', 'red');
     }
     updateView();
-    blink(resource, 'green');
-}; };
-var blink = function (resource, name) {
-    $("#" + resource).classList.add(name);
-    setTimeout(function () {
-        $("#" + resource).classList.remove(name);
+};
+setInterval(() => {
+    if (buffer.foraging) {
+        log(`Foragers have collected ${buffer.foraging} food.`, 'green', '🌾', 'tasks');
+        resources.food += buffer.foraging;
+        buffer.foraging = 0;
+        blink('food', 'green');
+    }
+    if (buffer.hunting) {
+        log(`Hunters have hunted ${buffer.hunting} food.`, 'green', '🏹', 'tasks');
+        resources.food += buffer.hunting;
+        buffer.hunting = 0;
+        blink('food', 'green');
+    }
+    if (buffer.wood) {
+        log(`Loggers have brought back ${buffer.wood} wood.`, 'green', '🌳', 'tasks');
+        resources.wood += buffer.wood;
+        buffer.wood = 0;
+        blink('wood', 'green');
+    }
+    if (buffer.foragers) {
+        log(`${buffer.foragers} people went foraging for food.`, null, '🌾', 'tasks');
+        buffer.foragers = 0;
+    }
+    if (buffer.hunters) {
+        log(`${buffer.hunters} people left to search game to hunt.`, null, '🏹', 'tasks');
+        buffer.hunters = 0;
+    }
+    if (buffer.loggers) {
+        log(`${buffer.loggers} people set off to bring wood.`, null, '🌳', 'tasks');
+        buffer.loggers = 0;
+    }
+}, 1500);
+const blink = (resource, name) => {
+    $(`#${resource}`).classList.add(name);
+    setTimeout(() => {
+        $(`#${resource}`).classList.remove(name);
     }, name === 'no' ? 400 : 100);
 };
-var updateView = function () {
+const updateView = () => {
     $('#wood .value').innerText = resources.wood;
     $('#food .value').innerText = resources.food;
     $('#population .value').innerText = population.total;
@@ -119,20 +156,20 @@ var updateView = function () {
     $('#chop-wood').disabled = population.ready < 2;
     $('#hunt').disabled = population.ready < 4;
 };
-var updateDate = function () {
+const updateDate = () => {
     date.setDate(date.getDate() + 1);
-    $('#days .value').innerText = date.getDate() + " / " + (date.getMonth() + 1) + " / " + date.getFullYear();
+    $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
-var nextDay = function () {
+const nextDay = () => {
     updateDate();
     if ((population.total) < 1) {
-        log("Your population was decimated", 'red', '☠️', 'info');
+        log(`Your population was decimated`, 'red', '☠️', 'info');
         stopGame();
     }
     if (population.hungry > 0) {
         population.hungry -= 1;
         population.total -= 1;
-        log("One person has died from starvation. +5 food.", 'red', '💀', 'info');
+        log(`One person has died from starvation. +5 food.`, 'red', '💀', 'info');
         resources.food += 5;
         blink('food', 'green');
         blink('population', 'red');
@@ -145,26 +182,26 @@ var nextDay = function () {
         population.ready += resources.food;
         population.hungry += -resources.food;
         resources.food = 0;
-        log("Due to lack of food, " + population.hungry + " are starving and can't work.", 'red', '😔', 'info');
+        log(`Due to lack of food, ${population.hungry} are starving and can't work.`, 'red', '😔', 'info');
     }
-    dayEvents.forEach(function (event) { return event(); });
+    dayEvents.forEach(event => event());
     updateView();
 };
-var dayCycle = function () {
+const dayCycle = () => {
     $('svg').classList.toggle('night');
 };
-var resources = {
+const resources = {
     wood: 0,
-    food: 0
+    food: 0,
 };
-var population = {
+const population = {
     total: 15,
     ready: 15,
     hungry: 0,
     sick: 0,
-    hurt: 0
+    hurt: 0,
 };
-var people = shuffle([
+const people = shuffle([
     {
         name: 'Abraão'
     },
@@ -211,43 +248,43 @@ var people = shuffle([
         name: 'Lúcia'
     },
 ]);
-var dayEvents = [];
-var DAY = 10000;
-var date = new Date('1549/05/13');
-var trailCount = 0;
-var startTrail = function (time, trail, clone) {
-    var newTrail = clone ? $("#" + trail).cloneNode() : $("#" + trail);
-    var id = trail;
+const dayEvents = [];
+const DAY = 10000;
+let date = new Date('1549/05/13');
+let trailCount = 0;
+const startTrail = (time, trail, clone) => {
+    const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`);
+    let id = trail;
     if (clone) {
         id = 'trail' + (++trailCount);
         newTrail.id = id;
-        $("#" + trail).after(newTrail);
+        $(`#${trail}`).after(newTrail);
     }
-    setTimeout(function () {
-        var pathLength = Math.round($("#" + trail).getTotalLength());
+    setTimeout(() => {
+        const pathLength = Math.round($(`#${trail}`).getTotalLength());
         if (trail == 'huntTrail') {
-            newTrail.style.strokeDasharray = "0," + pathLength + "px,0.5,1,0.5,1,0.5,1,0.5,100%";
+            newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`;
         }
         else {
-            newTrail.style.strokeDasharray = "0," + pathLength + "px,1";
+            newTrail.style.strokeDasharray = `0,${pathLength}px,1`;
         }
     }, 100);
-    setTimeout(function () {
-        $("#" + id).style.strokeDasharray = null;
+    setTimeout(() => {
+        $(`#${id}`).style.strokeDasharray = null;
     }, time / 2);
     if (clone) {
-        setTimeout(function () {
-            $("#" + id).remove();
+        setTimeout(() => {
+            $(`#${id}`).remove();
         }, time);
     }
 };
-var bury = function () {
-    var index = $('#crosses').children.length - population.total;
+const bury = () => {
+    const index = $('#crosses').children.length - population.total;
     if ($('#crosses').children[index]) {
         $('#crosses').children[index].style.display = 'initial';
     }
 };
-var projects = {
+const projects = {
     caravela: {
         description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
         emoji: '⚓️',
@@ -256,9 +293,9 @@ var projects = {
             wood: 100,
             food: 200,
             people: 10,
-            days: 8
+            days: 8,
         },
-        callback: function () { }
+        callback: () => { }
     },
     fishing: {
         emoji: '🎣',
@@ -267,17 +304,17 @@ var projects = {
             wood: 10,
             food: 10,
             people: 4,
-            days: 2
+            days: 2,
         },
         description: 'Develop fishing tools (+5 food per day)',
-        callback: function () {
+        callback: () => {
             log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣', 'info');
             show('#fh');
             population.ready -= 1;
-            setInterval(function () {
+            setInterval(() => {
                 startTrail(DAY / 2, 'fishTrail', false);
             }, DAY / 2);
-            dayEvents.push(function () {
+            dayEvents.push(() => {
                 resources.food += 5;
             });
         }
@@ -289,10 +326,10 @@ var projects = {
             wood: 10,
             food: 10,
             people: 4,
-            days: 2
+            days: 2,
         },
         description: 'Recycle and process wood more efficiently (+1 wood per day)',
-        callback: function () {
+        callback: () => {
             renderProject('shipyard');
         }
     },
@@ -304,9 +341,9 @@ var projects = {
             wood: 50,
             food: 15,
             people: 4,
-            days: 2
+            days: 2,
         },
-        callback: function () {
+        callback: () => {
             attackChance = attackChance * 0.5;
         }
     },
@@ -338,38 +375,42 @@ var projects = {
             days: 5
         },
         description: 'Build a fishing boat, bringing 10 extra food per day.'
-    }
+    },
 };
-var createProjects = function () {
-    Object.keys(projects).forEach(function (key) {
+const createProjects = () => {
+    Object.keys(projects).forEach(key => {
         if (projects[key].unlocked) {
             renderProject(key);
         }
     });
 };
-var resourceEmoji = {
+const resourceEmoji = {
     wood: '🌳',
     food: '🍒',
     days: 'days ⏳',
     people: '👫'
 };
-var getCostString = function (cost) {
+const getCostString = (cost) => {
     return Object.keys(cost)
-        .map(function (key) { return cost[key] + " " + resourceEmoji[key]; })
+        .map(key => `${cost[key]} ${resourceEmoji[key]}`)
         .join('  ');
 };
-var renderProject = function (key) {
-    var project = projects[key];
-    var $newProject = $$('div', 'project', null);
+const renderProject = (key) => {
+    const project = projects[key];
+    const $newProject = $$('div', 'project', null);
     $newProject.id = key;
-    $newProject.innerHTML = "\n  <div class=\"icon\">" + project.emoji + "</div>\n  <div class=\"title\">" + key + "</div>\n  <div class=\"description\">" + project.description + "</div>\n  <div class=\"cost\">" + getCostString(project.cost) + "</div>";
+    $newProject.innerHTML = `
+  <div class="icon">${project.emoji}</div>
+  <div class="title">${key}</div>
+  <div class="description">${project.description}</div>
+  <div class="cost">${getCostString(project.cost)}</div>`;
     $('.projects').append($newProject);
     on($newProject, 'click', selectProject(key));
 };
-var updateProjects = function () {
+const updateProjects = () => {
 };
-var selectProject = function (projectName) { return function () {
-    var project = projects[projectName];
+const selectProject = (projectName) => () => {
+    const project = projects[projectName];
     if (project.done) {
         return;
     }
@@ -378,25 +419,25 @@ var selectProject = function (projectName) { return function () {
         log('Conditions for construction of the new caravela have not been met.', null, '❌', 'info');
         return;
     }
-    var missing = ['wood', 'food'].filter(function (resource) { return resources[resource] < project.cost[resource]; });
+    const missing = ['wood', 'food'].filter(resource => resources[resource] < project.cost[resource]);
     if (population.ready < project.cost.people) {
-        log("Not enough people ready to start the " + projectName + " project", null, '❌', 'info');
+        log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info');
         return;
     }
     if (missing.length > 0) {
         blink(projectName, 'no');
-        log("There is not enough " + missing.join(' and ') + " to start the " + projectName + " project", null, '❌', 'info');
+        log(`There is not enough ${missing.join(' and ')} to start the ${projectName} project`, null, '❌', 'info');
         return;
     }
     resources.wood -= project.cost.wood;
     resources.food -= project.cost.food;
     population.ready -= project.cost.people;
     project.done = true;
-    var $project = $(".project#" + projectName);
-    var duration = project.cost.days * DAY;
-    $project.style.transition = "height " + duration + "ms linear";
+    const $project = $(`.project#${projectName}`);
+    const duration = project.cost.days * DAY;
+    $project.style.transition = `height ${duration}ms linear`;
     $project.classList.add('in-progress');
-    setTimeout(function () {
+    setTimeout(() => {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
         $project.style.transition = null;
@@ -404,31 +445,31 @@ var selectProject = function (projectName) { return function () {
         project.callback();
         updateProjects();
     }, duration);
-}; };
-var dayInterval, dayCycleInterval;
-var stopGame = function () {
+};
+let dayInterval, dayCycleInterval;
+const stopGame = () => {
     clearInterval(dayInterval);
     clearInterval(dayCycleInterval);
     $('svg').style.filter = 'brightness(.5) contrast(1.0) saturate(0)';
 };
-window.onload = function () {
+window.onload = () => {
     dayInterval = setInterval(nextDay, DAY);
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     updateDate();
     updateView();
     renderProject('caravela');
     log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝', 'info');
-    setTimeout(function () {
+    setTimeout(() => {
         log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
         show('#forage');
         blink('forage', 'blink');
     }, 2000);
-    setTimeout(function () {
+    setTimeout(() => {
         log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳', 'info');
         show('#chop-wood');
         blink('chop-wood', 'blink');
     }, DAY);
-    setTimeout(function () {
+    setTimeout(() => {
         log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');
         blink('projects', 'blink');
         renderProject('fishing');

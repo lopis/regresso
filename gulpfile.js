@@ -61,7 +61,8 @@ gulp.task('build-ts', function () {
 	.pipe(ts({
 		// noImplicitAny: true,
 		outFile: 'main.js',
-		removeComments: true,
+    removeComments: true,
+    target: "es2015",
 	}))
 	.pipe(gulp.dest('build'));
 });
