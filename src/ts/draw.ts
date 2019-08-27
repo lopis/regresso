@@ -28,8 +28,9 @@ const startTrail = (time, trail, clone) => {
 }
 
 const bury = () => {
-  const index = $('#crosses').children.length - population.total
-  if ($('#crosses').children[index]) {
-    $('#crosses').children[index].style.display = 'initial'
-  }
+  return
+  // const index = $('#crosses').children.length - population.total
+  // if ($('#crosses').children[index]) {
+  //   $('#crosses').children[index].style.display = 'initial'
+  // }
 }

@@ -24,10 +24,12 @@
   box-sizing: border-box;
   border: 12px solid #404a4d;
   border-radius: 20px;
+  line-height: 1;
 }
 .log p.new {
   margin-top: -120px;
   transition: margin-top 0s, height 0.3s 0.2s, font-size 0.3s 0.2s;
+  line-height: 1.5;
 }
 .log p:first-child {
   height: 120px;

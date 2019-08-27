@@ -174,19 +174,23 @@ const updateFood = () => {
 
   if (resources.food < 0) {
     population.hungry = -resources.food - population.starving - starving
+    if (population.hungry > 1) {
+      log(`People are getting hungry`, null, '💭', 'info')
+    }
     resources.food = 0
   }
 }
 
 const nextDay = () => {
   updateDate()
+  updateFood()
   
   if ((population.total) < 1) {
     log(`Your population was decimated`, 'red', '☠️', 'info')
     stopGame()
+    return
   }
 
-  updateFood()
 
   dayEvents.forEach(event => event())
 

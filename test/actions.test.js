@@ -31,6 +31,9 @@ const updateFood = () => {
 
   if (resources.food < 0) {
     population.hungry = -resources.food - population.starving - starving
+    if (population.hungry > 1) {
+      log(`People are getting hungry`, null, '💭', 'info')
+    }
     resources.food = 0
   }
 }

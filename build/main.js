@@ -189,16 +189,20 @@ const updateFood = () => {
     population.ready = population.total - population.starving;
     if (resources.food < 0) {
         population.hungry = -resources.food - population.starving - starving;
+        if (population.hungry > 1) {
+            log(`People are getting hungry`, null, '💭', 'info');
+        }
         resources.food = 0;
     }
 };
 const nextDay = () => {
     updateDate();
+    updateFood();
     if ((population.total) < 1) {
         log(`Your population was decimated`, 'red', '☠️', 'info');
         stopGame();
+        return;
     }
-    updateFood();
     dayEvents.forEach(event => event());
     updateView();
 };
@@ -294,10 +298,7 @@ const startTrail = (time, trail, clone) => {
     }
 };
 const bury = () => {
-    const index = $('#crosses').children.length - population.total;
-    if ($('#crosses').children[index]) {
-        $('#crosses').children[index].style.display = 'initial';
-    }
+    return;
 };
 const projects = {
     caravela: {
