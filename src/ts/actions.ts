@@ -1,8 +1,4 @@
 ///<reference path="util.ts"/>
-on($('#chop-wood'), 'click', () => fetchWood())
-on($('#forage'), 'click', () => forage())
-on($('#hunt'), 'click', () => hunt())
-
 const buffer = {
   foragers: 0,
   foraging: 0,
@@ -75,38 +71,47 @@ const bring = (resource, partySize, amount, risk) => () => {
   }
   updateView()
 }
-setInterval(() => {
-  if (buffer.foraging) {
-    log(`Foragers have collected ${buffer.foraging} food.`, 'green', '🌾', 'tasks')
-    resources.food += buffer.foraging
-    buffer.foraging = 0
-    blink('food', 'green')
-  }
-  if (buffer.hunting) {
-    log(`Hunters have hunted ${buffer.hunting} food.`, 'green', '🏹', 'tasks')
-    resources.food += buffer.hunting
-    buffer.hunting = 0
-    blink('food', 'green')
-  }
-  if (buffer.wood) {
-    log(`Loggers have brought back ${buffer.wood} wood.`, 'green', '🌳', 'tasks')
-    resources.wood += buffer.wood
-    buffer.wood = 0
-    blink('wood', 'green')
-  }
-  if (buffer.foragers) {
-    log(`${buffer.foragers} people went foraging for food.`, null, '🌾', 'tasks')
-    buffer.foragers = 0
-  }
-  if (buffer.hunters) {
-    log(`${buffer.hunters} people left to search game to hunt.`, null, '🏹', 'tasks')
-    buffer.hunters = 0
-  }
-  if (buffer.loggers) {
-    log(`${buffer.loggers} people set off to bring wood.`, null, '🌳', 'tasks')
-    buffer.loggers = 0
-  }
-}, 1500)
+
+const setupClickHandlers = () => {
+  on($('#chop-wood'), 'click', () => fetchWood())
+  on($('#forage'), 'click', () => forage())
+  on($('#hunt'), 'click', () => hunt())
+}
+
+const initBuffer = () => {
+  setInterval(() => {
+    if (buffer.foraging) {
+      log(`Foragers have collected ${buffer.foraging} food.`, 'green', '🌾', 'tasks')
+      resources.food += buffer.foraging
+      buffer.foraging = 0
+      blink('food', 'green')
+    }
+    if (buffer.hunting) {
+      log(`Hunters have hunted ${buffer.hunting} food.`, 'green', '🏹', 'tasks')
+      resources.food += buffer.hunting
+      buffer.hunting = 0
+      blink('food', 'green')
+    }
+    if (buffer.wood) {
+      log(`Loggers have brought back ${buffer.wood} wood.`, 'green', '🌳', 'tasks')
+      resources.wood += buffer.wood
+      buffer.wood = 0
+      blink('wood', 'green')
+    }
+    if (buffer.foragers) {
+      log(`${buffer.foragers} people went foraging for food.`, null, '🌾', 'tasks')
+      buffer.foragers = 0
+    }
+    if (buffer.hunters) {
+      log(`${buffer.hunters} people left to search game to hunt.`, null, '🏹', 'tasks')
+      buffer.hunters = 0
+    }
+    if (buffer.loggers) {
+      log(`${buffer.loggers} people set off to bring wood.`, null, '🌳', 'tasks')
+      buffer.loggers = 0
+    }
+  }, 1500)
+}
 
 const blink = (resource, name) => {
   $(`#${resource}`).classList.add(name)
@@ -121,11 +126,11 @@ const updateView = () => {
 
   $('#population .value').innerText = population.total
   $('#ready .value').innerText = population.ready
-  $('#hungry .value').innerText = population.hungry
-  if (population.hungry < 1) {
-    $('#hungry').classList.add('hidden')
+  $('#starving .value').innerText = population.starving
+  if (population.starving < 1) {
+    $('#starving').classList.add('hidden')
   } else {
-    $('#hungry').classList.remove('hidden')
+    $('#starving').classList.remove('hidden')
   }
   
   $('#forage').disabled = population.ready < 2
@@ -138,6 +143,41 @@ const updateDate = () => {
   $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`
 }
 
+const updateFood = () => {
+  let food = resources.food
+  let starving = Math.max(0, population.starving - food)
+  food = Math.max(0, food - starving)
+  let hungry = Math.max(0, population.hungry - food)
+  food = Math.max(0, food - hungry)
+
+  population.starving = starving
+  population.hungry = hungry
+  resources.food -= population.total
+
+  if (population.starving > 0) {
+    log(`${population.starving} died from starvation.`, 'red', '💀', 'info')
+    // resources.food += 5 * population.starving
+    population.total -= population.starving
+    blink('food', 'green')
+    blink('population', 'red')
+    bury()
+    population.starving = 0
+  }
+
+  if (population.hungry > 0) {
+    population.starving = population.hungry
+    population.hungry = 0
+    log(`Due to lack of food, ${population.starving} are starving and can't work.`, 'red', '😔', 'info')
+  }
+
+  population.ready = population.total - population.starving
+
+  if (resources.food < 0) {
+    population.hungry = -resources.food - population.starving - starving
+    resources.food = 0
+  }
+}
+
 const nextDay = () => {
   updateDate()
   
@@ -145,26 +185,8 @@ const nextDay = () => {
     log(`Your population was decimated`, 'red', '☠️', 'info')
     stopGame()
   }
-  if (population.hungry > 0) {
-    population.hungry -= 1
-    population.total -= 1
-    log(`One person has died from starvation. +5 food.`, 'red', '💀', 'info')
-    resources.food += 5
-    blink('food', 'green')
-    blink('population', 'red')
-    bury()
-  }
-  
-  population.ready += population.hungry
-  population.hungry = 0
 
-  resources.food -= population.ready
-  if (resources.food < 0) {
-    population.ready += resources.food
-    population.hungry += -resources.food
-    resources.food = 0
-    log(`Due to lack of food, ${population.hungry} are starving and can't work.`, 'red', '😔', 'info')
-  }
+  updateFood()
 
   dayEvents.forEach(event => event())
 

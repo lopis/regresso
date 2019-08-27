@@ -7,7 +7,8 @@
     "clean": "rm -rf build dist",
     "watch": "gulp build-dev; gulp watch",
     "build": "gulp build-dev",
-    "prod": "gulp build-prod"
+    "prod": "gulp build-prod",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,9 @@
     "mkdirp": "^0.5.1"
   },
   "dependencies": {
+    "@babel/parser": "^7.5.5",
+    "@babel/types": "^7.5.5",
+    "eval": "^0.1.4",
     "gulp-inject": "^5.0.4",
     "gulp-typescript": "^5.0.1",
     "typescript": "^3.5.3"

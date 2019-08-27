@@ -34,10 +34,6 @@ body {
   background: #c62929;
   transition: background-color 100ms;
 }
-
-.resource#hungry {
-  background: #c62929;
-}
 .resource-group {
   display: flex;
   background: #2d2929;
@@ -161,8 +157,5 @@ svg.night #sky {
 }
 
 #ship {
-	position: relative;
-	top: 8vh;
-  left: -5vw;
-  transition: 
+  transition: transform 5s ease-out;
 }

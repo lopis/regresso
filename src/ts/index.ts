@@ -15,6 +15,8 @@ window.onload = () => {
   updateDate()
   updateView()
   renderProject('caravela')
+  initBuffer()
+  setupClickHandlers()
 
   log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝', 'info')
   setTimeout(() => {

@@ -6,7 +6,7 @@ const population = {
   total: 15,
   ready: 15,
   hungry: 0,
-  sick: 0,
+  starving: 0,
   hurt: 0,
 }
 const people = shuffle([
