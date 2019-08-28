@@ -52,7 +52,7 @@ const projects = {
   weapons: {
     emoji: '🛡',
     unlocked: false,
-    description: 'Produce weapons and armor (-75% chance of animal attacks)',
+    description: 'Produce weapons and armor (-75% chance of animal attack deaths)',
     cost: {
       wood: 50,
       food: 15,
@@ -60,7 +60,7 @@ const projects = {
       days: 2,
     },
     callback: () => {
-      attackChance = attackChance * 0.5
+      attackChance = attackChance * 0.25
     }
   },
   shipyard: {

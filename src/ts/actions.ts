@@ -9,9 +9,10 @@ const buffer = {
 }
 
 const fetchWood = () => {
-  population.ready -= -1
+  const people = 1
+  population.ready -= people
   const time = DAY * 0.6
-  setTimeout(bring('wood', 1, 3, 0.05), time)
+  setTimeout(bring('wood', people, 3, 0.05), time)
   buffer.loggers++
   updateView()
   startTrail(time, 'forageTemplate', true)
@@ -26,9 +27,10 @@ const fetchWood = () => {
 
 let huntingEnabled = false
 const forage = () => {
-  population.ready -= 1
+  const people = 1
+  population.ready -= people
   const time = DAY * 0.4
-  setTimeout(bring('foraging', 1, 2, 0), time)
+  setTimeout(bring('foraging', people, 2, 0), time)
   buffer.foragers++
   updateView()
   startTrail(time, 'forageTemplate', true)
@@ -42,9 +44,10 @@ const forage = () => {
 }
 
 const hunt = () => {
-  population.ready -= 1
+  const people = 2
+  population.ready -= people
   const time = DAY * 1.2
-  setTimeout(bring('hunting', 2, 8, 0.1), time)
+  setTimeout(bring('hunting', people, 8, 0.1), time)
   buffer.hunters++
   updateView()
   startTrail(time, 'huntTrail', true)
@@ -125,7 +128,7 @@ const updateView = () => {
   $('#food .value').innerText = resources.food
 
   $('#population .value').innerText = population.total
-  $('#ready .value').innerText = population.ready
+  $('#ready .value').innerText = population.ready - population.starving
   $('#starving .value').innerText = population.starving
   if (population.starving < 1) {
     $('#starving').classList.add('hidden')
@@ -133,9 +136,9 @@ const updateView = () => {
     $('#starving').classList.remove('hidden')
   }
   
-  $('#forage').disabled = population.ready < 2
-  $('#chop-wood').disabled = population.ready < 2
-  $('#hunt').disabled = population.ready < 4
+  $('#forage').disabled = population.ready < 1
+  $('#chop-wood').disabled = (population.ready - population.starving) < 1
+  $('#hunt').disabled = population.ready < 2
 }
 
 const updateDate = () => {
@@ -170,7 +173,7 @@ const updateFood = () => {
     log(`Due to lack of food, ${population.starving} are starving and can't work.`, 'red', '😔', 'info')
   }
 
-  population.ready = population.total - population.starving
+  // population.ready = population.total - population.starving
 
   if (resources.food < 0) {
     population.hungry = -resources.food - population.starving - starving
@@ -188,6 +191,7 @@ const nextDay = () => {
   if ((population.total) < 1) {
     log(`Your population was decimated`, 'red', '☠️', 'info')
     stopGame()
+    updateView()
     return
   }
 
