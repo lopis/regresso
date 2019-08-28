@@ -9,10 +9,19 @@ const stopGame = () => {
   clearInterval(dayCycleInterval)
   $('svg').style.filter = 'brightness(.5) contrast(1.0) saturate(0)'
 }
-on($('.intro button'), 'click', () => {
-  $('.intro').classList.add('closed')
+const pauseGame = () => {
+  clearInterval(dayInterval)
+  clearInterval(dayCycleInterval)
+  $('#days').classList.add('paused')
+}
+const resumeGame = () => {
   dayInterval = setInterval(nextDay, DAY)
   dayCycleInterval = setInterval(dayCycle, DAY / 2)
+  $('#days').classList.remove('paused')
+}
+on($('.intro button'), 'click', () => {
+  $('.intro').classList.add('closed')
+  resumeGame()
   updateDate()
   updateView()
   renderProject('caravela')
@@ -37,4 +46,13 @@ on($('.intro button'), 'click', () => {
     blink('projects', 'blink')
     renderProject('fishing')
   }, DAY * 2)
+
+  on($('#projects'), 'click', () => {
+    if ($('.projects').classList.contains('closed')) {
+      pauseGame()
+    } else {
+      resumeGame()
+    }
+    $('.projects').classList.toggle('closed')
+  })
 })

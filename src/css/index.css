@@ -43,7 +43,14 @@ body {
 .resource-group .resource {
   margin: 0;
 }
-
+#days.paused::before {
+	content: 'PAUSED';
+	position: absolute;
+	padding: 10px;
+	color: #fe6666;
+	background: rgba(0,0,0,0.5);
+	font-weight: bold;
+}
 
 .hidden {
   display: none;
@@ -104,26 +111,6 @@ button:hover:not(:active):not(:disabled) {
 }
 .description {
   font-size: 80%;
-}
-
-#projects-checkbox:not(:checked) + .projects {
-  position: fixed;
-  background: none;
-  top: 0;
-  right: 0;
-  display: flex;
-  padding: 4px 10px;
-}
-#projects-checkbox:not(:checked) + .projects .project {
-  padding: 0;
-  background: none;
-  height: 42px;
-  width: 42px;
-  overflow: hidden;
-}
-
-#projects-checkbox:not(:checked) + .projects .cost {
-  display: none;
 }
 
 #main-image {
@@ -193,6 +180,7 @@ svg.night #sky {
 	width: 800px;
 	padding: 2em;
 	box-sizing: border-box;
+  transform: scale(1);
 }
 .intro::before {
 	content: "";
@@ -211,8 +199,14 @@ li + li {
 .intro ~ div {
   filter: blur(10px) brightness(1.5);
 }
-.intro.closed {
-  display: none;
+.intro.closed .modal {
+  top: -100%;
+  transform: scale(1.5);
+  opacity: 0;
+  transition: top 0s ease 0.3s, opacity 0.3s ease, transform 0.3s linear;
+}
+.intro.closed::before {
+  content: unset;
 }
 .intro.closed ~ div {
   filter: none;

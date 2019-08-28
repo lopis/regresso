@@ -1,18 +1,52 @@
-#projects {
-  background: #80bbd6;
-  display: inline-block;
+.projects.closed #projects {
+	background: white;
+	cursor: pointer;
+	border-radius: 5px;
+	padding: 8px;
+	margin-right: 14px;
+	font-variant: small-caps;
 }
-.projects {
+.projects:not(.closed) #projects {
+  position: absolute;
+	cursor: pointer;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 150%;
+  box-sizing: border-box;
+}
+.close {
+	font-size: 200%;
+	line-height: 0.6;
+	float: right;
+}
+.projects.closed #projects .close {
+  display: none;
+}
+.projects:not(.closed) #projects .open {
+  display: none;
+}
+.projects:not(.closed) {
+  transition: all 150ms ease-in-out;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   overflow: hidden;
   max-height: 900px;
-  transition: max-height 500ms;
-  background: #fdd85c;
+  background: linear-gradient(#7baebd, #2b5e6e);
   flex-shrink: 0;
+	position: fixed;
+	height: 90%;
+	width: 90%;
+	z-index: 3;
+	align-content: flex-start;
+	top: 5%;
+	right: 5%;
+	box-shadow: 0 0 0 10vh rgba(0,0,0,0.5);
+	padding: 50px 10px 10px 10px;
+	box-sizing: border-box;
+	border-radius: 15px;
 }
 .project {
-  background: #ffefb9;
+  background: #a9eafd;
   padding: 15px;
   margin: 5px;
   cursor: pointer;
@@ -20,7 +54,7 @@
   padding-bottom: 30px;
 }
 .project:not(.in-progress):not(.done):hover {
-  background: white;
+  background: #caf3ff;
 }
 .icon {
   font-size: 30px;
@@ -63,6 +97,31 @@
   cursor: default;
 }
 .project.done .cost {
+  display: none;
+}
+
+.projects.closed {
+  position: fixed;
+  background: none;
+  top: 0;
+  right: 0;
+  height: 52px;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  padding: 4px 10px;
+}
+.projects.closed .project {
+  padding: 0;
+  height: 42px;
+  width: 42px;
+  overflow: hidden;
+  pointer-events: none;
+  background: none;
+}
+
+.projects.closed .cost {
   display: none;
 }
 

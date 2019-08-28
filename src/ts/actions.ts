@@ -52,26 +52,30 @@ const hunt = () => {
   updateView()
   startTrail(time, 'huntTrail', true)
 
-  if (!projects.weapons.unlocked) {
-    projects.weapons.unlocked = true
-    log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info')
-    blink('projects', 'blink')
-    renderProject('weapons')
-  }
+  
 }
 
 let attackChance = 1.0
 const bring = (resource, partySize, amount, risk) => () => {
   buffer[resource] += amount
-  if (Math.random() > risk * attackChance) {
+  const die = Math.random() < risk * attackChance
+  if (!die) {
     population.ready += partySize
   } else {
-    log(`A party got attacked by wild animals while ${resource == 'wood' ? 'logging' : resource}. 1 person died`, 'red', '💀', 'info')
+    log(`Wild animals killed 1 person while ${resource == 'wood' ? 'logging' : resource}`, 'red', '💀', 'info')
     population.ready += partySize - 1
     population.total -= 1
     bury()
     blink('population', 'red')
   }
+
+  if (!projects.weapons.unlocked && (die || resource === 'hunting')) {
+    projects.weapons.unlocked = true
+    log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info')
+    blink('projects', 'blink')
+    renderProject('weapons')
+  }
+
   updateView()
 }
 
@@ -81,39 +85,41 @@ const setupClickHandlers = () => {
   on($('#hunt'), 'click', () => hunt())
 }
 
+let bufferTimeout = 3000
 const initBuffer = () => {
   setInterval(() => {
     if (buffer.foraging) {
-      log(`Foragers have collected ${buffer.foraging} food.`, 'green', '🌾', 'tasks')
+      log(`+${buffer.foraging}🍒.`, 'green', '🌾', 'tasks')
       resources.food += buffer.foraging
       buffer.foraging = 0
       blink('food', 'green')
     }
     if (buffer.hunting) {
-      log(`Hunters have hunted ${buffer.hunting} food.`, 'green', '🏹', 'tasks')
+      log(`+${buffer.hunting}🍒.`, 'green', '🏹', 'tasks')
       resources.food += buffer.hunting
       buffer.hunting = 0
       blink('food', 'green')
     }
     if (buffer.wood) {
-      log(`Loggers have brought back ${buffer.wood} wood.`, 'green', '🌳', 'tasks')
+      log(`+${buffer.wood}🌳.`, 'green', '🌳', 'tasks')
       resources.wood += buffer.wood
       buffer.wood = 0
       blink('wood', 'green')
     }
+
     if (buffer.foragers) {
-      log(`${buffer.foragers} people went foraging for food.`, null, '🌾', 'tasks')
+      log(`${buffer.foragers}👤 left for foraging.`, null, '🌾', 'tasks')
       buffer.foragers = 0
     }
     if (buffer.hunters) {
-      log(`${buffer.hunters} people left to search game to hunt.`, null, '🏹', 'tasks')
+      log(`${buffer.hunters}👥 left for hunting .`, null, '🏹', 'tasks')
       buffer.hunters = 0
     }
     if (buffer.loggers) {
-      log(`${buffer.loggers} people set off to bring wood.`, null, '🌳', 'tasks')
+      log(`${buffer.loggers}👤 left for logging.`, null, '🌳', 'tasks')
       buffer.loggers = 0
     }
-  }, 1500)
+  }, bufferTimeout)
 }
 
 const blink = (resource, name) => {
