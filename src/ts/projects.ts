@@ -46,6 +46,7 @@ const projects = {
     },
     description: 'Recycle and process wood more efficiently (+1 wood per day)',
     callback: () => {
+      blink('projects', 'blink')
       renderProject('shipyard')
     }
   },
@@ -92,6 +93,12 @@ const projects = {
     },
     description: 'Build a fishing boat, bringing 10 extra food per day.'
   },
+}
+
+const projectSets = {
+  foraging: ['foraging'],
+  fishing: ['fishing', 'fish_boat', 'high_sea_fishing'],
+  hunting: ['hunting', 'traps', 'farming']
 }
 
 const createProjects = () => {

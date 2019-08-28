@@ -349,6 +349,7 @@ const projects = {
         },
         description: 'Recycle and process wood more efficiently (+1 wood per day)',
         callback: () => {
+            blink('projects', 'blink');
             renderProject('shipyard');
         }
     },
@@ -395,6 +396,11 @@ const projects = {
         },
         description: 'Build a fishing boat, bringing 10 extra food per day.'
     },
+};
+const projectSets = {
+    foraging: ['foraging'],
+    fishing: ['fishing', 'fish_boat', 'high_sea_fishing'],
+    hunting: ['hunting', 'traps', 'farming']
 };
 const createProjects = () => {
     Object.keys(projects).forEach(key => {
@@ -471,7 +477,8 @@ const stopGame = () => {
     clearInterval(dayCycleInterval);
     $('svg').style.filter = 'brightness(.5) contrast(1.0) saturate(0)';
 };
-window.onload = () => {
+on($('.intro button'), 'click', () => {
+    $('.intro').classList.add('closed');
     dayInterval = setInterval(nextDay, DAY);
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     updateDate();
@@ -479,7 +486,7 @@ window.onload = () => {
     renderProject('caravela');
     initBuffer();
     setupClickHandlers();
-    log('Your ship wrecked on an unkown land. Help your remaining crew return to the seas.', null, '🏝', 'info');
+    log('Your people set camp by the sea.', null, '🏝', 'info');
     setTimeout(() => {
         log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
         show('#forage');
@@ -495,4 +502,4 @@ window.onload = () => {
         blink('projects', 'blink');
         renderProject('fishing');
     }, DAY * 2);
-};
+});

@@ -105,8 +105,25 @@ button:hover:not(:active):not(:disabled) {
 .description {
   font-size: 80%;
 }
-input#projects-checkbox:not(:checked) + .projects {
-  max-height: 0;
+
+#projects-checkbox:not(:checked) + .projects {
+  position: fixed;
+  background: none;
+  top: 0;
+  right: 0;
+  display: flex;
+  padding: 4px 10px;
+}
+#projects-checkbox:not(:checked) + .projects .project {
+  padding: 0;
+  background: none;
+  height: 42px;
+  width: 42px;
+  overflow: hidden;
+}
+
+#projects-checkbox:not(:checked) + .projects .cost {
+  display: none;
 }
 
 #main-image {
@@ -163,4 +180,41 @@ svg.night #sky {
 
 #ship {
   transition: transform 5s ease-out;
+}
+
+.intro .modal {
+	position: fixed;
+	background: #404a4d;
+	color: #fff;
+	top: 20%;
+	left: calc(50% - 400px);
+	z-index: 3;
+	font-size: 150%;
+	width: 800px;
+	padding: 2em;
+	box-sizing: border-box;
+}
+.intro::before {
+	content: "";
+	display: block;
+	position: fixed;
+	background: rgba(0,0,0,0.5);
+	top: 0px;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 2;
+}
+li + li {
+	margin-top: 0.5em;
+}
+.intro ~ div {
+  filter: blur(10px) brightness(1.5);
+}
+.intro.closed {
+  display: none;
+}
+.intro.closed ~ div {
+  filter: none;
+  transition: filter 500ms;
 }
