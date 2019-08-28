@@ -62,7 +62,7 @@ button, .btn {
 }
 
 .actions {
-  height: 50px;
+  flex-shrink: 0;
   padding: 8px;
   text-align: center;
   background: #9aad4d;
@@ -73,6 +73,11 @@ button, .btn {
 .actions button,
 .actions .btn {
   transition: transform 300ms ease-out;
+}
+.actions button small {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: -5px;
 }
 
 button:disabled {

@@ -73,7 +73,7 @@ const forage = () => {
 const hunt = () => {
     population.ready -= 1;
     const time = DAY * 1.2;
-    setTimeout(bring('hunting', 1, 4, 0.1), time);
+    setTimeout(bring('hunting', 2, 8, 0.1), time);
     buffer.hunters++;
     updateView();
     startTrail(time, 'huntTrail', true);
