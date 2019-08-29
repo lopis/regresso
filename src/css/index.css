@@ -56,15 +56,13 @@ body {
   display: none;
 }
 
-button, .btn {
+button {
     border-radius: 2px;
     font-size: 20px;
     padding: 0.6em 1em;
-    font-variant: small-caps;
     border: 1px solid #666;
     background: #c5d680;
     cursor: pointer;
-    line-height: 25px;
     color: #333;
 }
 
@@ -77,8 +75,7 @@ button, .btn {
 .actions button {
   visibility: hidden;
 }
-.actions button,
-.actions .btn {
+.actions button {
   transition: transform 300ms ease-out;
 }
 .actions button small {
@@ -103,16 +100,6 @@ button:hover:not(:active):not(:disabled) {
   transform: scale(1.8);
 }
 
-.title {
-  margin-left: 16px;
-  text-transform: capitalize;
-  font-variant: small-caps;
-  margin-bottom: 5px;
-}
-.description {
-  font-size: 80%;
-}
-
 #main-image {
   width: 100%;
   overflow: hidden;
@@ -127,7 +114,7 @@ button:hover:not(:active):not(:disabled) {
 }
 
 .trail {
-  transition: stroke-dasharray 5s linear;
+  transition: stroke-dasharray 3s linear;
   stroke-dasharray: 0,0%,1,100%;
 }
 #huntTrail {
@@ -141,10 +128,6 @@ button:hover:not(:active):not(:disabled) {
 }
 #fishTrail {
   transition-duration: 0.5s;
-}
-
-#crosses g {
-  display: none;
 }
 
 #sky, svg {
@@ -163,10 +146,6 @@ svg.night #sky {
 
 #sy, #fh, #hull {
   visibility: hidden;
-}
-
-#ship {
-  transition: transform 5s ease-out;
 }
 
 .intro .modal {
@@ -211,4 +190,28 @@ li + li {
 .intro.closed ~ div {
   filter: none;
   transition: filter 500ms;
+}
+.caps, button {
+  text-transform: capitalize;
+  font-variant: small-caps;
+}
+
+body {
+  --v: 0;
+}
+.v {
+	opacity: var(--v);
+  transition: opacity .1s ease-out 3s;
+}
+
+#ship {
+  transition: transform 3s ease-out;
+  transform: translate(-12vw,5vh);
+}
+.intro.closed ~ #main-image #ship {
+  transform: translate(0,0);
+}
+.intro.closed ~ #main-image #ship g {
+  transition: transform 1s ease-out 2s;
+	transform: translateY(1.3vh);
 }

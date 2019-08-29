@@ -12,8 +12,9 @@ const fetchWood = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.6
-  setTimeout(bring('wood', people, 3, 0.05), time)
+  st(bring('wood', people, 3, 0.05), time)
   buffer.loggers++
+  initBuffer()
   updateView()
   startTrail(time, 'forageTemplate', true)
 
@@ -30,8 +31,9 @@ const forage = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.4
-  setTimeout(bring('foraging', people, 2, 0), time)
+  st(bring('foraging', people, 2, 0), time)
   buffer.foragers++
+  initBuffer()
   updateView()
   startTrail(time, 'forageTemplate', true)
 
@@ -47,17 +49,17 @@ const hunt = () => {
   const people = 2
   population.ready -= people
   const time = DAY * 1.2
-  setTimeout(bring('hunting', people, 8, 0.1), time)
-  buffer.hunters++
+  st(bring('hunting', people, 8, 0.1), time)
+  buffer.hunters += people
+  initBuffer()
   updateView()
   startTrail(time, 'huntTrail', true)
-
-  
 }
 
 let attackChance = 1.0
 const bring = (resource, partySize, amount, risk) => () => {
   buffer[resource] += amount
+  initBuffer()
   const die = Math.random() < risk * attackChance
   if (!die) {
     population.ready += partySize
@@ -85,9 +87,11 @@ const setupClickHandlers = () => {
   on($('#hunt'), 'click', () => hunt())
 }
 
-let bufferTimeout = 3000
+let bufferTimeout = 1000
+let bufferInterval
 const initBuffer = () => {
-  setInterval(() => {
+  clearInterval(bufferInterval)
+  bufferInterval = setInterval(() => {
     if (buffer.foraging) {
       log(`+${buffer.foraging}🍒.`, 'green', '🌾', 'tasks')
       resources.food += buffer.foraging
@@ -124,32 +128,9 @@ const initBuffer = () => {
 
 const blink = (resource, name) => {
   $(`#${resource}`).classList.add(name)
-  setTimeout(() => {
+  st(() => {
     $(`#${resource}`).classList.remove(name)
   }, name === 'no' ? 400 : 100);
-}
-
-const updateView = () => {
-  $('#wood .value').innerText = resources.wood
-  $('#food .value').innerText = resources.food
-
-  $('#population .value').innerText = population.total
-  $('#ready .value').innerText = population.ready - population.starving
-  $('#starving .value').innerText = population.starving
-  if (population.starving < 1) {
-    $('#starving').classList.add('hidden')
-  } else {
-    $('#starving').classList.remove('hidden')
-  }
-  
-  $('#forage').disabled = population.ready < 1
-  $('#chop-wood').disabled = (population.ready - population.starving) < 1
-  $('#hunt').disabled = population.ready < 2
-}
-
-const updateDate = () => {
-  date.setDate(date.getDate() + 1)
-  $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`
 }
 
 const updateFood = () => {
@@ -167,6 +148,7 @@ const updateFood = () => {
     log(`${population.starving} died from starvation.`, 'red', '💀', 'info')
     // resources.food += 5 * population.starving
     population.total -= population.starving
+    population.ready -= population.starving
     blink('food', 'green')
     blink('population', 'red')
     bury()
@@ -188,6 +170,10 @@ const updateFood = () => {
     }
     resources.food = 0
   }
+}
+
+const enoughPeople = (min) => {
+  return (population.ready - population.starving) >= min
 }
 
 const nextDay = () => {

@@ -6,9 +6,10 @@ const $$ = (tag, className, innerText) => {
     el.innerText = innerText;
     return el;
 };
+const st = (fn, t) => setTimeout(fn, t);
 const log = (text, color, emoji, type) => {
     if ($(`.log#${type} .new`)) {
-        setTimeout(() => log(text, color, emoji, type), 500);
+        st(() => log(text, color, emoji, type), 500);
         return;
     }
     const newLog = document.createElement('p');
@@ -17,7 +18,7 @@ const log = (text, color, emoji, type) => {
         newLog.classList.add(color);
     newLog.classList.add('new');
     $(`.log#${type}`).prepend(newLog);
-    setTimeout(() => {
+    st(() => {
         newLog.classList.remove('new');
     }, 200);
 };
@@ -45,8 +46,9 @@ const fetchWood = () => {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.6;
-    setTimeout(bring('wood', people, 3, 0.05), time);
+    st(bring('wood', people, 3, 0.05), time);
     buffer.loggers++;
+    initBuffer();
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (!projects.carpentry.unlocked && resources.wood > 5) {
@@ -61,8 +63,9 @@ const forage = () => {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.4;
-    setTimeout(bring('foraging', people, 2, 0), time);
+    st(bring('foraging', people, 2, 0), time);
     buffer.foragers++;
+    initBuffer();
     updateView();
     startTrail(time, 'forageTemplate', true);
     if (resources.food > 100 && !huntingEnabled) {
@@ -76,14 +79,16 @@ const hunt = () => {
     const people = 2;
     population.ready -= people;
     const time = DAY * 1.2;
-    setTimeout(bring('hunting', people, 8, 0.1), time);
-    buffer.hunters++;
+    st(bring('hunting', people, 8, 0.1), time);
+    buffer.hunters += people;
+    initBuffer();
     updateView();
     startTrail(time, 'huntTrail', true);
 };
 let attackChance = 1.0;
 const bring = (resource, partySize, amount, risk) => () => {
     buffer[resource] += amount;
+    initBuffer();
     const die = Math.random() < risk * attackChance;
     if (!die) {
         population.ready += partySize;
@@ -108,9 +113,11 @@ const setupClickHandlers = () => {
     on($('#forage'), 'click', () => forage());
     on($('#hunt'), 'click', () => hunt());
 };
-let bufferTimeout = 3000;
+let bufferTimeout = 1000;
+let bufferInterval;
 const initBuffer = () => {
-    setInterval(() => {
+    clearInterval(bufferInterval);
+    bufferInterval = setInterval(() => {
         if (buffer.foraging) {
             log(`+${buffer.foraging}🍒.`, 'green', '🌾', 'tasks');
             resources.food += buffer.foraging;
@@ -145,29 +152,9 @@ const initBuffer = () => {
 };
 const blink = (resource, name) => {
     $(`#${resource}`).classList.add(name);
-    setTimeout(() => {
+    st(() => {
         $(`#${resource}`).classList.remove(name);
     }, name === 'no' ? 400 : 100);
-};
-const updateView = () => {
-    $('#wood .value').innerText = resources.wood;
-    $('#food .value').innerText = resources.food;
-    $('#population .value').innerText = population.total;
-    $('#ready .value').innerText = population.ready - population.starving;
-    $('#starving .value').innerText = population.starving;
-    if (population.starving < 1) {
-        $('#starving').classList.add('hidden');
-    }
-    else {
-        $('#starving').classList.remove('hidden');
-    }
-    $('#forage').disabled = population.ready < 1;
-    $('#chop-wood').disabled = (population.ready - population.starving) < 1;
-    $('#hunt').disabled = population.ready < 2;
-};
-const updateDate = () => {
-    date.setDate(date.getDate() + 1);
-    $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
 const updateFood = () => {
     let food = resources.food;
@@ -181,6 +168,7 @@ const updateFood = () => {
     if (population.starving > 0) {
         log(`${population.starving} died from starvation.`, 'red', '💀', 'info');
         population.total -= population.starving;
+        population.ready -= population.starving;
         blink('food', 'green');
         blink('population', 'red');
         bury();
@@ -198,6 +186,9 @@ const updateFood = () => {
         }
         resources.food = 0;
     }
+};
+const enoughPeople = (min) => {
+    return (population.ready - population.starving) >= min;
 };
 const nextDay = () => {
     updateDate();
@@ -284,7 +275,7 @@ const startTrail = (time, trail, clone) => {
         newTrail.id = id;
         $(`#${trail}`).after(newTrail);
     }
-    setTimeout(() => {
+    st(() => {
         const pathLength = Math.round($(`#${trail}`).getTotalLength());
         if (trail == 'huntTrail') {
             newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`;
@@ -293,17 +284,37 @@ const startTrail = (time, trail, clone) => {
             newTrail.style.strokeDasharray = `0,${pathLength}px,1`;
         }
     }, 100);
-    setTimeout(() => {
+    st(() => {
         $(`#${id}`).style.strokeDasharray = null;
     }, time / 2);
     if (clone) {
-        setTimeout(() => {
+        st(() => {
             $(`#${id}`).remove();
         }, time);
     }
 };
 const bury = () => {
     return;
+};
+const updateView = () => {
+    $('#wood .value').innerText = resources.wood;
+    $('#food .value').innerText = resources.food;
+    $('#population .value').innerText = population.total;
+    $('#ready .value').innerText = Math.max(0, population.ready - population.starving);
+    $('#starving .value').innerText = population.starving;
+    if (population.starving < 1) {
+        $('#starving').classList.add('hidden');
+    }
+    else {
+        $('#starving').classList.remove('hidden');
+    }
+    $('#forage').disabled = !enoughPeople(1);
+    $('#chop-wood').disabled = !enoughPeople(1);
+    $('#hunt').disabled = !enoughPeople(2);
+};
+const updateDate = () => {
+    date.setDate(date.getDate() + 1);
+    $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
 const projects = {
     caravela: {
@@ -333,10 +344,11 @@ const projects = {
             show('#fh');
             population.ready -= 1;
             setInterval(() => {
-                startTrail(DAY / 2, 'fishTrail', false);
-            }, DAY / 2);
+                startTrail(DAY / 5, 'fishTrail', false);
+            }, DAY / 5);
             dayEvents.push(() => {
                 resources.food += 5;
+                log(`+5🍒`, 'blue', '🐟', 'tasks');
             });
         }
     },
@@ -438,8 +450,8 @@ const renderProject = (key) => {
     $newProject.id = key;
     $newProject.innerHTML = `
   <div class="icon">${project.emoji}</div>
-  <div class="title">${key}</div>
-  <div class="description">${project.description}</div>
+  <div class="title caps">${key}</div>
+  <small class="description">${project.description}</small>
   <div class="cost">${getCostString(project.cost)}</div>`;
     $('.projects').append($newProject);
     on($newProject, 'click', selectProject(key));
@@ -457,7 +469,7 @@ const selectProject = (projectName) => () => {
         return;
     }
     const missing = ['wood', 'food'].filter(resource => resources[resource] < project.cost[resource]);
-    if (population.ready < project.cost.people) {
+    if (!enoughPeople(project.cost.people)) {
         log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info');
         return;
     }
@@ -474,7 +486,7 @@ const selectProject = (projectName) => () => {
     const duration = project.cost.days * DAY;
     $project.style.transition = `height ${duration}ms linear`;
     $project.classList.add('in-progress');
-    setTimeout(() => {
+    st(() => {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
         $project.style.transition = null;
@@ -499,8 +511,7 @@ const resumeGame = () => {
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     $('#days').classList.remove('paused');
 };
-on($('.intro button'), 'click', () => {
-    $('.intro').classList.add('closed');
+const startGame = () => {
     resumeGame();
     updateDate();
     updateView();
@@ -508,17 +519,17 @@ on($('.intro button'), 'click', () => {
     initBuffer();
     setupClickHandlers();
     log('Your people set camp by the sea.', null, '🏝', 'info');
-    setTimeout(() => {
+    st(() => {
         log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
         show('#forage');
         blink('forage', 'blink');
     }, 2000);
-    setTimeout(() => {
-        log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳', 'info');
+    st(() => {
+        log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info');
         show('#chop-wood');
         blink('chop-wood', 'blink');
     }, DAY);
-    setTimeout(() => {
+    st(() => {
         log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');
         blink('projects', 'blink');
         renderProject('fishing');
@@ -532,4 +543,9 @@ on($('.intro button'), 'click', () => {
         }
         $('.projects').classList.toggle('closed');
     });
+};
+on($('.intro button'), 'click', () => {
+    $('.intro').classList.add('closed');
+    document.body.style.setProperty('--v', '1');
+    st(startGame, 3000);
 });

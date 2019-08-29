@@ -39,18 +39,13 @@ gulp.task('init', (done) => {
 });
 
 gulp.task('build-js-dev', (done) => {
-	return gulp.src('./build/js/*.js')
+	return gulp.src('./build/*.js')
 	.pipe(concat('main.js'))
-	.pipe(gulp.dest('./build/'));
-});
-gulp.task('build-js-lib-dev', (done) => {
-	return gulp.src('./build/js/lib/*.js')
-	.pipe(concat('game-lib.js'))
 	.pipe(gulp.dest('./build/'));
 });
 
 gulp.task('build-js', (done) => {
-	return gulp.src('./build/js/*.js')
+	return gulp.src('./build/*.js')
 	.pipe(concat('main.js'))
 	.pipe(uglify())
 	.pipe(gulp.dest('./build/'));
@@ -110,6 +105,7 @@ gulp.task('check', gulp.series('zip', (done) => {
 gulp.task('inject-svg', function () {
   return gulp.src('./build/index.html')
     .pipe(inject(gulp.src(['./src/assets/island.svg']), {
+      removeTags: true,
       transform: function (filePath, file) {
         // return file contents as string
         return file.contents.toString('utf8')
@@ -135,8 +131,8 @@ gulp.task('build-dev', gulp.series(
 	'build-ts',
 	'build-js',
 	'check',
+	'build-ts',
 	'build-js-dev',
-	'build-js-lib-dev',
 	'build-css',
 	'build-assets',
 	(done) => {done();}

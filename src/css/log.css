@@ -16,7 +16,6 @@
 
 .log p {
   margin: 0;
-  line-height: 2;
   transition: margin-top 0.3s, height 0.3s 0.2s, font-size 0.3s 0.2s;
   height: 60px;
   padding: 0 10px;
@@ -46,13 +45,4 @@
 }
 .log p.blue {
   background: #0785ea;
-}
-.log p.green .green {
-	text-shadow: 0 0 1px black;
-}
-.log p.blue .blue {
-	text-shadow: 0 0 1px black;
-}
-.log p.red .red {
-	text-shadow: 0 0 1px black;
 }

@@ -4,7 +4,6 @@
 	border-radius: 5px;
 	padding: 8px;
 	margin-right: 14px;
-	font-variant: small-caps;
 }
 .projects:not(.closed) #projects {
   position: absolute;
@@ -26,12 +25,12 @@
   display: none;
 }
 .projects:not(.closed) {
-  transition: all 150ms ease-in-out;
+  transition: all 80ms ease-in-out;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   overflow: hidden;
   max-height: 900px;
-  background: linear-gradient(#7baebd, #2b5e6e);
+  background: #e4fa89;
   flex-shrink: 0;
 	position: fixed;
 	height: 90%;
@@ -46,15 +45,21 @@
 	border-radius: 15px;
 }
 .project {
-  background: #a9eafd;
   padding: 15px;
   margin: 5px;
   cursor: pointer;
   position: relative;
-  padding-bottom: 30px;
+  padding-bottom: 40px;
+  border: 2px solid #a1c700;
 }
-.project:not(.in-progress):not(.done):hover {
-  background: #caf3ff;
+.project:hover {
+  background: #c2ea1b;
+}
+.project.in-progress, .project.done {
+  border-color: transparent;
+}
+.project.done .icon {
+  box-shadow: 0 0 0 3px #a1c700 inset;
 }
 .icon {
   font-size: 30px;
@@ -109,7 +114,7 @@
   width: 50%;
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: flex-end;
   padding: 4px 10px;
 }
 .projects.closed .project {
@@ -119,6 +124,7 @@
   overflow: hidden;
   pointer-events: none;
   background: none;
+  border: none;
 }
 
 .projects.closed .cost {
@@ -144,10 +150,15 @@
 }
 
 
+.title {
+  margin-left: 16px;
+  margin-bottom: 5px;
+}
 .cost {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: white;
-  padding: 4px;
+  color: #2f6271;
+  padding: 7px;
+  font-weight: bold;
 }

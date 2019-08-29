@@ -19,8 +19,7 @@ const resumeGame = () => {
   dayCycleInterval = setInterval(dayCycle, DAY / 2)
   $('#days').classList.remove('paused')
 }
-on($('.intro button'), 'click', () => {
-  $('.intro').classList.add('closed')
+const startGame = () => {
   resumeGame()
   updateDate()
   updateView()
@@ -29,19 +28,19 @@ on($('.intro button'), 'click', () => {
   setupClickHandlers()
 
   log('Your people set camp by the sea.', null, '🏝', 'info')
-  setTimeout(() => {
+  st(() => {
     log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
     show('#forage')
     blink('forage', 'blink')
   }, 2000)
 
-  setTimeout(() => {
-    log('By crafting simple tools, logging and wood working is now possible.', 'blue', '🌳', 'info')
+  st(() => {
+    log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info')
     show('#chop-wood')
     blink('chop-wood', 'blink')
   }, DAY)
 
-  setTimeout(() => {
+  st(() => {
     log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info')
     blink('projects', 'blink')
     renderProject('fishing')
@@ -55,4 +54,11 @@ on($('.intro button'), 'click', () => {
     }
     $('.projects').classList.toggle('closed')
   })
+}
+
+on($('.intro button'), 'click', () => {
+  $('.intro').classList.add('closed')
+  document.body.style.setProperty('--v', '1');
+  
+  st(startGame, 3000)
 })

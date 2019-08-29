@@ -27,11 +27,12 @@ const projects = {
       population.ready -= 1
 
       setInterval(() => {
-        startTrail(DAY / 2, 'fishTrail', false)
-      }, DAY / 2)
+        startTrail(DAY / 5, 'fishTrail', false)
+      }, DAY / 5)
 
       dayEvents.push(() => {
         resources.food += 5
+        log(`+5🍒`, 'blue', '🐟', 'tasks')
       })
     }
   },
@@ -137,8 +138,8 @@ const renderProject = (key) => {
   $newProject.id = key
   $newProject.innerHTML = `
   <div class="icon">${project.emoji}</div>
-  <div class="title">${key}</div>
-  <div class="description">${project.description}</div>
+  <div class="title caps">${key}</div>
+  <small class="description">${project.description}</small>
   <div class="cost">${getCostString(project.cost)}</div>`
 
   $('.projects').append($newProject)
@@ -163,7 +164,7 @@ const selectProject = (projectName) => () => {
   const missing = ['wood', 'food'].filter(
     resource => resources[resource] < project.cost[resource]
   )
-  if (population.ready < project.cost.people) {
+  if (!enoughPeople(project.cost.people)) {
     log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info')
     return 
   }
@@ -183,7 +184,7 @@ const selectProject = (projectName) => () => {
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
 
-  setTimeout(() => {
+  st(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
     $project.classList.add('done')
     $project.classList.remove('in-progress')
