@@ -87,7 +87,7 @@ const setupClickHandlers = () => {
   on($('#hunt'), 'click', () => hunt())
 }
 
-let bufferTimeout = 1000
+let bufferTimeout = 500
 let bufferInterval
 const initBuffer = () => {
   clearInterval(bufferInterval)

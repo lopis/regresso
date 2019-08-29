@@ -113,7 +113,7 @@ const setupClickHandlers = () => {
     on($('#forage'), 'click', () => forage());
     on($('#hunt'), 'click', () => hunt());
 };
-let bufferTimeout = 1000;
+let bufferTimeout = 500;
 let bufferInterval;
 const initBuffer = () => {
     clearInterval(bufferInterval);
@@ -317,18 +317,6 @@ const updateDate = () => {
     $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
 const projects = {
-    caravela: {
-        description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
-        emoji: '⚓️',
-        unlocked: false,
-        cost: {
-            wood: 100,
-            food: 200,
-            people: 10,
-            days: 8,
-        },
-        callback: () => { }
-    },
     fishing: {
         emoji: '🎣',
         unlocked: true,
@@ -352,6 +340,23 @@ const projects = {
             });
         }
     },
+    high_sea_fishing: {
+        emoji: '⛵️',
+        unlocked: true,
+        requires: [
+            'shipyard',
+            'fishing'
+        ],
+        cost: {
+            wood: 25,
+            food: 10,
+            people: 5,
+            days: 5
+        },
+        description: 'Build a fishing boat, bringing 10 extra food per day.',
+        callback: () => {
+        }
+    },
     carpentry: {
         emoji: '🔨',
         unlocked: false,
@@ -363,18 +368,10 @@ const projects = {
         },
         description: 'Recycle and process wood more efficiently (+1 wood per day)',
         callback: () => {
+            log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info');
             blink('projects', 'blink');
             renderProject('shipyard');
-        }
-    },
-    spinning_wheel: {
-        emoji: '🧶',
-        unlocked: false,
-        cost: {
-            wood: 10,
-            food: 20,
-            people: 2,
-            days: 3,
+            renderProject('spinning_wheel');
         }
     },
     weapons: {
@@ -391,9 +388,20 @@ const projects = {
             attackChance = attackChance * 0.25;
         }
     },
+    spinning_wheel: {
+        emoji: '🧶',
+        unlocked: true,
+        description: 'Some foragers will start gathering fibers, spinning into thread, producing cloth. (-50% food from foraging)',
+        cost: {
+            wood: 10,
+            food: 20,
+            people: 2,
+            days: 3,
+        }
+    },
     shipyard: {
         emoji: '⚓',
-        unlocked: false,
+        unlocked: true,
         requires: [
             'carpentry'
         ],
@@ -403,22 +411,27 @@ const projects = {
             people: 5,
             days: 7
         },
-        description: 'Build a shipyard where boats and ships can be built.'
+        description: 'Build a shipyard where boats and ships can be built.',
+        callback: () => {
+            log('The shipyard construction has finished!', 'blue', '⚓', 'info');
+            renderProject('high_sea_fishing');
+        }
     },
-    high_sea_fishing: {
-        emoji: '⛵️',
+    caravela: {
+        description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
+        emoji: '⚓️',
         unlocked: false,
         requires: [
             'shipyard',
-            'fishing'
+            'spinning_wheel',
         ],
         cost: {
-            wood: 25,
-            food: 10,
-            people: 5,
-            days: 5
+            wood: 100,
+            food: 200,
+            people: 10,
+            days: 8,
         },
-        description: 'Build a fishing boat, bringing 10 extra food per day.'
+        callback: () => { }
     },
 };
 const projectSets = {

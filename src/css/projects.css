@@ -29,15 +29,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   overflow: hidden;
-  max-height: 900px;
+  min-height: 250px;
   background: #e4fa89;
   flex-shrink: 0;
 	position: fixed;
-	height: 90%;
 	width: 90%;
 	z-index: 3;
 	align-content: flex-start;
-	top: 5%;
+	top: 10%;
 	right: 5%;
 	box-shadow: 0 0 10vh rgba(0,0,0,0.5);
 	padding: 50px 10px 10px 10px;
@@ -49,7 +48,7 @@
   margin: 5px;
   cursor: pointer;
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
   border: 2px solid #a1c700;
 }
 .project:hover {
@@ -77,6 +76,9 @@
   z-index: 0;
   transition: inherit;
   flex-shrink: 0;
+}
+.project .icon {
+  margin-bottom: 1em;
 }
 .icon::before {
 	content: "";
