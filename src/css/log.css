@@ -1,6 +1,7 @@
 #logs {
   display: flex;
   overflow: hidden;
+  flex-grow: 1;
 }
 
 .log {

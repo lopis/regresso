@@ -152,7 +152,7 @@ svg.night #sky {
 	position: fixed;
 	background: #404a4d;
 	color: #fff;
-	top: 20%;
+	top: 10%;
 	left: calc(50% - 400px);
 	z-index: 3;
 	font-size: 150%;
@@ -214,4 +214,16 @@ body {
 .intro.closed ~ #main-image #ship g {
   transition: transform 1s ease-out 2s;
 	transform: translateY(1.3vh);
+}
+
+.logo {
+  image-rendering: crisp-edges;
+	margin: 10px auto;
+	display: block;
+	width: 250px;
+	filter: invert();
+}
+.modal .logo {
+	width: 70%;
+	filter: invert();
 }
