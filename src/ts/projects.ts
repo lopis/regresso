@@ -50,6 +50,16 @@ const projects = {
       renderProject('shipyard')
     }
   },
+  spinning_wheel: {
+    emoji: '🧶',
+    unlocked: false,
+    cost: {
+      wood: 10,
+      food: 20,
+      people: 2,
+      days: 3,
+    }
+  },
   weapons: {
     emoji: '🛡',
     unlocked: false,
