@@ -215,28 +215,13 @@ body {
   transition: opacity .1s ease-out 3s;
 }
 
-/* #ship {
-  transition: transform 3s ease-out;
-  transform: translate(-12vw,5vh);
-}
-.intro.closed ~ #main-image #ship {
-  transform: translate(0,0);
-}
-.intro.closed ~ #main-image #ship g {
-	transition: transform 5s linear 3s;
-	transform: translateY(1.2vh) rotateZ(40deg);
-	transform-origin: 8.7vw 3.5vh;
-} */
-
 .logo {
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 	margin: 10px auto;
 	display: block;
-	width: 250px;
-	filter: invert(1.0);
+	width: calc(70px * 4);
 }
 .modal .logo {
-	width: 70%;
-	filter: invert(1.0);
+	width: calc(70px * 7);
 }

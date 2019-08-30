@@ -10,10 +10,11 @@ const population = {
   hurt: 0,
 }
 
+let foragingReturns = 2
 let huntingEnabled = false
 let smokeEnabled = false
 let attackChance = 1.0
-let bufferTimeout = 500
+let bufferTimeout = 300
 let bufferInterval
 
 const people = shuffle([

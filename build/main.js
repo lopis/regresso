@@ -55,7 +55,7 @@ const forage = () => {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.4;
-    setTimeout(bring('foraging', people, 2, 0), time);
+    setTimeout(bring('foraging', people, foragingReturns, 0), time);
     buffer.foragers++;
     initBuffer();
     updateView();
@@ -172,6 +172,7 @@ const updateFood = () => {
     population.starving = starving;
     population.hungry = hungry;
     resources.food -= population.total;
+    blink('food', 'red');
     if (population.starving > 0) {
         log(`${population.starving} died from starvation.`, 'red', '💀', 'info');
         population.total -= population.starving;
@@ -223,10 +224,11 @@ const population = {
     starving: 0,
     hurt: 0,
 };
+let foragingReturns = 2;
 let huntingEnabled = false;
 let smokeEnabled = false;
 let attackChance = 1.0;
-let bufferTimeout = 500;
+let bufferTimeout = 300;
 let bufferInterval;
 const people = shuffle([
     {
@@ -391,7 +393,6 @@ const projects = {
         callback: () => {
             log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info');
             blink('projects', 'blink');
-            show('#sy');
             renderProject('shipyard');
             renderProject('spinning_wheel');
         }
@@ -419,6 +420,13 @@ const projects = {
             food: 20,
             people: 2,
             days: 3,
+        },
+        callback: () => {
+            log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info');
+            foragingReturns -= 1;
+            $('#forage .return').innerText = foragingReturns;
+            blink('#foraging', 'blink');
+            unlockCaravela();
         }
     },
     shipyard: {
@@ -438,11 +446,12 @@ const projects = {
             log('The shipyard construction has finished!', 'blue', '⚓', 'info');
             show('#sy');
             renderProject('high_sea_fishing');
+            unlockCaravela();
         }
     },
     caravela: {
         description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
-        emoji: '⚓️',
+        emoji: '🌊',
         unlocked: false,
         requires: [
             'shipyard',
@@ -456,6 +465,12 @@ const projects = {
         },
         callback: () => { }
     },
+};
+const unlockCaravela = () => {
+    if (projects.spinning_wheel.done && projects.shipyard.done) {
+        log('The caravela construction project is in sight!', 'green', '🌊', 'info');
+        projects.caravela.unlocked = true;
+    }
 };
 const projectSets = {
     foraging: ['foraging'],
@@ -499,10 +514,13 @@ const selectProject = (projectName) => () => {
     if (project.done) {
         return;
     }
-    if (!project.unlocked) {
-        blink(projectName, 'no');
-        log('Conditions for construction of the new caravela have not been met.', null, '❌', 'info');
-        return;
+    if (projectName === 'caravela' && !project.unlocked) {
+        const missing = project.caravela.requires.filter(r => !projects[r].done);
+        if (missing.lenthg > 0) {
+            blink(projectName, 'no');
+            log(`Construction of the new caravela requires ${missing.join(' and ')}.`, null, '❌', 'info');
+            return;
+        }
     }
     const missing = ['wood', 'food'].filter(resource => resources[resource] < project.cost[resource]);
     if (!enoughPeople(project.cost.people)) {
@@ -571,12 +589,6 @@ const startGame = () => {
         renderProject('fishing');
     }, DAY * 2);
     on($('#projects'), 'click', () => {
-        if ($('.projects').classList.contains('closed')) {
-            pauseGame();
-        }
-        else {
-            resumeGame();
-        }
         $('.projects').classList.toggle('closed');
     });
 };
@@ -584,7 +596,6 @@ on($('.intro button'), 'click', () => {
     $('.intro').classList.add('closed');
     $('#sail').beginElement();
     setTimeout(() => {
-        console.log('sinking glugluglu');
         $('#sink').beginElement();
         $('#sinkRotate').beginElement();
     }, 2000);

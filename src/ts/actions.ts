@@ -23,7 +23,7 @@ const forage = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.4
-  setTimeout(bring('foraging', people, 2, 0), time)
+  setTimeout(bring('foraging', people, foragingReturns, 0), time)
   buffer.foragers++
   initBuffer()
   updateView()
@@ -151,6 +151,7 @@ const updateFood = () => {
   population.starving = starving
   population.hungry = hungry
   resources.food -= population.total
+  blink('food', 'red')
 
   if (population.starving > 0) {
     log(`${population.starving} died from starvation.`, 'red', '💀', 'info')

@@ -47,11 +47,6 @@ const startGame = () => {
   }, DAY * 2)
 
   on($('#projects'), 'click', () => {
-    if ($('.projects').classList.contains('closed')) {
-      pauseGame()
-    } else {
-      resumeGame()
-    }
     $('.projects').classList.toggle('closed')
   })
 }
@@ -60,8 +55,6 @@ on($('.intro button'), 'click', () => {
   $('.intro').classList.add('closed')
   $('#sail').beginElement()
   setTimeout(() => {
-    console.log('sinking glugluglu');
-    
     $('#sink').beginElement()
     $('#sinkRotate').beginElement()
   }, 2000)

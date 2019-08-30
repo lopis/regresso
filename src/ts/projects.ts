@@ -67,7 +67,6 @@ const projects = {
     callback: () => {
       log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info')
       blink('projects', 'blink')
-      show('#sy')
       renderProject('shipyard')
       renderProject('spinning_wheel')
     }
@@ -95,6 +94,13 @@ const projects = {
       food: 20,
       people: 2,
       days: 3,
+    },
+    callback: () => {
+      log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info')
+      foragingReturns -= 1
+      $('#forage .return').innerText = foragingReturns
+      blink('foraging', 'blink')
+      unlockCaravela()
     }
   },
   shipyard: {
@@ -114,11 +120,12 @@ const projects = {
       log('The shipyard construction has finished!', 'blue', '⚓', 'info')
       show('#sy')
       renderProject('high_sea_fishing')
+      unlockCaravela()
     }
   },
   caravela: {
     description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
-    emoji: '⚓️',
+    emoji: '🌊',
     unlocked: false,
     requires: [
       'shipyard',
@@ -132,6 +139,13 @@ const projects = {
     },
     callback: () => {}
   },
+}
+
+const unlockCaravela = () => {
+  if (projects.spinning_wheel.done && projects.shipyard.done) {
+    log('The caravela construction project is in sight!', 'green', '🌊', 'info')
+    projects.caravela.unlocked = true
+  }
 }
 
 const projectSets = {
@@ -183,10 +197,13 @@ const selectProject = (projectName) => () => {
   if (project.done) {
     return
   }
-  if (!project.unlocked) {
-    blink(projectName, 'no')
-    log('Conditions for construction of the new caravela have not been met.', null, '❌', 'info')
-    return
+  if (projectName === 'caravela' && !project.unlocked) {
+    const missing = project.caravela.requires.filter(r => !projects[r].done)
+    if (missing.lenthg > 0) {
+      blink(projectName, 'no')
+      log(`Construction of the new caravela requires ${missing.join(' and ')}.`, null, '❌', 'info')
+      return
+    }
   }
   
   const missing = ['wood', 'food'].filter(
