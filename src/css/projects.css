@@ -124,7 +124,6 @@
   height: 42px;
   width: 42px;
   overflow: hidden;
-  pointer-events: none;
   background: none;
   border: none;
 }

@@ -1,42 +1,32 @@
 let resouces = {}
 let population = {}
 const updateFood = () => {
-  let food = resources.food
-  let starving = Math.max(0, population.starving - food)
-  food = Math.max(0, food - population.starving)
-  let hungry = Math.max(0, population.hungry - food)
-  food = Math.max(0, food - population.hungry)
+  let diff = resources.food - population.total
 
-  population.starving = starving
-  population.hungry = hungry
-
-  if (population.starving > 0) {
-    log(`${population.starving} died from starvation.`, 'red', '💀', 'info')
-    // resources.food += 5 * population.starving
-    population.total -= population.starving
-    population.ready -= population.starving
-    blink('food', 'green')
-    blink('population', 'red')
-    bury()
+  if (diff >= 0) {
+    population.hungry = population.starving
     population.starving = 0
-  }
-
-  if (population.hungry > 0) {
-    population.starving = population.hungry
-    population.hungry = 0
-    log(`Due to lack of food, ${population.starving} are starving and can't work.`, 'red', '😔', 'info')
-  }
-
-  if (resources.food < population.total) {
-    debug([resources.food, population.starving, starving].join(', '), '');
+    resources.food = diff
+  } else {
+    const dead = Math.min(population.starving, -diff)
+    if (dead > 0) {
+      log(`${dead} died from starvation.`, 'red', '💀', 'info')
+      population.total -= dead
+      population.ready -= dead
+      population.starving = 0
+      blink('population', 'red')
+      bury()
+    }
     
-    population.hungry = population.total - resources.food - population.starving
-    if (population.hungry > 1) {
+    const starving = Math.min(population.hungry, -diff)
+    if (starving > 0) {
+      population.starving = starving
+      log(`${starving} are starving and can't work.`, 'red', '😔', 'info')
+    } else {
       log(`People are getting hungry`, null, '💭', 'info')
     }
+    population.hungry = Math.min(population.total - starving, -diff)
     resources.food = 0
-  } else {
-    resources.food -= population.total
   }
 }
 
@@ -97,7 +87,7 @@ test('get food and then distribute', () => {
   expect(resources.food).toBe(0);
   expect(population.total).toBe(5);
   expect(population.ready).toBe(5);
-  expect(population.hungry).toBe(0);
+  expect(population.hungry).toBe(5);
   expect(population.starving).toBe(0);
 
   updateFood()
@@ -105,17 +95,17 @@ test('get food and then distribute', () => {
   expect(resources.food).toBe(0);
   expect(population.total).toBe(5);
   expect(population.ready).toBe(5);
-  expect(population.hungry).toBe(5);
-  expect(population.starving).toBe(0);
+  expect(population.hungry).toBe(0);
+  expect(population.starving).toBe(5);
 
   resources.food = 3
   updateFood()
 
   expect(resources.food).toBe(0);
-  expect(population.total).toBe(5);
-  expect(population.ready).toBe(5);
-  expect(population.hungry).toBe(0);
-  expect(population.starving).toBe(2);
+  expect(population.total).toBe(3);
+  expect(population.ready).toBe(3);
+  expect(population.hungry).toBe(2);
+  expect(population.starving).toBe(0);
 
   population = {
     "total": 14,   // (14-9=5) become hungry
@@ -133,7 +123,7 @@ test('get food and then distribute', () => {
   expect(population.total).toBe(14);
   expect(population.ready).toBe(14);
   expect(population.hungry).toBe(5);
-  expect(population.starving).toBe(4);
+  expect(population.starving).toBe(9);
 
   resources = {
     "food": 5 
@@ -141,8 +131,8 @@ test('get food and then distribute', () => {
   debug = (a,b) => console.log(a, b)
   updateFood()
   expect(resources.food).toBe(0);
-  expect(population.total).toBe(14);
-  expect(population.ready).toBe(14);
-  expect(population.hungry).toBe(5);
-  expect(population.starving).toBe(4);
+  expect(population.total).toBe(5);
+  expect(population.ready).toBe(5);
+  expect(population.hungry).toBe(0);
+  expect(population.starving).toBe(5);
 })

@@ -47,6 +47,13 @@ const updateView = () => {
   } else {
     $('#starving').classList.remove('hidden')
   }
+
+  $('#fishers .value').innerText = population.fishers
+  if (population.fishers < 1) {
+    $('#fishers').classList.add('hidden')
+  } else {
+    $('#fishers').classList.remove('hidden')
+  }
   
   $('#forage').disabled = !enoughPeople(1)
   $('#chop-wood').disabled = !enoughPeople(1)

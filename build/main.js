@@ -164,34 +164,31 @@ const blink = (resource, name) => {
     }, name === 'no' ? 400 : 100);
 };
 const updateFood = () => {
-    let food = resources.food;
-    let starving = Math.max(0, population.starving - food);
-    food = Math.max(0, food - starving);
-    let hungry = Math.max(0, population.hungry - food);
-    food = Math.max(0, food - hungry);
-    population.starving = starving;
-    population.hungry = hungry;
-    resources.food -= population.total;
-    blink('food', 'red');
-    if (population.starving > 0) {
-        log(`${population.starving} died from starvation.`, 'red', '💀', 'info');
-        population.total -= population.starving;
-        population.ready -= population.starving;
-        blink('food', 'green');
-        blink('population', 'red');
-        bury();
+    let diff = resources.food - population.total;
+    if (diff >= 0) {
+        population.hungry = population.starving;
         population.starving = 0;
+        resources.food = diff;
     }
-    if (population.hungry > 0) {
-        population.starving = population.hungry;
-        population.hungry = 0;
-        log(`Due to lack of food, ${population.starving} are starving and can't work.`, 'red', '😔', 'info');
-    }
-    if (resources.food < 0) {
-        population.hungry = -resources.food - population.starving - starving;
-        if (population.hungry > 1) {
+    else {
+        const dead = Math.min(population.starving, -diff);
+        if (dead > 0) {
+            log(`${dead} died from starvation.`, 'red', '💀', 'info');
+            population.total -= dead;
+            population.ready -= dead;
+            population.starving = 0;
+            blink('population', 'red');
+            bury();
+        }
+        const starving = Math.min(population.hungry, -diff);
+        if (starving > 0) {
+            population.starving = starving;
+            log(`${starving} are starving and can't work.`, 'red', '😔', 'info');
+        }
+        else {
             log(`People are getting hungry`, null, '💭', 'info');
         }
+        population.hungry = Math.min(population.total - starving, -diff);
         resources.food = 0;
     }
 };
@@ -222,7 +219,7 @@ const population = {
     ready: 15,
     hungry: 0,
     starving: 0,
-    hurt: 0,
+    fishers: 0
 };
 let foragingReturns = 2;
 let huntingEnabled = false;
@@ -279,7 +276,7 @@ const people = shuffle([
 ]);
 const dayEvents = [];
 const DAY = 10000;
-let date = new Date('1549/05/13');
+let date = new Date('1549/08/13');
 let trailCount = 0;
 const startTrail = (time, trail, clone) => {
     const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`);
@@ -322,6 +319,13 @@ const updateView = () => {
     else {
         $('#starving').classList.remove('hidden');
     }
+    $('#fishers .value').innerText = population.fishers;
+    if (population.fishers < 1) {
+        $('#fishers').classList.add('hidden');
+    }
+    else {
+        $('#fishers').classList.remove('hidden');
+    }
     $('#forage').disabled = !enoughPeople(1);
     $('#chop-wood').disabled = !enoughPeople(1);
     $('#hunt').disabled = !enoughPeople(2);
@@ -333,6 +337,7 @@ const updateDate = () => {
 const projects = {
     fishing: {
         emoji: '🎣',
+        done: false,
         unlocked: true,
         cost: {
             wood: 10,
@@ -345,6 +350,7 @@ const projects = {
             log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info');
             show('#fh');
             population.ready -= 1;
+            population.fishers++;
             setInterval(() => {
                 startTrail(DAY / 3, 'fishTrail', false);
             }, DAY / 3);
@@ -356,6 +362,7 @@ const projects = {
     },
     high_sea_fishing: {
         emoji: '⛵️',
+        done: false,
         unlocked: true,
         requires: [
             'shipyard',
@@ -370,6 +377,7 @@ const projects = {
         description: 'Build a fishing boat (+5 food per day).',
         callback: () => {
             population.ready -= 1;
+            population.fishers++;
             show('#boatTrail');
             setInterval(() => {
                 startTrail(DAY / 2, 'boatTrail', false);
@@ -382,6 +390,7 @@ const projects = {
     },
     carpentry: {
         emoji: '🔨',
+        done: false,
         unlocked: false,
         cost: {
             wood: 10,
@@ -399,6 +408,7 @@ const projects = {
     },
     weapons: {
         emoji: '🛡',
+        done: false,
         unlocked: false,
         description: 'Produce weapons and armor (-75% chance of animal attack deaths)',
         cost: {
@@ -413,6 +423,7 @@ const projects = {
     },
     spinning_wheel: {
         emoji: '🧶',
+        done: false,
         unlocked: true,
         description: 'Some foragers will start gathering fibers, spinning into thread, producing cloth. (-50% food from foraging)',
         cost: {
@@ -425,12 +436,13 @@ const projects = {
             log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info');
             foragingReturns -= 1;
             $('#forage .return').innerText = foragingReturns;
-            blink('#foraging', 'blink');
+            blink('foraging', 'blink');
             unlockCaravela();
         }
     },
     shipyard: {
         emoji: '⚓',
+        done: false,
         unlocked: true,
         requires: [
             'carpentry'
@@ -452,6 +464,7 @@ const projects = {
     caravela: {
         description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
         emoji: '🌊',
+        done: false,
         unlocked: false,
         requires: [
             'shipyard',
@@ -510,27 +523,43 @@ const renderProject = (key) => {
 const updateProjects = () => {
 };
 const selectProject = (projectName) => () => {
+    if ($('.projects').classList.contains('closed')) {
+        $('.projects').classList.remove('closed');
+        return;
+    }
     const project = projects[projectName];
     if (project.done) {
         return;
     }
     if (projectName === 'caravela' && !project.unlocked) {
-        const missing = project.caravela.requires.filter(r => !projects[r].done);
-        if (missing.lenthg > 0) {
+        const missing = projects.caravela.requires
+            .filter(r => !projects[r].done)
+            .map(r => `[${r.replace(/_/g, ' ')}]`);
+        if (missing.length > 0) {
             blink(projectName, 'no');
             log(`Construction of the new caravela requires ${missing.join(' and ')}.`, null, '❌', 'info');
             return;
         }
     }
     const missing = ['wood', 'food'].filter(resource => resources[resource] < project.cost[resource]);
-    if (!enoughPeople(project.cost.people)) {
-        log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info');
-        return;
-    }
     if (missing.length > 0) {
         blink(projectName, 'no');
         log(`There is not enough ${missing.join(' and ')} to start the ${projectName} project`, null, '❌', 'info');
         return;
+    }
+    if (!enoughPeople(project.cost.people)) {
+        if (projectName === 'caravela') {
+            const ready = population.ready - population.starving;
+            const manHours = project.cost.people * project.cost.days;
+            const duration = Math.ceil(manHours / ready);
+            log(`The Caravela contruction started, but with only ${ready} people, it will take ${duration} days.`, null, '⚒', 'info');
+            project.cost.people = ready;
+            project.cost.days = duration;
+        }
+        else {
+            log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info');
+            return;
+        }
     }
     resources.wood -= project.cost.wood;
     resources.food -= project.cost.food;
@@ -540,6 +569,7 @@ const selectProject = (projectName) => () => {
     const duration = project.cost.days * DAY;
     $project.style.transition = `height ${duration}ms linear`;
     $project.classList.add('in-progress');
+    $('.projects').classList.add('closed');
     setTimeout(() => {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
@@ -593,6 +623,8 @@ const startGame = () => {
     });
 };
 on($('.intro button'), 'click', () => {
+    updateDate();
+    updateView();
     $('.intro').classList.add('closed');
     $('#sail').beginElement();
     setTimeout(() => {

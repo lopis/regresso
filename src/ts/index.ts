@@ -52,6 +52,8 @@ const startGame = () => {
 }
 
 on($('.intro button'), 'click', () => {
+  updateDate()
+  updateView()
   $('.intro').classList.add('closed')
   $('#sail').beginElement()
   setTimeout(() => {

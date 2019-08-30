@@ -2,6 +2,7 @@ const projects = {
   // FISHING PROJECTS
   fishing: {
     emoji: '🎣',
+    done: false,
     unlocked: true,
     cost: {
       wood: 10,
@@ -14,6 +15,7 @@ const projects = {
       log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
       show('#fh') // Fishing house
       population.ready -= 1
+      population.fishers++
 
       setInterval(() => {
         startTrail(DAY / 3, 'fishTrail', false)
@@ -27,6 +29,7 @@ const projects = {
   },
   high_sea_fishing: {
     emoji: '⛵️',
+    done: false,
     unlocked: true,
     requires: [
       'shipyard',
@@ -41,6 +44,7 @@ const projects = {
     description: 'Build a fishing boat (+5 food per day).',
     callback: () => {
       population.ready -= 1
+      population.fishers++
       show('#boatTrail')
 
       setInterval(() => {
@@ -56,6 +60,7 @@ const projects = {
   // FISHING PROJECTS
   carpentry: {
     emoji: '🔨',
+    done: false,
     unlocked: false,
     cost: {
       wood: 10,
@@ -73,6 +78,7 @@ const projects = {
   },
   weapons: {
     emoji: '🛡',
+    done: false,
     unlocked: false,
     description: 'Produce weapons and armor (-75% chance of animal attack deaths)',
     cost: {
@@ -87,6 +93,7 @@ const projects = {
   },
   spinning_wheel: {
     emoji: '🧶',
+    done: false,
     unlocked: true,
     description: 'Some foragers will start gathering fibers, spinning into thread, producing cloth. (-50% food from foraging)',
     cost: {
@@ -105,6 +112,7 @@ const projects = {
   },
   shipyard: {
     emoji: '⚓',
+    done: false,
     unlocked: true,
     requires: [
       'carpentry'
@@ -126,6 +134,7 @@ const projects = {
   caravela: {
     description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
     emoji: '🌊',
+    done: false,
     unlocked: false,
     requires: [
       'shipyard',
@@ -193,13 +202,20 @@ const updateProjects = () => {
 }
 
 const selectProject = (projectName) => () => {
+  if ($('.projects').classList.contains('closed')) {
+    $('.projects').classList.remove('closed')
+    return
+  }
+
   const project = projects[projectName]
   if (project.done) {
     return
   }
   if (projectName === 'caravela' && !project.unlocked) {
-    const missing = project.caravela.requires.filter(r => !projects[r].done)
-    if (missing.lenthg > 0) {
+    const missing = projects.caravela.requires
+      .filter(r => !projects[r].done)
+      .map(r => `[${r.replace(/_/g, ' ')}]`)
+    if (missing.length > 0) {
       blink(projectName, 'no')
       log(`Construction of the new caravela requires ${missing.join(' and ')}.`, null, '❌', 'info')
       return
@@ -209,14 +225,24 @@ const selectProject = (projectName) => () => {
   const missing = ['wood', 'food'].filter(
     resource => resources[resource] < project.cost[resource]
   )
-  if (!enoughPeople(project.cost.people)) {
-    log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info')
-    return 
-  }
   if (missing.length > 0) {
     blink(projectName, 'no')
     log(`There is not enough ${missing.join(' and ')} to start the ${projectName} project`, null, '❌', 'info')
     return
+  }
+  
+  if (!enoughPeople(project.cost.people)) {
+    if (projectName === 'caravela') {
+      const ready = population.ready - population.starving
+      const manHours = project.cost.people * project.cost.days
+      const duration = Math.ceil(manHours / ready)
+      log(`The Caravela contruction started, but with only ${ready} people, it will take ${duration} days.`, null, '⚒', 'info')
+      project.cost.people = ready
+      project.cost.days = duration
+    } else {
+      log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info')
+      return 
+    }
   }
 
   resources.wood -= project.cost.wood
@@ -228,6 +254,7 @@ const selectProject = (projectName) => () => {
   const duration = project.cost.days * DAY
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
+  $('.projects').classList.add('closed')
 
   setTimeout(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)

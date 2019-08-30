@@ -142,41 +142,31 @@ const blink = (resource, name) => {
 }
 
 const updateFood = () => {
-  let food = resources.food
-  let starving = Math.max(0, population.starving - food)
-  food = Math.max(0, food - starving)
-  let hungry = Math.max(0, population.hungry - food)
-  food = Math.max(0, food - hungry)
+  let diff = resources.food - population.total
 
-  population.starving = starving
-  population.hungry = hungry
-  resources.food -= population.total
-  blink('food', 'red')
-
-  if (population.starving > 0) {
-    log(`${population.starving} died from starvation.`, 'red', '💀', 'info')
-    // resources.food += 5 * population.starving
-    population.total -= population.starving
-    population.ready -= population.starving
-    blink('food', 'green')
-    blink('population', 'red')
-    bury()
+  if (diff >= 0) {
+    population.hungry = population.starving
     population.starving = 0
-  }
-
-  if (population.hungry > 0) {
-    population.starving = population.hungry
-    population.hungry = 0
-    log(`Due to lack of food, ${population.starving} are starving and can't work.`, 'red', '😔', 'info')
-  }
-
-  // population.ready = population.total - population.starving
-
-  if (resources.food < 0) {
-    population.hungry = -resources.food - population.starving - starving
-    if (population.hungry > 1) {
+    resources.food = diff
+  } else {
+    const dead = Math.min(population.starving, -diff)
+    if (dead > 0) {
+      log(`${dead} died from starvation.`, 'red', '💀', 'info')
+      population.total -= dead
+      population.ready -= dead
+      population.starving = 0
+      blink('population', 'red')
+      bury()
+    }
+    
+    const starving = Math.min(population.hungry, -diff)
+    if (starving > 0) {
+      population.starving = starving
+      log(`${starving} are starving and can't work.`, 'red', '😔', 'info')
+    } else {
       log(`People are getting hungry`, null, '💭', 'info')
     }
+    population.hungry = Math.min(population.total - starving, -diff)
     resources.food = 0
   }
 }

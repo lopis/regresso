@@ -7,7 +7,7 @@ const population = {
   ready: 15,
   hungry: 0,
   starving: 0,
-  hurt: 0,
+  fishers: 0
 }
 
 let foragingReturns = 2
@@ -67,4 +67,4 @@ const people = shuffle([
 
 const dayEvents = []
 const DAY = 10000
-let date = new Date('1549/05/13')
+let date = new Date('1549/08/13')
