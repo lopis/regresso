@@ -9,6 +9,13 @@ const population = {
   starving: 0,
   hurt: 0,
 }
+
+let huntingEnabled = false
+let smokeEnabled = false
+let attackChance = 1.0
+let bufferTimeout = 500
+let bufferInterval
+
 const people = shuffle([
   {
     name: 'Abraão'

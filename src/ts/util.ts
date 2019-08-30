@@ -7,11 +7,10 @@ const $$ = (tag, className, innerText) => {
   
   return el
 }
-const st = (fn, t) => setTimeout(fn, t)
 
 const log = (text, color, emoji, type) => {
   if ($(`.log#${type} .new`)) {
-    st(() => log(text, color, emoji, type), 500)
+    setTimeout(() => log(text, color, emoji, type), 500)
     return
   }
 
@@ -20,7 +19,7 @@ const log = (text, color, emoji, type) => {
   if (color) newLog.classList.add(color)
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
-  st(() => {
+  setTimeout(() => {
     newLog.classList.remove('new')
   }, 200)
 }

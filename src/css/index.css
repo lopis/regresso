@@ -129,6 +129,11 @@ button:hover:not(:active):not(:disabled) {
 #fishTrail {
   transition-duration: 0.5s;
 }
+#boatTrail {
+  visibility: hidden;
+  transition-duration: 2s;
+  stroke-dasharray: 0,0%,2,100%;
+}
 
 #sky, svg {
   transition: filter 1s linear;
@@ -160,6 +165,7 @@ svg.night #sky {
 	padding: 2em;
 	box-sizing: border-box;
   transform: scale(1);
+  text-align: justify;
 }
 .intro::before {
 	content: "";
@@ -171,6 +177,11 @@ svg.night #sky {
 	height: 100%;
 	width: 100%;
 	z-index: 2;
+}
+.modal small {
+	font-size: 60%;
+	float: right;
+	margin-top: 2em;
 }
 li + li {
 	margin-top: 0.5em;
@@ -212,18 +223,20 @@ body {
   transform: translate(0,0);
 }
 .intro.closed ~ #main-image #ship g {
-  transition: transform 1s ease-out 2s;
-	transform: translateY(1.3vh);
+	transition: transform 5s linear 3s;
+	transform: translateY(1.2vh) rotateZ(40deg);
+	transform-origin: 8.7vw 3.5vh;
 }
 
 .logo {
   image-rendering: crisp-edges;
+  image-rendering: pixelated;
 	margin: 10px auto;
 	display: block;
 	width: 250px;
-	filter: invert();
+	filter: invert(1.0);
 }
 .modal .logo {
 	width: 70%;
-	filter: invert();
+	filter: invert(1.0);
 }

@@ -9,19 +9,19 @@ const projects = {
       people: 4,
       days: 2,
     },
-    description: 'Develop fishing tools (+5 food per day)',
+    description: 'Develop fishing tools (+3 food per day)',
     callback: () => {
-      log('Fishing preparations have been developed (+5 food per day).', 'blue', '🎣', 'info')
+      log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
       show('#fh') // Fishing house
       population.ready -= 1
 
       setInterval(() => {
-        startTrail(DAY / 5, 'fishTrail', false)
-      }, DAY / 5)
+        startTrail(DAY / 3, 'fishTrail', false)
+      }, DAY / 3)
 
       dayEvents.push(() => {
-        resources.food += 5
-        log(`+5🍒`, 'blue', '🐟', 'tasks')
+        resources.food += 3
+        log(`+3🍒`, 'blue', '🐟', 'tasks')
       })
     }
   },
@@ -38,9 +38,19 @@ const projects = {
       people: 5,
       days: 5
     },
-    description: 'Build a fishing boat, bringing 10 extra food per day.',
+    description: 'Build a fishing boat (+5 food per day).',
     callback: () => {
+      population.ready -= 1
+      show('#boatTrail')
 
+      setInterval(() => {
+        startTrail(DAY / 2, 'boatTrail', false)
+      }, DAY / 2)
+
+      dayEvents.push(() => {
+        resources.food += 5
+        log(`+5🍒`, 'blue', '🐟', 'tasks')
+      })
     }
   },
   // FISHING PROJECTS
@@ -57,6 +67,7 @@ const projects = {
     callback: () => {
       log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info')
       blink('projects', 'blink')
+      show('#sy')
       renderProject('shipyard')
       renderProject('spinning_wheel')
     }
@@ -101,6 +112,7 @@ const projects = {
     description: 'Build a shipyard where boats and ships can be built.',
     callback: () => {
       log('The shipyard construction has finished!', 'blue', '⚓', 'info')
+      show('#sy')
       renderProject('high_sea_fishing')
     }
   },
@@ -200,7 +212,7 @@ const selectProject = (projectName) => () => {
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
 
-  st(() => {
+  setTimeout(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
     $project.classList.add('done')
     $project.classList.remove('in-progress')

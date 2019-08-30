@@ -12,70 +12,77 @@ const fetchWood = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.6
-  st(bring('wood', people, 3, 0.05), time)
+  setTimeout(bring('wood', people, 3, 0.05), time)
   buffer.loggers++
   initBuffer()
   updateView()
   startTrail(time, 'forageTemplate', true)
-
-  if (!projects.carpentry.unlocked && resources.wood > 5) {
-    projects.carpentry.unlocked = true
-    log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info')
-    renderProject('carpentry')
-    blink('projects', 'blink')
-  }
 }
 
-let huntingEnabled = false
 const forage = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.4
-  st(bring('foraging', people, 2, 0), time)
+  setTimeout(bring('foraging', people, 2, 0), time)
   buffer.foragers++
   initBuffer()
   updateView()
   startTrail(time, 'forageTemplate', true)
-
-  if (resources.food > 100 && !huntingEnabled) {
-    show('#hunt')
-    blink('hunt', 'blink')
-    huntingEnabled = true
-    log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info')
-  }
 }
 
 const hunt = () => {
   const people = 2
   population.ready -= people
   const time = DAY * 1.2
-  st(bring('hunting', people, 8, 0.1), time)
+  setTimeout(bring('hunting', people, 8, 0.1), time)
   buffer.hunters += people
   initBuffer()
   updateView()
   startTrail(time, 'huntTrail', true)
 }
 
-let attackChance = 1.0
-const bring = (resource, partySize, amount, risk) => () => {
-  buffer[resource] += amount
+const bring = (action, partySize, amount, risk) => () => {
+  buffer[action] += amount
   initBuffer()
   const die = Math.random() < risk * attackChance
   if (!die) {
     population.ready += partySize
   } else {
-    log(`Wild animals killed 1 person while ${resource == 'wood' ? 'logging' : resource}`, 'red', '💀', 'info')
+    log(`Wild animals killed 1 person while ${action == 'wood' ? 'logging' : action}`, 'red', '💀', 'info')
     population.ready += partySize - 1
     population.total -= 1
     bury()
     blink('population', 'red')
   }
 
-  if (!projects.weapons.unlocked && (die || resource === 'hunting')) {
+  if (!projects.weapons.unlocked && (die || action === 'hunting')) {
     projects.weapons.unlocked = true
     log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info')
     blink('projects', 'blink')
     renderProject('weapons')
+  }
+  if (action === 'foraging' && resources.food > 80 && !huntingEnabled) {
+    show('#hunt')
+    blink('hunt', 'blink')
+    huntingEnabled = true
+    log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info')
+  }
+  if (action === 'wood' && !projects.carpentry.unlocked && resources.wood > 5) {
+    projects.carpentry.unlocked = true
+    log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info')
+    renderProject('carpentry')
+    blink('projects', 'blink')
+  }
+  if (!smokeEnabled && action === 'wood') {
+    $('animate').beginElement()
+    smokeEnabled = true
+    log('The crew rejoices the arrival of wood for cooking and heating.', null, '🔥', 'info')
+    dayEvents.push(() => {
+      if (resources.wood > 0) {
+        resources.wood = Math.max(0, resources.wood - 2)
+        blink('wood', 'red')
+      }
+    })
   }
 
   updateView()
@@ -87,8 +94,7 @@ const setupClickHandlers = () => {
   on($('#hunt'), 'click', () => hunt())
 }
 
-let bufferTimeout = 500
-let bufferInterval
+
 const initBuffer = () => {
   clearInterval(bufferInterval)
   bufferInterval = setInterval(() => {
@@ -123,12 +129,14 @@ const initBuffer = () => {
       log(`${buffer.loggers}👤 left for logging.`, null, '🌳', 'tasks')
       buffer.loggers = 0
     }
+
+    updateView()
   }, bufferTimeout)
 }
 
 const blink = (resource, name) => {
   $(`#${resource}`).classList.add(name)
-  st(() => {
+  setTimeout(() => {
     $(`#${resource}`).classList.remove(name)
   }, name === 'no' ? 400 : 100);
 }

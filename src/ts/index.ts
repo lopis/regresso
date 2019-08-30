@@ -27,20 +27,20 @@ const startGame = () => {
   initBuffer()
   setupClickHandlers()
 
-  log('Your people set camp by the sea.', null, '🏝', 'info')
-  st(() => {
+  log('Your people set camp by the sea.', null, '⛺️', 'info')
+  setTimeout(() => {
     log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
     show('#forage')
     blink('forage', 'blink')
   }, 2000)
 
-  st(() => {
+  setTimeout(() => {
     log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info')
     show('#chop-wood')
     blink('chop-wood', 'blink')
   }, DAY)
 
-  st(() => {
+  setTimeout(() => {
     log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info')
     blink('projects', 'blink')
     renderProject('fishing')
@@ -60,5 +60,5 @@ on($('.intro button'), 'click', () => {
   $('.intro').classList.add('closed')
   document.body.style.setProperty('--v', '1');
   
-  st(startGame, 3000)
+  setTimeout(startGame, 3000)
 })

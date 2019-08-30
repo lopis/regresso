@@ -7,21 +7,21 @@ const startTrail = (time, trail, clone) => {
     newTrail.id = id
     $(`#${trail}`).after(newTrail)
   }
-  st(() => {
+  setTimeout(() => {
     const pathLength = Math.round($(`#${trail}`).getTotalLength())
     if (trail == 'huntTrail') {
       newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
-      newTrail.style.strokeDasharray = `0,${pathLength}px,1`
+      newTrail.style.strokeDasharray = `0,${pathLength}px,${trail == 'boatTrail' ? 2 : 1}`
     }
   }, 100)
 
-  st(() => {
+  setTimeout(() => {
     $(`#${id}`).style.strokeDasharray = null
   }, time/2)
 
   if (clone) {
-    st(() => {
+    setTimeout(() => {
       $(`#${id}`).remove()
     }, time)
   }
