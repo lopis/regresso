@@ -149,7 +149,7 @@ svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
 }
 
-#sy, #fh, #hull {
+#sy, #fh, #hull, #st {
   visibility: hidden;
 }
 
@@ -215,7 +215,7 @@ body {
   transition: opacity .1s ease-out 3s;
 }
 
-#ship {
+/* #ship {
   transition: transform 3s ease-out;
   transform: translate(-12vw,5vh);
 }
@@ -226,7 +226,7 @@ body {
 	transition: transform 5s linear 3s;
 	transform: translateY(1.2vh) rotateZ(40deg);
 	transform-origin: 8.7vw 3.5vh;
-}
+} */
 
 .logo {
   image-rendering: crisp-edges;

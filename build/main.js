@@ -582,6 +582,10 @@ const startGame = () => {
 };
 on($('.intro button'), 'click', () => {
     $('.intro').classList.add('closed');
+    $('#sail').beginElement();
+    setTimeout(() => {
+        $('#sink').beginElement();
+    }, 2000);
     document.body.style.setProperty('--v', '1');
     setTimeout(startGame, 3000);
 });
