@@ -7,7 +7,7 @@ let dayInterval, dayCycleInterval
 const stopGame = () => {
   clearInterval(dayInterval)
   clearInterval(dayCycleInterval)
-  $('svg').style.filter = 'brightness(.5) contrast(1.0) saturate(0)'
+  $('#island').style.filter = 'brightness(.5) contrast(1.0) saturate(0)'
 }
 const pauseGame = () => {
   clearInterval(dayInterval)
@@ -27,7 +27,7 @@ const startGame = () => {
   initBuffer()
   setupClickHandlers()
 
-  log('Your people set camp by the sea.', null, '⛺️', 'info')
+  log('People settled by the sea.', null, '⛺️', 'info')
   setTimeout(() => {
     log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
     show('#forage')
@@ -58,9 +58,12 @@ const startGame = () => {
 
 on($('.intro button'), 'click', () => {
   $('.intro').classList.add('closed')
-  $('#sail').beginElement();
+  $('#sail').beginElement()
   setTimeout(() => {
-    $('#sink').beginElement();
+    console.log('sinking glugluglu');
+    
+    $('#sink').beginElement()
+    $('#sinkRotate').beginElement()
   }, 2000)
   document.body.style.setProperty('--v', '1');
   

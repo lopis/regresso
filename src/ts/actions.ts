@@ -202,5 +202,5 @@ const nextDay = () => {
 }
 
 const dayCycle = () => {
-  $('svg').classList.toggle('night')
+  $('#island').classList.toggle('night')
 }
