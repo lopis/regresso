@@ -19,6 +19,18 @@ const fetchWood = () => {
   startTrail(time, 'forageTemplate', true)
 }
 
+const pray = () => {
+  population.ready -= 1
+  isPraying = true
+  setTimeout(() => {
+    population.ready += 1
+    isPraying = false
+    godSatisfaction += 0.05
+    const person = people[Math.round(Math.random() * people.length) - 1]
+    log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
+  }, DAY);
+}
+
 const forage = () => {
   const people = 1
   population.ready -= people
@@ -39,6 +51,23 @@ const hunt = () => {
   initBuffer()
   updateView()
   startTrail(time, 'huntTrail', true)
+}
+
+const leave = () => {
+  log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
+  $('#newShip').classList.add('go')
+
+  if (godSatisfaction < Math.random()) {
+    setTimeout(() => {
+      log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
+      stopGame();
+    }, 7000)
+  } else {
+    setTimeout(() => {
+      log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
+      log('Fim.', null, '🌅', 'info')
+    }, 7000)
+  }
 }
 
 const bring = (action, partySize, amount, risk) => () => {
@@ -89,11 +118,12 @@ const bring = (action, partySize, amount, risk) => () => {
 }
 
 const setupClickHandlers = () => {
-  on($('#chop-wood'), 'click', () => fetchWood())
-  on($('#forage'), 'click', () => forage())
-  on($('#hunt'), 'click', () => hunt())
+  on($('#chop-wood'), 'click', fetchWood)
+  on($('#forage'), 'click', forage)
+  on($('#hunt'), 'click', hunt)
+  on($('#pray'), 'click', pray)
+  on($('#leave'), 'click', leave)
 }
-
 
 const initBuffer = () => {
   clearInterval(bufferInterval)

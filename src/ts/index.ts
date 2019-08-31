@@ -56,11 +56,11 @@ on($('.intro button'), 'click', () => {
   updateDate()
   updateView()
   $('.intro').classList.add('closed')
-  $('#sail').beginElement()
-  setTimeout(() => {
-    $('#sink').beginElement()
-    $('#sinkRotate').beginElement()
-  }, 2000)
+  // $('#sail').beginElement()
+  // setTimeout(() => {
+  //   $('#sink').beginElement()
+  //   $('#sinkRotate').beginElement()
+  // }, 2000)
   document.body.style.setProperty('--v', '1');
   
   setTimeout(startGame, 3000)

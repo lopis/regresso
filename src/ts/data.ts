@@ -16,6 +16,8 @@ let smokeEnabled = false
 let attackChance = 1.0
 let bufferTimeout = 300
 let bufferInterval
+let godSatisfaction = 0.1
+let isPraying = false
 
 const people = shuffle([
   {

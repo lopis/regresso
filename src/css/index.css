@@ -57,13 +57,14 @@ body {
 }
 
 button {
-    border-radius: 2px;
-    font-size: 20px;
-    padding: 0.6em 1em;
-    border: 1px solid #666;
-    background: #c5d680;
-    cursor: pointer;
-    color: #333;
+  border-radius: 2px;
+  font-size: 20px;
+  padding: 0.6em 0.3em;
+  border: 1px solid #666;
+  background: #c5d680;
+  cursor: pointer;
+  color: #333;
+  width: 200px;
 }
 
 .actions {
@@ -149,7 +150,7 @@ svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
 }
 
-#sy, #fh, #hull, #st {
+#sy, #fh, #hull, #st, #newShip {
   visibility: hidden;
 }
 
@@ -224,4 +225,9 @@ body {
 }
 .modal .logo {
 	width: calc(70px * 7);
+}
+
+#newShip.go {
+  transition: transform 10s cubic-bezier(.5,0,1,1);
+  transform: translate(-40%, 60%);
 }

@@ -148,8 +148,25 @@ const projects = {
     },
     callback: () => {
       log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info')
+      show('#newShip')
+      show('#leave')
     }
   },
+  chapel: {
+    description: 'A place where people can gather to support, encorage and service each other (no extra effect).',
+    requires: ['carpentry'],
+    emoji: '🙏',
+    cost: {
+      wood: 20,
+      food: 20,
+      people: 3,
+      days: 3,
+    },
+    callback: () => {
+      godSatisfaction += 0.5
+      show('#pray')
+    }
+  }
 }
 
 const unlockCaravela = () => {

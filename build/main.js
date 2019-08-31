@@ -32,6 +32,7 @@ const shuffle = (array) => {
         array[i] = array[j];
         array[j] = temp;
     }
+    return array;
 };
 const buffer = {
     foragers: 0,
@@ -50,6 +51,17 @@ const fetchWood = () => {
     initBuffer();
     updateView();
     startTrail(time, 'forageTemplate', true);
+};
+const pray = () => {
+    population.ready -= 1;
+    isPraying = true;
+    setTimeout(() => {
+        population.ready += 1;
+        isPraying = false;
+        godSatisfaction += 0.05;
+        const person = people[Math.round(Math.random() * people.length) - 1];
+        log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info');
+    }, DAY);
 };
 const forage = () => {
     const people = 1;
@@ -70,6 +82,22 @@ const hunt = () => {
     initBuffer();
     updateView();
     startTrail(time, 'huntTrail', true);
+};
+const leave = () => {
+    log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info');
+    $('#newShip').classList.add('go');
+    if (godSatisfaction < Math.random()) {
+        setTimeout(() => {
+            log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info');
+            stopGame();
+        }, 7000);
+    }
+    else {
+        setTimeout(() => {
+            log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info');
+            log('Fim.', null, '🌅', 'info');
+        }, 7000);
+    }
 };
 const bring = (action, partySize, amount, risk) => () => {
     buffer[action] += amount;
@@ -117,9 +145,11 @@ const bring = (action, partySize, amount, risk) => () => {
     updateView();
 };
 const setupClickHandlers = () => {
-    on($('#chop-wood'), 'click', () => fetchWood());
-    on($('#forage'), 'click', () => forage());
-    on($('#hunt'), 'click', () => hunt());
+    on($('#chop-wood'), 'click', fetchWood);
+    on($('#forage'), 'click', forage);
+    on($('#hunt'), 'click', hunt);
+    on($('#pray'), 'click', pray);
+    on($('#leave'), 'click', leave);
 };
 const initBuffer = () => {
     clearInterval(bufferInterval);
@@ -227,6 +257,8 @@ let smokeEnabled = false;
 let attackChance = 1.0;
 let bufferTimeout = 300;
 let bufferInterval;
+let godSatisfaction = 0.1;
+let isPraying = false;
 const people = shuffle([
     {
         name: 'Abraão'
@@ -329,6 +361,7 @@ const updateView = () => {
     $('#forage').disabled = !enoughPeople(1);
     $('#chop-wood').disabled = !enoughPeople(1);
     $('#hunt').disabled = !enoughPeople(2);
+    $('#pray').disabled = isPraying;
 };
 const updateDate = () => {
     date.setDate(date.getDate() + 1);
@@ -478,8 +511,25 @@ const projects = {
         },
         callback: () => {
             log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info');
+            show('#newShip');
+            show('#leave');
         }
     },
+    chapel: {
+        description: 'A place where people can gather to support, encorage and service each other (no extra effect).',
+        requires: ['carpentry'],
+        emoji: '🙏',
+        cost: {
+            wood: 20,
+            food: 20,
+            people: 3,
+            days: 3,
+        },
+        callback: () => {
+            godSatisfaction += 0.5;
+            show('#pray');
+        }
+    }
 };
 const unlockCaravela = () => {
     if (projects.spinning_wheel.done && projects.shipyard.done) {
@@ -635,11 +685,6 @@ on($('.intro button'), 'click', () => {
     updateDate();
     updateView();
     $('.intro').classList.add('closed');
-    $('#sail').beginElement();
-    setTimeout(() => {
-        $('#sink').beginElement();
-        $('#sinkRotate').beginElement();
-    }, 2000);
     document.body.style.setProperty('--v', '1');
     setTimeout(startGame, 3000);
 });

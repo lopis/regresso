@@ -58,6 +58,7 @@ const updateView = () => {
   $('#forage').disabled = !enoughPeople(1)
   $('#chop-wood').disabled = !enoughPeople(1)
   $('#hunt').disabled = !enoughPeople(2)
+  $('#pray').disabled = isPraying
 }
 
 const updateDate = () => {
