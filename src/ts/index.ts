@@ -48,6 +48,7 @@ const startGame = () => {
 
   on($('#projects'), 'click', () => {
     $('.projects').classList.toggle('closed')
+    $('#requirements').innerText = null
   })
 }
 

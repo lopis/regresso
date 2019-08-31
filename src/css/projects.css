@@ -28,7 +28,6 @@
   transition: all 80ms ease-in-out;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  overflow: hidden;
   min-height: 250px;
   background: #e4fa89;
   flex-shrink: 0;

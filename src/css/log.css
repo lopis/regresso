@@ -47,3 +47,24 @@
 .log p.blue {
   background: #2a7ec1;
 }
+
+.closed #requirements {
+  display: none;
+}
+#requirements {
+	position: absolute;
+	top: -20px;
+	width: 50%;
+	left: 25%;
+	text-align: center;
+	color: white;
+	background: #ae5555;
+	border-radius: 5px;
+	padding: 15px 0;
+	box-shadow: 0 5px 5px 0 rgba(0,0,0,.2);
+	transition: opacity 0.1s ease-in-out, top 0.1s ease-in-out;
+}
+#requirements:empty {
+	opacity: 0;
+	top: -30px;
+}

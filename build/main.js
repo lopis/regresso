@@ -476,7 +476,9 @@ const projects = {
             people: 10,
             days: 8,
         },
-        callback: () => { }
+        callback: () => {
+            log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info');
+        }
     },
 };
 const unlockCaravela = () => {
@@ -537,14 +539,18 @@ const selectProject = (projectName) => () => {
             .map(r => `[${r.replace(/_/g, ' ')}]`);
         if (missing.length > 0) {
             blink(projectName, 'no');
-            log(`Construction of the new caravela requires ${missing.join(' and ')}.`, null, '❌', 'info');
+            const msg = `Construction of the new caravela requires ${missing.join(' and ')}.`;
+            $('#requirements').innerText = msg;
+            log(msg, null, '❌', 'info');
             return;
         }
     }
     const missing = ['wood', 'food'].filter(resource => resources[resource] < project.cost[resource]);
     if (missing.length > 0) {
         blink(projectName, 'no');
-        log(`There is not enough ${missing.join(' and ')} to start the ${projectName} project`, null, '❌', 'info');
+        const msg = `There is not enough ${missing.join(' and ')} to start the ${projectName} project`;
+        $('#requirements').innerText = msg;
+        log(msg, null, '❌', 'info');
         return;
     }
     if (!enoughPeople(project.cost.people)) {
@@ -557,7 +563,9 @@ const selectProject = (projectName) => () => {
             project.cost.days = duration;
         }
         else {
-            log(`Not enough people ready to start the ${projectName} project`, null, '❌', 'info');
+            const msg = `Not enough people ready to start the ${projectName} project`;
+            $('#requirements').innerText = msg;
+            log(msg, null, '❌', 'info');
             return;
         }
     }
@@ -620,6 +628,7 @@ const startGame = () => {
     }, DAY * 2);
     on($('#projects'), 'click', () => {
         $('.projects').classList.toggle('closed');
+        $('#requirements').innerText = null;
     });
 };
 on($('.intro button'), 'click', () => {
