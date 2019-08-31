@@ -86,9 +86,13 @@ const hunt = () => {
 const leave = () => {
     log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info');
     $('#newShip').classList.add('go');
+    population.ready = 0;
+    updateView();
     if (godSatisfaction < Math.random()) {
         setTimeout(() => {
             log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info');
+            population.total = 0;
+            updateView();
             stopGame();
         }, 7000);
     }
@@ -685,6 +689,11 @@ on($('.intro button'), 'click', () => {
     updateDate();
     updateView();
     $('.intro').classList.add('closed');
+    $('#sail').beginElement();
+    setTimeout(() => {
+        $('#sink').beginElement();
+        $('#sinkRotate').beginElement();
+    }, 2000);
     document.body.style.setProperty('--v', '1');
     setTimeout(startGame, 3000);
 });

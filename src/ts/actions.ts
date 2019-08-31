@@ -56,10 +56,14 @@ const hunt = () => {
 const leave = () => {
   log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
   $('#newShip').classList.add('go')
+  population.ready = 0
+  updateView()
 
   if (godSatisfaction < Math.random()) {
     setTimeout(() => {
       log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
+      population.total = 0
+      updateView()
       stopGame();
     }, 7000)
   } else {
