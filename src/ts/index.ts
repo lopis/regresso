@@ -4,21 +4,32 @@
 ///<reference path="actions.ts"/>
 ///<reference path="projects.ts"/>
 let dayInterval, dayCycleInterval
-const stopGame = () => {
+
+const stopDays = () => {
   clearInterval(dayInterval)
   clearInterval(dayCycleInterval)
+}
+
+const stopGame = () => {
+  stopDays()
   $('#island').style.filter = 'brightness(.5) contrast(1.0) saturate(0)'
 }
-const pauseGame = () => {
-  clearInterval(dayInterval)
-  clearInterval(dayCycleInterval)
-  $('#days').classList.add('paused')
-}
+
 const resumeGame = () => {
   dayInterval = setInterval(nextDay, DAY)
   dayCycleInterval = setInterval(dayCycle, DAY / 2)
   $('#days').classList.remove('paused')
 }
+
+const init = () => {
+  updateDate()
+  updateView()
+  document.body.style.setProperty('--v', '1'); //Show village
+  sinkBoatAnimation()
+  
+  timeout(startGame, 3000)
+}
+
 const startGame = () => {
   resumeGame()
   updateDate()
@@ -28,19 +39,20 @@ const startGame = () => {
   setupClickHandlers()
 
   log('People settled by the sea.', null, '⛺️', 'info')
-  setTimeout(() => {
+  timeout(() => {
     log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
     show('#forage')
+    show('#restart')
     blink('forage', 'blink')
   }, 2000)
 
-  setTimeout(() => {
+  timeout(() => {
     log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info')
     show('#chop-wood')
     blink('chop-wood', 'blink')
   }, DAY)
 
-  setTimeout(() => {
+  timeout(() => {
     log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info')
     blink('projects', 'blink')
     renderProject('fishing')
@@ -52,16 +64,4 @@ const startGame = () => {
   })
 }
 
-on($('.intro button'), 'click', () => {
-  updateDate()
-  updateView()
-  $('.intro').classList.add('closed')
-  $('#sail').beginElement()
-  setTimeout(() => {
-    $('#sink').beginElement()
-    $('#sinkRotate').beginElement()
-  }, 2000)
-  document.body.style.setProperty('--v', '1');
-  
-  setTimeout(startGame, 3000)
-})
+on($('.intro button'), 'click', init)

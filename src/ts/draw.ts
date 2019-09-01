@@ -7,7 +7,7 @@ const startTrail = (time, trail, clone) => {
     newTrail.id = id
     $(`#${trail}`).after(newTrail)
   }
-  setTimeout(() => {
+  timeout(() => {
     const pathLength = Math.round($(`#${trail}`).getTotalLength())
     if (trail == 'huntTrail') {
       newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
@@ -16,12 +16,12 @@ const startTrail = (time, trail, clone) => {
     }
   }, 100)
 
-  setTimeout(() => {
+  timeout(() => {
     $(`#${id}`).style.strokeDasharray = null
   }, time/2)
 
   if (clone) {
-    setTimeout(() => {
+    timeout(() => {
       $(`#${id}`).remove()
     }, time)
   }
@@ -58,10 +58,19 @@ const updateView = () => {
   $('#forage').disabled = !enoughPeople(1)
   $('#chop-wood').disabled = !enoughPeople(1)
   $('#hunt').disabled = !enoughPeople(2)
-  $('#pray').disabled = isPraying
+  $('#pray').disabled = !enoughPeople(1) || isPraying
 }
 
 const updateDate = () => {
   date.setDate(date.getDate() + 1)
   $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`
+}
+
+const sinkBoatAnimation = () => {
+  $('.intro').classList.add('closed')
+  $('#sail').beginElement()
+  timeout(() => {
+    $('#sink').beginElement()
+    $('#sinkRotate').beginElement()
+  }, 2000)
 }

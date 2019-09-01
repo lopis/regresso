@@ -74,6 +74,7 @@ const projects = {
       blink('projects', 'blink')
       renderProject('shipyard')
       renderProject('spinning_wheel')
+      renderProject('chapel')
     }
   },
   weapons: {
@@ -163,7 +164,7 @@ const projects = {
       days: 3,
     },
     callback: () => {
-      godSatisfaction += 0.5
+      godsWrath -= 0.5
       show('#pray')
     }
   }
@@ -281,7 +282,7 @@ const selectProject = (projectName) => () => {
   $project.classList.add('in-progress')
   $('.projects').classList.add('closed')
 
-  setTimeout(() => {
+  timeout(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
     $project.classList.add('done')
     $project.classList.remove('in-progress')

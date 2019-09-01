@@ -12,7 +12,7 @@ const fetchWood = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.6
-  setTimeout(bring('wood', people, 3, 0.05), time)
+  timeout(bring('wood', people, 3, 0.05), time)
   buffer.loggers++
   initBuffer()
   updateView()
@@ -22,10 +22,10 @@ const fetchWood = () => {
 const pray = () => {
   population.ready -= 1
   isPraying = true
-  setTimeout(() => {
+  timeout(() => {
     population.ready += 1
     isPraying = false
-    godSatisfaction += 0.05
+    godsWrath = godsWrath*0.9
     const person = people[Math.round(Math.random() * people.length) - 1]
     log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
   }, DAY);
@@ -35,7 +35,7 @@ const forage = () => {
   const people = 1
   population.ready -= people
   const time = DAY * 0.4
-  setTimeout(bring('foraging', people, foragingReturns, 0), time)
+  timeout(bring('foraging', people, foragingReturns, 0), time)
   buffer.foragers++
   initBuffer()
   updateView()
@@ -46,7 +46,7 @@ const hunt = () => {
   const people = 2
   population.ready -= people
   const time = DAY * 1.2
-  setTimeout(bring('hunting', people, 8, 0.1), time)
+  timeout(bring('hunting', people, 8, 0.1), time)
   buffer.hunters += people
   initBuffer()
   updateView()
@@ -59,15 +59,15 @@ const leave = () => {
   population.ready = 0
   updateView()
 
-  if (godSatisfaction < Math.random()) {
-    setTimeout(() => {
+  if (godsWrath > 0.2) {
+    timeout(() => {
       log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
       population.total = 0
       updateView()
       stopGame();
     }, 7000)
   } else {
-    setTimeout(() => {
+    timeout(() => {
       log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
       log('Fim.', null, '🌅', 'info')
     }, 7000)
@@ -127,6 +127,10 @@ const setupClickHandlers = () => {
   on($('#hunt'), 'click', hunt)
   on($('#pray'), 'click', pray)
   on($('#leave'), 'click', leave)
+  on($('#restart'), 'click', () => {
+    resetGame()
+    init()
+  })
 }
 
 const initBuffer = () => {
@@ -170,7 +174,7 @@ const initBuffer = () => {
 
 const blink = (resource, name) => {
   $(`#${resource}`).classList.add(name)
-  setTimeout(() => {
+  timeout(() => {
     $(`#${resource}`).classList.remove(name)
   }, name === 'no' ? 400 : 100);
 }
@@ -210,6 +214,8 @@ const enoughPeople = (min) => {
 }
 
 const nextDay = () => {
+  console.log('nextDay', date);
+  
   updateDate()
   updateFood()
   

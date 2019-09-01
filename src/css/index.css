@@ -75,6 +75,7 @@ button {
 }
 .actions button {
   visibility: hidden;
+  vertical-align: middle;
 }
 .actions button {
   transition: transform 300ms ease-out;

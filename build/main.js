@@ -1,4 +1,5 @@
 const $ = q => document.querySelector(q);
+const $a = q => document.querySelectorAll(q);
 const on = (elem, event, callback) => elem.addEventListener(event, callback);
 const $$ = (tag, className, innerText) => {
     const el = document.createElement(tag);
@@ -8,7 +9,7 @@ const $$ = (tag, className, innerText) => {
 };
 const log = (text, color, emoji, type) => {
     if ($(`.log#${type} .new`)) {
-        setTimeout(() => log(text, color, emoji, type), 500);
+        timeout(() => log(text, color, emoji, type), 500);
         return;
     }
     const newLog = document.createElement('p');
@@ -17,12 +18,15 @@ const log = (text, color, emoji, type) => {
         newLog.classList.add(color);
     newLog.classList.add('new');
     $(`.log#${type}`).prepend(newLog);
-    setTimeout(() => {
+    timeout(() => {
         newLog.classList.remove('new');
     }, 200);
 };
 const show = (q) => {
     $(q).style.visibility = 'visible';
+};
+const hide = (q) => {
+    $(q).style.visibility = 'hidden';
 };
 const shuffle = (array) => {
     let i = 0, j = 0, temp = null;
@@ -33,6 +37,35 @@ const shuffle = (array) => {
         array[j] = temp;
     }
     return array;
+};
+const timeouts = [];
+const timeout = (fn, dur) => {
+    timeouts.push(setTimeout(fn, dur));
+};
+const intervals = [];
+const interval = (fn, dur) => {
+    intervals.push(setInterval(fn, dur));
+};
+const clearAllTimers = () => {
+    timeouts.forEach(clearTimeout);
+    intervals.forEach(clearInterval);
+    clearInterval(dayInterval);
+    clearInterval(dayCycleInterval);
+};
+const resetGame = () => {
+    clearAllTimers();
+    document.body.style.setProperty('--v', '0');
+    $a('button').forEach(b => b.style.visibility = 'hidden');
+    $a('.project').forEach(p => p.remove());
+    $('#island').innerHTML = svgBackup;
+    for (const key in initialConditions) {
+        if (initialConditions[key] instanceof Object) {
+            Object.assign(window[key], initialConditions[key]);
+        }
+        else {
+            window[key] = initialConditions[key];
+        }
+    }
 };
 const buffer = {
     foragers: 0,
@@ -46,7 +79,7 @@ const fetchWood = () => {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.6;
-    setTimeout(bring('wood', people, 3, 0.05), time);
+    timeout(bring('wood', people, 3, 0.05), time);
     buffer.loggers++;
     initBuffer();
     updateView();
@@ -55,10 +88,10 @@ const fetchWood = () => {
 const pray = () => {
     population.ready -= 1;
     isPraying = true;
-    setTimeout(() => {
+    timeout(() => {
         population.ready += 1;
         isPraying = false;
-        godSatisfaction += 0.05;
+        godsWrath = godsWrath * 0.9;
         const person = people[Math.round(Math.random() * people.length) - 1];
         log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info');
     }, DAY);
@@ -67,7 +100,7 @@ const forage = () => {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.4;
-    setTimeout(bring('foraging', people, foragingReturns, 0), time);
+    timeout(bring('foraging', people, foragingReturns, 0), time);
     buffer.foragers++;
     initBuffer();
     updateView();
@@ -77,7 +110,7 @@ const hunt = () => {
     const people = 2;
     population.ready -= people;
     const time = DAY * 1.2;
-    setTimeout(bring('hunting', people, 8, 0.1), time);
+    timeout(bring('hunting', people, 8, 0.1), time);
     buffer.hunters += people;
     initBuffer();
     updateView();
@@ -88,8 +121,8 @@ const leave = () => {
     $('#newShip').classList.add('go');
     population.ready = 0;
     updateView();
-    if (godSatisfaction < Math.random()) {
-        setTimeout(() => {
+    if (godsWrath > 0.2) {
+        timeout(() => {
             log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info');
             population.total = 0;
             updateView();
@@ -97,7 +130,7 @@ const leave = () => {
         }, 7000);
     }
     else {
-        setTimeout(() => {
+        timeout(() => {
             log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info');
             log('Fim.', null, '🌅', 'info');
         }, 7000);
@@ -154,6 +187,10 @@ const setupClickHandlers = () => {
     on($('#hunt'), 'click', hunt);
     on($('#pray'), 'click', pray);
     on($('#leave'), 'click', leave);
+    on($('#restart'), 'click', () => {
+        resetGame();
+        init();
+    });
 };
 const initBuffer = () => {
     clearInterval(bufferInterval);
@@ -193,7 +230,7 @@ const initBuffer = () => {
 };
 const blink = (resource, name) => {
     $(`#${resource}`).classList.add(name);
-    setTimeout(() => {
+    timeout(() => {
         $(`#${resource}`).classList.remove(name);
     }, name === 'no' ? 400 : 100);
 };
@@ -230,6 +267,7 @@ const enoughPeople = (min) => {
     return (population.ready - population.starving) >= min;
 };
 const nextDay = () => {
+    console.log('nextDay', date);
     updateDate();
     updateFood();
     if ((population.total) < 1) {
@@ -244,25 +282,43 @@ const nextDay = () => {
 const dayCycle = () => {
     $('#island').classList.toggle('night');
 };
-const resources = {
+var resources = {
     wood: 0,
     food: 0,
 };
-const population = {
+var population = {
     total: 15,
     ready: 15,
     hungry: 0,
     starving: 0,
     fishers: 0
 };
-let foragingReturns = 2;
-let huntingEnabled = false;
-let smokeEnabled = false;
-let attackChance = 1.0;
-let bufferTimeout = 300;
-let bufferInterval;
-let godSatisfaction = 0.1;
-let isPraying = false;
+var foragingReturns = 2;
+var huntingEnabled = false;
+var smokeEnabled = false;
+var attackChance = 1.0;
+var bufferTimeout = 300;
+var bufferInterval = null;
+var godsWrath = 1;
+var isPraying = false;
+var dayEvents = [];
+var DAY = 10000;
+var date = new Date('1549/08/13');
+const initialConditions = {
+    resources: Object.assign({}, resources),
+    population: Object.assign({}, population),
+    foragingReturns,
+    huntingEnabled,
+    smokeEnabled,
+    attackChance,
+    bufferTimeout,
+    bufferInterval,
+    godsWrath,
+    isPraying,
+    date,
+    dayEvents,
+};
+const svgBackup = $('#island').innerHTML;
 const people = shuffle([
     {
         name: 'Abraão'
@@ -310,9 +366,6 @@ const people = shuffle([
         name: 'Lúcia'
     },
 ]);
-const dayEvents = [];
-const DAY = 10000;
-let date = new Date('1549/08/13');
 let trailCount = 0;
 const startTrail = (time, trail, clone) => {
     const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`);
@@ -322,7 +375,7 @@ const startTrail = (time, trail, clone) => {
         newTrail.id = id;
         $(`#${trail}`).after(newTrail);
     }
-    setTimeout(() => {
+    timeout(() => {
         const pathLength = Math.round($(`#${trail}`).getTotalLength());
         if (trail == 'huntTrail') {
             newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`;
@@ -331,11 +384,11 @@ const startTrail = (time, trail, clone) => {
             newTrail.style.strokeDasharray = `0,${pathLength}px,${trail == 'boatTrail' ? 2 : 1}`;
         }
     }, 100);
-    setTimeout(() => {
+    timeout(() => {
         $(`#${id}`).style.strokeDasharray = null;
     }, time / 2);
     if (clone) {
-        setTimeout(() => {
+        timeout(() => {
             $(`#${id}`).remove();
         }, time);
     }
@@ -365,11 +418,19 @@ const updateView = () => {
     $('#forage').disabled = !enoughPeople(1);
     $('#chop-wood').disabled = !enoughPeople(1);
     $('#hunt').disabled = !enoughPeople(2);
-    $('#pray').disabled = isPraying;
+    $('#pray').disabled = !enoughPeople(1) || isPraying;
 };
 const updateDate = () => {
     date.setDate(date.getDate() + 1);
     $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
+};
+const sinkBoatAnimation = () => {
+    $('.intro').classList.add('closed');
+    $('#sail').beginElement();
+    timeout(() => {
+        $('#sink').beginElement();
+        $('#sinkRotate').beginElement();
+    }, 2000);
 };
 const projects = {
     fishing: {
@@ -441,6 +502,7 @@ const projects = {
             blink('projects', 'blink');
             renderProject('shipyard');
             renderProject('spinning_wheel');
+            renderProject('chapel');
         }
     },
     weapons: {
@@ -530,7 +592,7 @@ const projects = {
             days: 3,
         },
         callback: () => {
-            godSatisfaction += 0.5;
+            godsWrath -= 0.5;
             show('#pray');
         }
     }
@@ -632,7 +694,7 @@ const selectProject = (projectName) => () => {
     $project.style.transition = `height ${duration}ms linear`;
     $project.classList.add('in-progress');
     $('.projects').classList.add('closed');
-    setTimeout(() => {
+    timeout(() => {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
         $project.style.transition = null;
@@ -642,20 +704,25 @@ const selectProject = (projectName) => () => {
     }, duration);
 };
 let dayInterval, dayCycleInterval;
-const stopGame = () => {
+const stopDays = () => {
     clearInterval(dayInterval);
     clearInterval(dayCycleInterval);
-    $('#island').style.filter = 'brightness(.5) contrast(1.0) saturate(0)';
 };
-const pauseGame = () => {
-    clearInterval(dayInterval);
-    clearInterval(dayCycleInterval);
-    $('#days').classList.add('paused');
+const stopGame = () => {
+    stopDays();
+    $('#island').style.filter = 'brightness(.5) contrast(1.0) saturate(0)';
 };
 const resumeGame = () => {
     dayInterval = setInterval(nextDay, DAY);
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
     $('#days').classList.remove('paused');
+};
+const init = () => {
+    updateDate();
+    updateView();
+    document.body.style.setProperty('--v', '1');
+    sinkBoatAnimation();
+    timeout(startGame, 3000);
 };
 const startGame = () => {
     resumeGame();
@@ -665,17 +732,18 @@ const startGame = () => {
     initBuffer();
     setupClickHandlers();
     log('People settled by the sea.', null, '⛺️', 'info');
-    setTimeout(() => {
+    timeout(() => {
         log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
         show('#forage');
+        show('#restart');
         blink('forage', 'blink');
     }, 2000);
-    setTimeout(() => {
+    timeout(() => {
         log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info');
         show('#chop-wood');
         blink('chop-wood', 'blink');
     }, DAY);
-    setTimeout(() => {
+    timeout(() => {
         log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');
         blink('projects', 'blink');
         renderProject('fishing');
@@ -685,15 +753,4 @@ const startGame = () => {
         $('#requirements').innerText = null;
     });
 };
-on($('.intro button'), 'click', () => {
-    updateDate();
-    updateView();
-    $('.intro').classList.add('closed');
-    $('#sail').beginElement();
-    setTimeout(() => {
-        $('#sink').beginElement();
-        $('#sinkRotate').beginElement();
-    }, 2000);
-    document.body.style.setProperty('--v', '1');
-    setTimeout(startGame, 3000);
-});
+on($('.intro button'), 'click', init);

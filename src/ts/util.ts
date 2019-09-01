@@ -1,4 +1,5 @@
 const $ = q => document.querySelector(q)
+const $a = q => document.querySelectorAll(q)
 const on = (elem, event, callback) => elem.addEventListener(event, callback)
 const $$ = (tag, className, innerText) => {
   const el = document.createElement(tag)
@@ -10,7 +11,7 @@ const $$ = (tag, className, innerText) => {
 
 const log = (text, color, emoji, type) => {
   if ($(`.log#${type} .new`)) {
-    setTimeout(() => log(text, color, emoji, type), 500)
+    timeout(() => log(text, color, emoji, type), 500)
     return
   }
 
@@ -19,13 +20,16 @@ const log = (text, color, emoji, type) => {
   if (color) newLog.classList.add(color)
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
-  setTimeout(() => {
+  timeout(() => {
     newLog.classList.remove('new')
   }, 200)
 }
 
 const show = (q) => {
   $(q).style.visibility = 'visible'
+}
+const hide = (q) => {
+  $(q).style.visibility = 'hidden'
 }
 
 const shuffle = (array) => {
@@ -41,4 +45,37 @@ const shuffle = (array) => {
   }
 
   return array
+}
+
+const timeouts = []
+const timeout = (fn, dur) => {
+  timeouts.push(setTimeout(fn, dur))
+}
+
+const intervals = []
+const interval = (fn, dur) => {
+  intervals.push(setInterval(fn, dur))
+}
+
+const clearAllTimers = () => {
+  timeouts.forEach(clearTimeout)
+  intervals.forEach(clearInterval)
+  clearInterval(dayInterval);
+  clearInterval(dayCycleInterval);
+}
+
+const resetGame = () => {
+  clearAllTimers()
+  document.body.style.setProperty('--v', '0'); //Hide village
+  $a('button').forEach(b => b.style.visibility = 'hidden')
+  $a('.project').forEach(p => p.remove())
+  $('#island').innerHTML = svgBackup
+
+  for (const key in initialConditions) {
+    if (initialConditions[key] instanceof Object) {
+      Object.assign(window[key], initialConditions[key])
+    } else {
+      window[key] = initialConditions[key]
+    }
+  }
 }
