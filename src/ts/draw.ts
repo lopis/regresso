@@ -7,7 +7,7 @@ const startTrail = (time, trail, clone) => {
     newTrail.id = id
     $(`#${trail}`).after(newTrail)
   }
-  timeout(() => {
+  setTimeout(() => {
     const pathLength = Math.round($(`#${trail}`).getTotalLength())
     if (trail == 'huntTrail') {
       newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
@@ -16,12 +16,12 @@ const startTrail = (time, trail, clone) => {
     }
   }, 100)
 
-  timeout(() => {
+  setTimeout(() => {
     $(`#${id}`).style.strokeDasharray = null
   }, time/2)
 
   if (clone) {
-    timeout(() => {
+    setTimeout(() => {
       $(`#${id}`).remove()
     }, time)
   }

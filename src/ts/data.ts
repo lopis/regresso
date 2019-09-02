@@ -34,7 +34,7 @@ const initialConditions = {
   bufferInterval,
   godsWrath,
   isPraying,
-  date,
+  date: new Date(date),
   dayEvents,
 }
 const svgBackup = $('#island').innerHTML

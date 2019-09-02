@@ -41,17 +41,19 @@ const shuffle = (array) => {
     }
     return array;
 };
-const timeouts = [];
+let timeouts = [];
 const timeout = (fn, dur) => {
     timeouts.push(setTimeout(fn, dur));
 };
-const intervals = [];
+let intervals = [];
 const interval = (fn, dur) => {
     intervals.push(setInterval(fn, dur));
 };
 const clearAllTimers = () => {
     timeouts.forEach(clearTimeout);
+    timeouts = [];
     intervals.forEach(clearInterval);
+    intervals = [];
     clearInterval(dayInterval);
     clearInterval(dayCycleInterval);
 };
@@ -62,6 +64,7 @@ const resetGame = () => {
     $a('.project').forEach(p => p.remove());
     $('#island').innerHTML = svgBackup;
     $a('.log').forEach(l => l.innerHTML = '');
+    $('#island').style.filter = null;
     for (const key in initialConditions) {
         if (initialConditions[key] instanceof Object) {
             Object.assign(window[key], initialConditions[key]);
@@ -120,17 +123,23 @@ function hunt() {
     updateView();
     startTrail(time, 'huntTrail', true);
 }
+const printScore = () => {
+    const days = (date - initialConditions.date) / (1000 * 60 * 60 * 24);
+    log(`You took ${days} days to go back and rescued ${population.total}/${initialConditions.population.total} people.`);
+};
 function leave() {
     log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info');
     $('#newShip').classList.add('go');
     population.ready = 0;
     updateView();
+    clearAllTimers();
     if (godsWrath > 0.2) {
         timeout(() => {
             log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info');
             population.total = 0;
             updateView();
             stopGame();
+            printScore();
         }, 7000);
     }
     else {
@@ -326,7 +335,7 @@ const initialConditions = {
     bufferInterval,
     godsWrath,
     isPraying,
-    date,
+    date: new Date(date),
     dayEvents,
 };
 const svgBackup = $('#island').innerHTML;
@@ -386,7 +395,7 @@ const startTrail = (time, trail, clone) => {
         newTrail.id = id;
         $(`#${trail}`).after(newTrail);
     }
-    timeout(() => {
+    setTimeout(() => {
         const pathLength = Math.round($(`#${trail}`).getTotalLength());
         if (trail == 'huntTrail') {
             newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`;
@@ -395,11 +404,11 @@ const startTrail = (time, trail, clone) => {
             newTrail.style.strokeDasharray = `0,${pathLength}px,${trail == 'boatTrail' ? 2 : 1}`;
         }
     }, 100);
-    timeout(() => {
+    setTimeout(() => {
         $(`#${id}`).style.strokeDasharray = null;
     }, time / 2);
     if (clone) {
-        timeout(() => {
+        setTimeout(() => {
             $(`#${id}`).remove();
         }, time);
     }
@@ -457,7 +466,7 @@ const projects = {
             show('#fh');
             population.ready -= 1;
             population.fishers++;
-            setInterval(() => {
+            interval(() => {
                 startTrail(DAY / 3, 'fishTrail', false);
             }, DAY / 3);
             dayEvents.push(() => {
@@ -485,7 +494,7 @@ const projects = {
             population.ready -= 1;
             population.fishers++;
             show('#boatTrail');
-            setInterval(() => {
+            interval(() => {
                 startTrail(DAY / 2, 'boatTrail', false);
             }, DAY / 2);
             dayEvents.push(() => {

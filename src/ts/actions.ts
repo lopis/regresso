@@ -53,11 +53,17 @@ function hunt () {
   startTrail(time, 'huntTrail', true)
 }
 
+const printScore = () => {
+  const days = (date - initialConditions.date) / (1000 * 60 * 60 * 24)
+  log(`You took ${days} days to go back and rescued ${population.total}/${initialConditions.population.total} people.`, )
+}
+
 function leave () {
   log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
   $('#newShip').classList.add('go')
   population.ready = 0
   updateView()
+  clearAllTimers()
 
   if (godsWrath > 0.2) {
     timeout(() => {
@@ -65,6 +71,7 @@ function leave () {
       population.total = 0
       updateView()
       stopGame();
+      printScore();
     }, 7000)
   } else {
     timeout(() => {

@@ -17,7 +17,7 @@ const projects = {
       population.ready -= 1
       population.fishers++
 
-      setInterval(() => {
+      interval(() => {
         startTrail(DAY / 3, 'fishTrail', false)
       }, DAY / 3)
 
@@ -47,7 +47,7 @@ const projects = {
       population.fishers++
       show('#boatTrail')
 
-      setInterval(() => {
+      interval(() => {
         startTrail(DAY / 2, 'boatTrail', false)
       }, DAY / 2)
 

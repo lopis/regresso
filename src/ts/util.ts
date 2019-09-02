@@ -52,19 +52,21 @@ const shuffle = (array) => {
   return array
 }
 
-const timeouts = []
+let timeouts = []
 const timeout = (fn, dur) => {
   timeouts.push(setTimeout(fn, dur))
 }
 
-const intervals = []
+let intervals = []
 const interval = (fn, dur) => {
   intervals.push(setInterval(fn, dur))
 }
 
 const clearAllTimers = () => {
   timeouts.forEach(clearTimeout)
+  timeouts = []
   intervals.forEach(clearInterval)
+  intervals = []
   clearInterval(dayInterval);
   clearInterval(dayCycleInterval);
 }
@@ -76,6 +78,7 @@ const resetGame = () => {
   $a('.project').forEach(p => p.remove())
   $('#island').innerHTML = svgBackup
   $a('.log').forEach(l => l.innerHTML = '')
+  $('#island').style.filter = null
 
   for (const key in initialConditions) {
     if (initialConditions[key] instanceof Object) {
