@@ -40,49 +40,36 @@ const initialConditions = {
 const svgBackup = $('#island').innerHTML
 
 const people = shuffle([
-  {
-    name: 'Abraão'
-  },
-  {
-    name: 'Bartolomeu'
-  },
-  {
-    name: 'João'
-  },
-  {
-    name: 'Jacinto'
-  },
-  {
-    name: 'Paulo'
-  },
-  {
-    name: 'Lindomar'
-  },
-  {
-    name: 'Isaías'
-  },
-  {
-    name: 'Henrique'
-  },
-  {
-    name: 'Tomás'
-  },
-  {
-    name: 'Amélia'
-  },
-  {
-    name: 'Camila'
-  },
-  {
-    name: 'Benedita'
-  },
-  {
-    name: 'Madalena'
-  },
-  {
-    name: 'Teresa'
-  },
-  {
-    name: 'Lúcia'
-  },
-])
+  'Abraão',
+  'Bartolomeu',
+  'João',
+  'Jacinto',
+  'Paulo',
+  'Lindomar',
+  'Isaías',
+  'Henrique',
+  'Tomás',
+  'Amélia',
+  'Camila',
+  'Benedita',
+  'Madalena',
+  'Teresa',
+  'Lúcia',
+]).reduce((rest, el) => {
+  rest.push({name: el, alive: true})
+  return rest
+}, [])
+
+const getRandomPerson = () => {
+  const alive = people.filter(p => p.alive)
+  return alive[Math.round(Math.random() * (alive.length - 1))]
+}
+const makePeopleDead = (n) => {
+  const p = []
+  for (let i = 0; i < n; i++) {
+    const next = getRandomPerson()
+    next.alive = false
+    p.push(next)
+  }
+  return p
+}

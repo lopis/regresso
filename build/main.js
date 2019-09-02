@@ -99,7 +99,7 @@ function pray() {
         population.ready += 1;
         isPraying = false;
         godsWrath = godsWrath * 0.7;
-        const person = people[Math.round(Math.random() * people.length) - 1];
+        const person = getRandomPerson();
         log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info');
     }, DAY);
 }
@@ -124,8 +124,8 @@ function hunt() {
     startTrail(time, 'huntTrail', true);
 }
 const printScore = () => {
-    const days = (date - initialConditions.date) / (1000 * 60 * 60 * 24);
-    log(`You took ${days} days to go back and rescued ${population.total}/${initialConditions.population.total} people.`);
+    const days = (date.getTime() - initialConditions.date.getTime()) / (1000 * 60 * 60 * 24);
+    log(`You took ${days} days to go back and rescued ${population.total}/${initialConditions.population.total} people.`, null, '🏁', 'info');
 };
 function leave() {
     log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info');
@@ -265,7 +265,7 @@ const updateFood = () => {
     else {
         const dead = Math.min(population.starving, -diff);
         if (dead > 0) {
-            log(`${dead} died from starvation.`, 'red', '💀', 'info');
+            log(`${makePeopleDead(dead).map(p => p.name).join(', ')} died from starvation.`, 'red', '💀', 'info');
             population.total -= dead;
             population.ready -= dead;
             population.starving = 0;
@@ -273,14 +273,14 @@ const updateFood = () => {
             bury();
         }
         const starving = Math.min(population.hungry, -diff);
+        population.hungry = Math.min(population.total - starving, -diff);
         if (starving > 0) {
             population.starving = starving;
             log(`${starving} are starving and can't work.`, 'red', '😔', 'info');
         }
-        else {
-            log(`People are getting hungry`, null, '💭', 'info');
+        else if (population.hungry > 0) {
+            log(`${getRandomPerson().name} ${population.hungry > 2 ? `and ${population.hungry - 1} others are` : 'is'} getting hungry`, null, '💭', 'info');
         }
-        population.hungry = Math.min(population.total - starving, -diff);
         resources.food = 0;
     }
 };
@@ -340,52 +340,38 @@ const initialConditions = {
 };
 const svgBackup = $('#island').innerHTML;
 const people = shuffle([
-    {
-        name: 'Abraão'
-    },
-    {
-        name: 'Bartolomeu'
-    },
-    {
-        name: 'João'
-    },
-    {
-        name: 'Jacinto'
-    },
-    {
-        name: 'Paulo'
-    },
-    {
-        name: 'Lindomar'
-    },
-    {
-        name: 'Isaías'
-    },
-    {
-        name: 'Henrique'
-    },
-    {
-        name: 'Tomás'
-    },
-    {
-        name: 'Amélia'
-    },
-    {
-        name: 'Camila'
-    },
-    {
-        name: 'Benedita'
-    },
-    {
-        name: 'Madalena'
-    },
-    {
-        name: 'Teresa'
-    },
-    {
-        name: 'Lúcia'
-    },
-]);
+    'Abraão',
+    'Bartolomeu',
+    'João',
+    'Jacinto',
+    'Paulo',
+    'Lindomar',
+    'Isaías',
+    'Henrique',
+    'Tomás',
+    'Amélia',
+    'Camila',
+    'Benedita',
+    'Madalena',
+    'Teresa',
+    'Lúcia',
+]).reduce((rest, el) => {
+    rest.push({ name: el, alive: true });
+    return rest;
+}, []);
+const getRandomPerson = () => {
+    const alive = people.filter(p => p.alive);
+    return alive[Math.round(Math.random() * (alive.length - 1))];
+};
+const makePeopleDead = (n) => {
+    const p = [];
+    for (let i = 0; i < n; i++) {
+        const next = getRandomPerson();
+        next.alive = false;
+        p.push(next);
+    }
+    return p;
+};
 let trailCount = 0;
 const startTrail = (time, trail, clone) => {
     const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`);
