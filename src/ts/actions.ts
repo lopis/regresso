@@ -122,10 +122,8 @@ const bring = (action, partySize, amount, risk) => () => {
 }
 
 function restart () {
-  () => {
-    resetGame()
-    init()
-  }
+  resetGame()
+  init()
 }
 
 const setupClickHandlers = () => {

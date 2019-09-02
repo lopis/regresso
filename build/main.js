@@ -58,6 +58,7 @@ const resetGame = () => {
     $a('button').forEach(b => b.style.visibility = 'hidden');
     $a('.project').forEach(p => p.remove());
     $('#island').innerHTML = svgBackup;
+    $a('.log').forEach(l => l.innerHTML = '');
     for (const key in initialConditions) {
         if (initialConditions[key] instanceof Object) {
             Object.assign(window[key], initialConditions[key]);
@@ -182,10 +183,8 @@ const bring = (action, partySize, amount, risk) => () => {
     updateView();
 };
 function restart() {
-    () => {
-        resetGame();
-        init();
-    };
+    resetGame();
+    init();
 }
 const setupClickHandlers = () => {
     $a('.actions button').forEach(b => {
