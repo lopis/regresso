@@ -56,7 +56,7 @@ const updateView = () => {
   }
   
   $('#forage').disabled = !enoughPeople(1)
-  $('#chop-wood').disabled = !enoughPeople(1)
+  $('#fetchWood').disabled = !enoughPeople(1)
   $('#hunt').disabled = !enoughPeople(2)
   $('#pray').disabled = !enoughPeople(1) || isPraying
 }

@@ -1,6 +1,7 @@
 var chalk = require('chalk');
 var concat = require('gulp-concat');
 var cssmin = require('gulp-cssmin');
+var concatCss = require('gulp-concat-css');
 var fs = require('fs');
 var gulp = require('gulp');
 var htmlmin = require('gulp-htmlmin');
@@ -70,9 +71,24 @@ gulp.task('build-html', (done) => {
 
 gulp.task('build-css', (done) => {
 	return gulp.src('./src/css/**/*.css')
-		.pipe(cssmin())
+    .pipe(concatCss('style.css'))
+    .pipe(cssmin())
 		.pipe(gulp.dest('./build/'));
 });
+gulp.task('inject-css', (done) => {
+  return gulp.src('./build/index.html')
+    .pipe(inject(gulp.src(['./build/style.css']), {
+      removeTags: true,
+      starttag: '/* inject:css */',
+      endtag: '/* endinject */',
+      transform: function (filePath, file) {
+        // return file contents as string
+        return file.contents.toString('utf8')
+      }
+    }))
+    .pipe(gulp.dest('./build'))
+})
+
 
 gulp.task('build-assets', (done) => {
 	return gulp.src('./src/assets/**/*')
@@ -83,7 +99,6 @@ gulp.task('zip', (done) => {
 	return gulp.src([
     './build/*.html',
     './build/*.js',
-    './build/*.css',
     './build/*.png',
   ])
 		.pipe(zip('entry.zip')) //gulp-zip performs compression by default
@@ -119,7 +134,8 @@ gulp.task('build-prod', gulp.series(
   'inject-svg',
 	'build-ts',
 	'build-js',
-	'build-css',
+  'build-css',
+  'inject-css',
 	'build-assets',
 	'check',
 	'zip',
@@ -129,11 +145,14 @@ gulp.task('build-dev', gulp.series(
 	'build-html',
   'inject-svg',
 	'build-ts',
+  'build-css',
+  'inject-css',
 	'build-js',
 	'check',
 	'build-ts',
 	'build-js-dev',
-	'build-css',
+  'build-css',
+  'inject-css',
 	'build-assets',
 	(done) => {done();}
 ));

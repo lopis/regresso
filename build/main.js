@@ -75,7 +75,7 @@ const buffer = {
     loggers: 0,
     wood: 0,
 };
-const fetchWood = () => {
+function fetchWood() {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.6;
@@ -84,8 +84,8 @@ const fetchWood = () => {
     initBuffer();
     updateView();
     startTrail(time, 'forageTemplate', true);
-};
-const pray = () => {
+}
+function pray() {
     population.ready -= 1;
     isPraying = true;
     timeout(() => {
@@ -95,8 +95,8 @@ const pray = () => {
         const person = people[Math.round(Math.random() * people.length) - 1];
         log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info');
     }, DAY);
-};
-const forage = () => {
+}
+function forage() {
     const people = 1;
     population.ready -= people;
     const time = DAY * 0.4;
@@ -105,8 +105,8 @@ const forage = () => {
     initBuffer();
     updateView();
     startTrail(time, 'forageTemplate', true);
-};
-const hunt = () => {
+}
+function hunt() {
     const people = 2;
     population.ready -= people;
     const time = DAY * 1.2;
@@ -115,8 +115,8 @@ const hunt = () => {
     initBuffer();
     updateView();
     startTrail(time, 'huntTrail', true);
-};
-const leave = () => {
+}
+function leave() {
     log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info');
     $('#newShip').classList.add('go');
     population.ready = 0;
@@ -135,7 +135,7 @@ const leave = () => {
             log('Fim.', null, '🌅', 'info');
         }, 7000);
     }
-};
+}
 const bring = (action, partySize, amount, risk) => () => {
     buffer[action] += amount;
     initBuffer();
@@ -181,54 +181,60 @@ const bring = (action, partySize, amount, risk) => () => {
     }
     updateView();
 };
-const setupClickHandlers = () => {
-    on($('#chop-wood'), 'click', fetchWood);
-    on($('#forage'), 'click', forage);
-    on($('#hunt'), 'click', hunt);
-    on($('#pray'), 'click', pray);
-    on($('#leave'), 'click', leave);
-    on($('#restart'), 'click', () => {
+function restart() {
+    () => {
         resetGame();
         init();
+    };
+}
+const setupClickHandlers = () => {
+    $a('.actions button').forEach(b => {
+        on(b, 'click', window[b.id]);
     });
+};
+const mapping = {
+    wood: {
+        r: 'wood', e: '🌳'
+    },
+    foraging: {
+        r: 'food', e: '🌾'
+    },
+    hunting: {
+        r: 'food', e: '🏹'
+    }
+};
+const logTask = (value) => {
+    if (buffer[value] < 1)
+        return;
+    log(`+${buffer.foraging}`, 'green', mapping[value].e, 'tasks');
+    resources[mapping[value].r] += buffer[value];
+    buffer[value] = 0;
+    blink(mapping[value].r, 'green');
 };
 const initBuffer = () => {
     clearInterval(bufferInterval);
     bufferInterval = setInterval(() => {
-        if (buffer.foraging) {
-            log(`+${buffer.foraging}🍒.`, 'green', '🌾', 'tasks');
-            resources.food += buffer.foraging;
-            buffer.foraging = 0;
-            blink('food', 'green');
-        }
-        if (buffer.hunting) {
-            log(`+${buffer.hunting}🍒.`, 'green', '🏹', 'tasks');
-            resources.food += buffer.hunting;
-            buffer.hunting = 0;
-            blink('food', 'green');
-        }
-        if (buffer.wood) {
-            log(`+${buffer.wood}🌳.`, 'green', '🌳', 'tasks');
-            resources.wood += buffer.wood;
-            buffer.wood = 0;
-            blink('wood', 'green');
-        }
+        ['foraging', 'hunting', 'wood'].forEach(logTask);
         if (buffer.foragers) {
-            log(`${buffer.foragers}👤 left for foraging.`, null, '🌾', 'tasks');
+            log(`${buffer.foragers}👤 went foraging.`, null, '🌾', 'tasks');
             buffer.foragers = 0;
         }
         if (buffer.hunters) {
-            log(`${buffer.hunters}👥 left for hunting .`, null, '🏹', 'tasks');
+            log(`${buffer.hunters}👥 went hunting .`, null, '🏹', 'tasks');
             buffer.hunters = 0;
         }
         if (buffer.loggers) {
-            log(`${buffer.loggers}👤 left for logging.`, null, '🌳', 'tasks');
+            log(`${buffer.loggers}👤 went logging.`, null, '🌳', 'tasks');
             buffer.loggers = 0;
         }
         updateView();
     }, bufferTimeout);
 };
 const blink = (resource, name) => {
+    if (!$(`#${resource}`)) {
+        console.log(resource, 'This doesnt exist');
+        return;
+    }
     $(`#${resource}`).classList.add(name);
     timeout(() => {
         $(`#${resource}`).classList.remove(name);
@@ -416,7 +422,7 @@ const updateView = () => {
         $('#fishers').classList.remove('hidden');
     }
     $('#forage').disabled = !enoughPeople(1);
-    $('#chop-wood').disabled = !enoughPeople(1);
+    $('#fetchWood').disabled = !enoughPeople(1);
     $('#hunt').disabled = !enoughPeople(2);
     $('#pray').disabled = !enoughPeople(1) || isPraying;
 };
@@ -740,8 +746,8 @@ const startGame = () => {
     }, 2000);
     timeout(() => {
         log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info');
-        show('#chop-wood');
-        blink('chop-wood', 'blink');
+        show('#fetchWood');
+        blink('fetchWood', 'blink');
     }, DAY);
     timeout(() => {
         log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info');

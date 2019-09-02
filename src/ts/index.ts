@@ -48,8 +48,8 @@ const startGame = () => {
 
   timeout(() => {
     log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info')
-    show('#chop-wood')
-    blink('chop-wood', 'blink')
+    show('#fetchWood')
+    blink('fetchWood', 'blink')
   }, DAY)
 
   timeout(() => {
