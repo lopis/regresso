@@ -68,13 +68,17 @@ const projects = {
       people: 4,
       days: 2,
     },
-    description: 'Recycle and process wood more efficiently (+1 wood per day)',
+    description: 'Recycle and process wood more efficiently (+5 wood per day)',
     callback: () => {
-      log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info')
+      log('Carpentry was perfected, new buildings are now available.', 'blue', '🔨', 'info')
       blink('projects', 'blink')
       renderProject('shipyard')
       renderProject('spinning_wheel')
       renderProject('chapel')
+      dayEvents.push(() => {
+        resources.wood += 5
+        log(`+5🌳`, 'blue', '🔨', 'tasks')
+      })
     }
   },
   weapons: {
@@ -166,6 +170,7 @@ const projects = {
     callback: () => {
       godsWrath -= 0.5
       show('#pray')
+      show('#cp')
     }
   }
 }
@@ -209,7 +214,7 @@ const renderProject = (key) => {
   $newProject.id = key
   $newProject.innerHTML = `
   <div class="icon">${project.emoji}</div>
-  <div class="title caps">${key}</div>
+  <div class="title caps">${key.replace(/_/g, ' ')}</div>
   <small class="description">${project.description}</small>
   <div class="cost">${getCostString(project.cost)}</div>`
 

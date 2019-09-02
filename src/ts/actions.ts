@@ -25,7 +25,7 @@ function pray () {
   timeout(() => {
     population.ready += 1
     isPraying = false
-    godsWrath = godsWrath*0.9
+    godsWrath = godsWrath*0.7
     const person = people[Math.round(Math.random() * people.length) - 1]
     log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
   }, DAY);
@@ -46,7 +46,7 @@ function hunt () {
   const people = 2
   population.ready -= people
   const time = DAY * 1.2
-  timeout(bring('hunting', people, 8, 0.1), time)
+  timeout(bring('hunting', people, 20, 0.1), time)
   buffer.hunters += people
   initBuffer()
   updateView()
@@ -130,6 +130,10 @@ const setupClickHandlers = () => {
   $a('.actions button').forEach(b => {
     on(b, 'click', window[b.id])
   })
+  on($('#projects'), 'click', () => {
+    $('.projects').classList.toggle('closed')
+    $('#requirements').innerText = null
+  })
 }
 
 const mapping = {
@@ -146,7 +150,7 @@ const mapping = {
 const logTask = (value) => {
   if (buffer[value] < 1) return
 
-  log(`+${buffer.foraging}`, 'green', mapping[value].e, 'tasks')
+  log(`+${buffer[value]}`, 'green', mapping[value].e, 'tasks')
   resources[mapping[value].r] += buffer[value]
   buffer[value] = 0
   blink(mapping[value].r, 'green')
@@ -220,13 +224,11 @@ const enoughPeople = (min) => {
 }
 
 const nextDay = () => {
-  console.log('nextDay', date);
-  
   updateDate()
   updateFood()
   
   if ((population.total) < 1) {
-    log(`Your population was decimated`, 'red', '☠️', 'info')
+    log(`Your population was decimated. <strong>Restart?<strong>`, 'restart', '☠️', 'info')
     stopGame()
     updateView()
     return

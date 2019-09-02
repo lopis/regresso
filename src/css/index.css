@@ -151,7 +151,7 @@ svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
 }
 
-#sy, #fh, #hull, #st, #newShip {
+#sy, #fh, #hull, #st, #newShip, #cp {
   visibility: hidden;
 }
 
@@ -214,7 +214,7 @@ body {
 }
 .v {
 	opacity: var(--v);
-  transition: opacity .1s ease-out 3s;
+  transition: opacity .1s ease-out;
 }
 
 .logo {
@@ -222,10 +222,13 @@ body {
   image-rendering: pixelated;
 	margin: 10px auto;
 	display: block;
-	width: calc(70px * 4);
+  width: calc(70px * 4);
 }
 .modal .logo {
 	width: calc(70px * 7);
+}
+footer {
+  opacity: 0.4;
 }
 
 #newShip.go {

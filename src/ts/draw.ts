@@ -67,10 +67,7 @@ const updateDate = () => {
 }
 
 const sinkBoatAnimation = () => {
-  $('.intro').classList.add('closed')
   $('#sail').beginElement()
-  timeout(() => {
-    $('#sink').beginElement()
-    $('#sinkRotate').beginElement()
-  }, 2000)
+  $('#sink').beginElement()
+  $('#sinkRotate').beginElement()
 }

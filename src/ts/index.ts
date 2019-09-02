@@ -24,10 +24,13 @@ const resumeGame = () => {
 const init = () => {
   updateDate()
   updateView()
-  document.body.style.setProperty('--v', '1'); //Show village
+  $('.intro').classList.add('closed')
   sinkBoatAnimation()
+  setTimeout(() => {
+    document.body.style.setProperty('--v', '1'); //Show village
+  }, 4000)
   
-  timeout(startGame, 3000)
+  timeout(startGame, 4000)
 }
 
 const startGame = () => {
@@ -36,7 +39,6 @@ const startGame = () => {
   updateView()
   renderProject('caravela')
   initBuffer()
-  setupClickHandlers()
 
   log('People settled by the sea.', null, '⛺️', 'info')
   timeout(() => {
@@ -57,11 +59,9 @@ const startGame = () => {
     blink('projects', 'blink')
     renderProject('fishing')
   }, DAY * 2)
-
-  on($('#projects'), 'click', () => {
-    $('.projects').classList.toggle('closed')
-    $('#requirements').innerText = null
-  })
 }
 
-on($('.intro button'), 'click', init)
+on($('.intro button'), 'click', () => {
+  setupClickHandlers();
+  init();
+})

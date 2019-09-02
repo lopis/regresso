@@ -18,6 +18,9 @@ const log = (text, color, emoji, type) => {
         newLog.classList.add(color);
     newLog.classList.add('new');
     $(`.log#${type}`).prepend(newLog);
+    if (color === 'restart') {
+        on(newLog, 'click', restart);
+    }
     timeout(() => {
         newLog.classList.remove('new');
     }, 200);
@@ -92,7 +95,7 @@ function pray() {
     timeout(() => {
         population.ready += 1;
         isPraying = false;
-        godsWrath = godsWrath * 0.9;
+        godsWrath = godsWrath * 0.7;
         const person = people[Math.round(Math.random() * people.length) - 1];
         log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info');
     }, DAY);
@@ -111,7 +114,7 @@ function hunt() {
     const people = 2;
     population.ready -= people;
     const time = DAY * 1.2;
-    timeout(bring('hunting', people, 8, 0.1), time);
+    timeout(bring('hunting', people, 20, 0.1), time);
     buffer.hunters += people;
     initBuffer();
     updateView();
@@ -190,6 +193,10 @@ const setupClickHandlers = () => {
     $a('.actions button').forEach(b => {
         on(b, 'click', window[b.id]);
     });
+    on($('#projects'), 'click', () => {
+        $('.projects').classList.toggle('closed');
+        $('#requirements').innerText = null;
+    });
 };
 const mapping = {
     wood: {
@@ -205,7 +212,7 @@ const mapping = {
 const logTask = (value) => {
     if (buffer[value] < 1)
         return;
-    log(`+${buffer.foraging}`, 'green', mapping[value].e, 'tasks');
+    log(`+${buffer[value]}`, 'green', mapping[value].e, 'tasks');
     resources[mapping[value].r] += buffer[value];
     buffer[value] = 0;
     blink(mapping[value].r, 'green');
@@ -272,11 +279,10 @@ const enoughPeople = (min) => {
     return (population.ready - population.starving) >= min;
 };
 const nextDay = () => {
-    console.log('nextDay', date);
     updateDate();
     updateFood();
     if ((population.total) < 1) {
-        log(`Your population was decimated`, 'red', '☠️', 'info');
+        log(`Your population was decimated. <strong>Restart?<strong>`, 'restart', '☠️', 'info');
         stopGame();
         updateView();
         return;
@@ -302,7 +308,7 @@ var foragingReturns = 2;
 var huntingEnabled = false;
 var smokeEnabled = false;
 var attackChance = 1.0;
-var bufferTimeout = 300;
+var bufferTimeout = 400;
 var bufferInterval = null;
 var godsWrath = 1;
 var isPraying = false;
@@ -430,12 +436,9 @@ const updateDate = () => {
     $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
 const sinkBoatAnimation = () => {
-    $('.intro').classList.add('closed');
     $('#sail').beginElement();
-    timeout(() => {
-        $('#sink').beginElement();
-        $('#sinkRotate').beginElement();
-    }, 2000);
+    $('#sink').beginElement();
+    $('#sinkRotate').beginElement();
 };
 const projects = {
     fishing: {
@@ -501,13 +504,17 @@ const projects = {
             people: 4,
             days: 2,
         },
-        description: 'Recycle and process wood more efficiently (+1 wood per day)',
+        description: 'Recycle and process wood more efficiently (+5 wood per day)',
         callback: () => {
-            log('Carpentry was perfected, building the shipyard is now possible', 'blue', '🔨', 'info');
+            log('Carpentry was perfected, new buildings are now available.', 'blue', '🔨', 'info');
             blink('projects', 'blink');
             renderProject('shipyard');
             renderProject('spinning_wheel');
             renderProject('chapel');
+            dayEvents.push(() => {
+                resources.wood += 5;
+                log(`+5🌳`, 'blue', '🔨', 'tasks');
+            });
         }
     },
     weapons: {
@@ -599,6 +606,7 @@ const projects = {
         callback: () => {
             godsWrath -= 0.5;
             show('#pray');
+            show('#cp');
         }
     }
 };
@@ -637,7 +645,7 @@ const renderProject = (key) => {
     $newProject.id = key;
     $newProject.innerHTML = `
   <div class="icon">${project.emoji}</div>
-  <div class="title caps">${key}</div>
+  <div class="title caps">${key.replace(/_/g, ' ')}</div>
   <small class="description">${project.description}</small>
   <div class="cost">${getCostString(project.cost)}</div>`;
     $('.projects').append($newProject);
@@ -725,9 +733,12 @@ const resumeGame = () => {
 const init = () => {
     updateDate();
     updateView();
-    document.body.style.setProperty('--v', '1');
+    $('.intro').classList.add('closed');
     sinkBoatAnimation();
-    timeout(startGame, 3000);
+    setTimeout(() => {
+        document.body.style.setProperty('--v', '1');
+    }, 4000);
+    timeout(startGame, 4000);
 };
 const startGame = () => {
     resumeGame();
@@ -735,7 +746,6 @@ const startGame = () => {
     updateView();
     renderProject('caravela');
     initBuffer();
-    setupClickHandlers();
     log('People settled by the sea.', null, '⛺️', 'info');
     timeout(() => {
         log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info');
@@ -753,9 +763,8 @@ const startGame = () => {
         blink('projects', 'blink');
         renderProject('fishing');
     }, DAY * 2);
-    on($('#projects'), 'click', () => {
-        $('.projects').classList.toggle('closed');
-        $('#requirements').innerText = null;
-    });
 };
-on($('.intro button'), 'click', init);
+on($('.intro button'), 'click', () => {
+    setupClickHandlers();
+    init();
+});

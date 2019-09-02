@@ -139,7 +139,7 @@ gulp.task('build-prod', gulp.series(
 	'build-assets',
 	'check',
 	'zip',
-	(done) => {done();}
+	(done) => {console.log('\x07');done();}
 ));
 gulp.task('build-dev', gulp.series(
 	'build-html',
@@ -154,5 +154,5 @@ gulp.task('build-dev', gulp.series(
   'build-css',
   'inject-css',
 	'build-assets',
-	(done) => {done();}
+	(done) => {console.log('\x07');done();}
 ));

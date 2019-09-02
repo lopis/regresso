@@ -20,6 +20,11 @@ const log = (text, color, emoji, type) => {
   if (color) newLog.classList.add(color)
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
+
+  if (color === 'restart') {
+    on(newLog, 'click', restart)
+  }
+
   timeout(() => {
     newLog.classList.remove('new')
   }, 200)

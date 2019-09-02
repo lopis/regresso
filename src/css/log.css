@@ -68,3 +68,8 @@
 	opacity: 0;
 	top: -30px;
 }
+p.restart:hover:not(:active) {
+	transform: translateY(-2px);
+	transition: transform 100ms ease-in-out, background 100ms ease-in-out;
+	cursor: pointer;
+}
