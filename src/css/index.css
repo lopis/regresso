@@ -259,3 +259,26 @@ footer {
   transition: transform 10s cubic-bezier(.5,0,1,1);
   transform: translate(-40%, 60%);
 }
+
+.people {
+	display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  background: #ccc;
+}
+.people .icon {
+	margin: -1px 1px -4px 1px;
+	font-size: 25px;
+	height: 1.1em;
+	width: 1.1em;
+	line-height: 1.1em;
+  background: none;
+  overflow: visible;
+}
+.people .dead {
+  opacity: 0.5;
+  filter: saturate(0);
+}
+.people .icon:nth-child(n+9) {
+	position: relative;
+	left: 14px;
+}

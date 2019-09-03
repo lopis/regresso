@@ -57,9 +57,11 @@ const people = shuffle([
   'Madalena',
   'Teresa',
   'Lúcia',
-]).reduce((rest, el) => {
-  
-  rest.push({name: el, alive: true})
+]).reduce((rest, name) => {
+  const $person = $$('div', 'icon', faces.pop())
+  $person.id = name
+  $('.people').append($person)
+  rest.push({name: name, alive: true})
   return rest
 }, [])
 
@@ -72,6 +74,7 @@ const makeDeadPerson = () => {
   deadPeople++
   const person = getRandomPerson()
   person.alive = false
+  $(`#${person.name}`).classList.add('dead')
   return person
 }
 const makePeopleDead = (n) => {
