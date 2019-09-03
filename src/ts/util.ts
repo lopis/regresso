@@ -1,17 +1,17 @@
 const $ = q => document.querySelector(q)
 const $a = q => document.querySelectorAll(q)
 const on = (elem, event, callback) => elem.addEventListener(event, callback)
-const $$ = (tag, className, innerText) => {
+const $$ = (tag, className, innerHTML) => {
   const el = document.createElement(tag)
   el.classList.add(className)
-  el.innerText = innerText
+  el.innerHTML = innerHTML
   
   return el
 }
 
 const log = (text, color, emoji, type) => {
   if ($(`.log#${type} .new`)) {
-    timeout(() => log(text, color, emoji, type), 500)
+    setTimeout(() => log(text, color, emoji, type), 500)
     return
   }
 
@@ -25,7 +25,7 @@ const log = (text, color, emoji, type) => {
     on(newLog, 'click', restart)
   }
 
-  timeout(() => {
+  setTimeout(() => {
     newLog.classList.remove('new')
   }, 200)
 }
@@ -79,12 +79,13 @@ const resetGame = () => {
   $('#island').innerHTML = svgBackup
   $a('.log').forEach(l => l.innerHTML = '')
   $('#island').style.filter = null
+  hide('#score-board')
 
-  for (const key in initialConditions) {
-    if (initialConditions[key] instanceof Object) {
-      Object.assign(window[key], initialConditions[key])
+  for (const key in initCon) {
+    if (initCon[key] instanceof Object) {
+      Object.assign(window[key], initCon[key])
     } else {
-      window[key] = initialConditions[key]
+      window[key] = initCon[key]
     }
   }
 }

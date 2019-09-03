@@ -42,20 +42,20 @@ const startGame = () => {
 
   log('People settled by the sea.', null, '⛺️', 'info')
   timeout(() => {
-    log('A scouting team has found good foraging grounds nearby.', 'blue', '🌾', 'info')
+    log(`${makeDeadPerson().name} found good foraging grounds nearby.`, 'blue', '🌾', 'info')
     show('#forage')
     show('#restart')
     blink('forage', 'blink')
   }, 2000)
 
   timeout(() => {
-    log('Rudimentary axes make it now possible to gather wood.', 'blue', '🌳', 'info')
+    log(`${makeDeadPerson().name} made somerudimentary axes`, 'blue', '🌳', 'info')
     show('#fetchWood')
     blink('fetchWood', 'blink')
   }, DAY)
 
   timeout(() => {
-    log('The river delta could provide you with food if you would develop fishing.', 'blue', '🐟', 'info')
+    log('The river can provide you food if you develop fishing.', 'blue', '🐟', 'info')
     blink('projects', 'blink')
     renderProject('fishing')
   }, DAY * 2)

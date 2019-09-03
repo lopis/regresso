@@ -151,11 +151,11 @@ svg.night #sky {
   filter: brightness(0.3) contrast(1.8);
 }
 
-#sy, #fh, #hull, #st, #newShip, #cp {
+#sy, #fh, #hull, #st, #newShip, #cp, #score-board {
   visibility: hidden;
 }
 
-.intro .modal {
+.modal {
 	position: fixed;
 	background: #404a4d;
 	color: #fff;
@@ -169,7 +169,8 @@ svg.night #sky {
   transform: scale(1);
   text-align: justify;
 }
-.intro::before {
+.intro::before,
+#score-board::before {
 	content: "";
 	display: block;
 	position: fixed;

@@ -10,7 +10,7 @@ const buffer = {
 
 function fetchWood () {
   const people = 1
-  population.ready -= people
+  p.ready -= people
   const time = DAY * 0.6
   timeout(bring('wood', people, 3, 0.05), time)
   buffer.loggers++
@@ -20,10 +20,10 @@ function fetchWood () {
 }
 
 function pray () {
-  population.ready -= 1
+  p.ready -= 1
   isPraying = true
   timeout(() => {
-    population.ready += 1
+    p.ready += 1
     isPraying = false
     godsWrath = godsWrath*0.7
     const person = getRandomPerson()
@@ -33,7 +33,7 @@ function pray () {
 
 function forage () {
   const people = 1
-  population.ready -= people
+  p.ready -= people
   const time = DAY * 0.4
   timeout(bring('foraging', people, foragingReturns, 0), time)
   buffer.foragers++
@@ -44,7 +44,7 @@ function forage () {
 
 function hunt () {
   const people = 2
-  population.ready -= people
+  p.ready -= people
   const time = DAY * 1.2
   timeout(bring('hunting', people, 20, 0.1), time)
   buffer.hunters += people
@@ -54,21 +54,40 @@ function hunt () {
 }
 
 const printScore = () => {
-  const days = (date.getTime() - initialConditions.date.getTime()) / (1000 * 60 * 60 * 24)
-  log(`You took ${days} days to go back and rescued ${population.total}/${initialConditions.population.total} people.`, null, '🏁', 'info')
+  const days = (date.getTime() - initCon.date.getTime()) / (1000 * 60 * 60 * 24)
+  const left = $('#leave').disabled
+  const completed = $a('.project.done').length
+
+  const score = [
+    'Days taken', days,
+    'Population saved', p.total,
+    'Projects completed', completed,
+    'Went back to the sea', left ? 'Yes' : 'No',
+  ]
+
+  if (left) {
+    score.push('Survived wrath of god')
+    score.push(godsWrath <= 0.2 ? 'Yes' : 'No')
+  }
+
+
+  $('#score-board .modal .content').innerHTML = score.map(
+    value => `<span>${value}</span>`
+  ).join('') + `<p>Final Score: ${(p.total * 10 + completed - days + (left ? 10 : 0)) * (1 - godsWrath)}pts</p>`
+  show('#score-board')
 }
 
 function leave () {
-  log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
+  log(`${p.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
   $('#newShip').classList.add('go')
-  population.ready = 0
+  p.ready = 0
   updateView()
   clearAllTimers()
 
   if (godsWrath > 0.2) {
     timeout(() => {
       log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
-      population.total = 0
+      p.total = 0
       updateView()
       stopGame();
       printScore();
@@ -86,12 +105,11 @@ const bring = (action, partySize, amount, risk) => () => {
   initBuffer()
   const die = Math.random() < risk * attackChance
   if (!die) {
-    population.ready += partySize
+    p.ready += partySize
   } else {
-    log(`Wild animals killed 1 person while ${action == 'wood' ? 'logging' : action}`, 'red', '💀', 'info')
-    population.ready += partySize - 1
-    population.total -= 1
-    bury()
+    log(`Wild animals killed ${makeDeadPerson().name} while ${action == 'wood' ? 'logging' : action}`, 'red', '💀', 'info')
+    p.ready += partySize - 1
+    p.total -= 1
     blink('population', 'red')
   }
 
@@ -101,13 +119,13 @@ const bring = (action, partySize, amount, risk) => () => {
     blink('projects', 'blink')
     renderProject('weapons')
   }
-  if (action === 'foraging' && resources.food > 80 && !huntingEnabled) {
+  if (action === 'foraging' && r.food > 80 && !huntingEnabled) {
     show('#hunt')
     blink('hunt', 'blink')
     huntingEnabled = true
     log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info')
   }
-  if (action === 'wood' && !projects.carpentry.unlocked && resources.wood > 5) {
+  if (action === 'wood' && !projects.carpentry.unlocked && r.wood > 5) {
     projects.carpentry.unlocked = true
     log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info')
     renderProject('carpentry')
@@ -118,8 +136,8 @@ const bring = (action, partySize, amount, risk) => () => {
     smokeEnabled = true
     log('The crew rejoices the arrival of wood for cooking and heating.', null, '🔥', 'info')
     dayEvents.push(() => {
-      if (resources.wood > 0) {
-        resources.wood = Math.max(0, resources.wood - 2)
+      if (r.wood > 0) {
+        r.wood = Math.max(0, r.wood - 2)
         blink('wood', 'red')
       }
     })
@@ -141,6 +159,7 @@ const setupClickHandlers = () => {
     $('.projects').classList.toggle('closed')
     $('#requirements').innerText = null
   })
+  on($('#score-board button'), 'click', restart)
 }
 
 const mapping = {
@@ -158,7 +177,7 @@ const logTask = (value) => {
   if (buffer[value] < 1) return
 
   log(`+${buffer[value]}`, 'green', mapping[value].e, 'tasks')
-  resources[mapping[value].r] += buffer[value]
+  r[mapping[value].r] += buffer[value]
   buffer[value] = 0
   blink(mapping[value].r, 'green')
 }
@@ -186,10 +205,6 @@ const initBuffer = () => {
 }
 
 const blink = (resource, name) => {
-  if (!$(`#${resource}`)) {
-    console.log(resource, 'This doesnt exist'); return;
-    
-  }
   $(`#${resource}`).classList.add(name)
   timeout(() => {
     $(`#${resource}`).classList.remove(name)
@@ -197,44 +212,43 @@ const blink = (resource, name) => {
 }
 
 const updateFood = () => {
-  let diff = resources.food - population.total
+  let diff = r.food - p.total
 
   if (diff >= 0) {
-    population.hungry = population.starving
-    population.starving = 0
-    resources.food = diff
+    p.hungry = p.starving
+    p.starving = 0
+    r.food = diff
   } else {
-    const dead = Math.min(population.starving, -diff)
+    const dead = Math.min(p.starving, -diff)
     if (dead > 0) {
       log(`${makePeopleDead(dead).map(p=>p.name).join(', ')} died from starvation.`, 'red', '💀', 'info')
-      population.total -= dead
-      population.ready -= dead
-      population.starving = 0
+      p.total -= dead
+      p.ready -= dead
+      p.starving = 0
       blink('population', 'red')
-      bury()
     }
     
-    const starving = Math.min(population.hungry, -diff)
-    population.hungry = Math.min(population.total - starving, -diff)
+    const starving = Math.min(p.hungry, -diff)
+    p.hungry = Math.min(p.total - starving, -diff)
     if (starving > 0) {
-      population.starving = starving
+      p.starving = starving
       log(`${starving} are starving and can't work.`, 'red', '😔', 'info')
-    } else if (population.hungry > 0) {
-      log(`${getRandomPerson().name} ${population.hungry > 2 ? `and ${population.hungry - 1} others are` : 'is'} getting hungry`, null, '💭', 'info')
+    } else if (p.hungry > 0) {
+      log(`${getRandomPerson().name} ${p.hungry > 2 ? `and ${p.hungry - 1} others are` : 'is'} getting hungry`, null, '💭', 'info')
     }
-    resources.food = 0
+    r.food = 0
   }
 }
 
 const enoughPeople = (min) => {
-  return (population.ready - population.starving) >= min
+  return (p.ready - p.starving) >= min
 }
 
 const nextDay = () => {
   updateDate()
   updateFood()
   
-  if ((population.total) < 1) {
+  if ((p.total) < 1) {
     log(`Your population was decimated. <strong>Restart?<strong>`, 'restart', '☠️', 'info')
     stopGame()
     updateView()

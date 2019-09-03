@@ -10,6 +10,10 @@
   flex-grow: 2;
   flex-basis: 0;
   flex-shrink: 0;
+  scrollbar-width: none;
+}
+.log::-webkit-scrollbar {
+  display: none;
 }
 #tasks {
 	flex-grow: 1;

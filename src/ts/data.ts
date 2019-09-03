@@ -1,8 +1,8 @@
-var resources = {
+var r = {
   wood: 0,
   food: 0,
 }
-var population = {
+var p = {
   total: 15,
   ready: 15,
   hungry: 0,
@@ -23,9 +23,9 @@ var dayEvents = []
 var DAY = 10000
 var date = new Date('1549/08/13')
 
-const initialConditions = {
-  resources: Object.assign({}, resources),
-  population: Object.assign({}, population),
+const initCon = {
+  r: Object.assign({}, r),
+  p: Object.assign({}, p),
   foragingReturns,
   huntingEnabled,
   smokeEnabled,
@@ -64,12 +64,15 @@ const getRandomPerson = () => {
   const alive = people.filter(p => p.alive)
   return alive[Math.round(Math.random() * (alive.length - 1))]
 }
+const makeDeadPerson = () => {
+  const person = getRandomPerson()
+  person.alive = false
+  return person
+}
 const makePeopleDead = (n) => {
   const p = []
   for (let i = 0; i < n; i++) {
-    const next = getRandomPerson()
-    next.alive = false
-    p.push(next)
+    p.push(makeDeadPerson())
   }
   return p
 }

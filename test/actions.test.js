@@ -15,7 +15,6 @@ const updateFood = () => {
       population.ready -= dead
       population.starving = 0
       blink('population', 'red')
-      bury()
     }
     
     const starving = Math.min(population.hungry, -diff)
@@ -32,9 +31,7 @@ const updateFood = () => {
 
 const log = () => {}
 const blink = () => {}
-const bury = () => {}
 let debug = () => {}
-// debug = (a,b) => console.log(a, b)
 
 test('food and population updates correctly', () => {
   resources = {
