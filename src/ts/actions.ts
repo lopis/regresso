@@ -217,6 +217,7 @@ const blink = (resource, name) => {
 
 const updateFood = () => {
   let diff = r.food - p.total
+  blink('food', 'red')
 
   if (diff >= 0) {
     p.hungry = p.starving

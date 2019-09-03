@@ -80,6 +80,7 @@ const resetGame = () => {
   $a('.log').forEach(l => l.innerHTML = '')
   $('#island').style.filter = null
   hide('#score-board')
+  resetPeople()
 
   for (const key in initCon) {
     if (initCon[key] instanceof Object) {

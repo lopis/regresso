@@ -75,6 +75,7 @@
   z-index: 0;
   transition: inherit;
   flex-shrink: 0;
+  cursor: default;
 }
 .project .icon {
   margin-bottom: 1em;
@@ -111,7 +112,7 @@
   background: none;
   top: 0;
   right: 0;
-  height: 52px;
+  height: 60px;
   width: 50%;
   display: flex;
   align-items: center;

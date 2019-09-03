@@ -28,7 +28,7 @@
           New projects will unlock ways to automate actions, or work towards the goal.
         </li>
       </ol>
-      <button>Start</button>
+      <button autofocus="true">Start</button>
       <small>
         Regresso, </i>[hook-re-ssoo]<i>, means "return / the way back" in Portuguese.
       </small>
@@ -36,6 +36,7 @@
   </div>
   <div id="score-board">
     <div class="modal">
+      <img class="logo" src="logo.png">      
       <p>Scoreboard</p>
       <div class="content"></div>
       <button>Restart</button>
@@ -56,9 +57,10 @@
     </div>
     <div class="resource-group">
       <div class="resource" id="population">
-        <span class="label">👫 People</span>
+        <span class="label">👫</span>
         <span class="value">0</span>
       </div>
+      <div class="people resource"></div>
       <div class="resource" id="ready">
         <span class="label">Ready</span>
         <span class="value">0</span>
@@ -72,7 +74,6 @@
         <span class="value">0</span>
       </div>
     </div>
-    <div class="people resource"></div>
     <div class="projects closed">
       <div class="log" id="requirements"></div>
       <label id="projects" for="projects-checkbox">

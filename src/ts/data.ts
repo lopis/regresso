@@ -39,31 +39,37 @@ const initCon = {
 }
 const svgBackup = $('#island').innerHTML
 
-const faces = ["👨🏻‍🦱","👨🏼‍🦱","👨🏻","🧔🏽","👴🏼","👦🏻","🧑🏻","👨🏼‍🦰","🧓🏼","👩🏼‍🦳","👩🏾‍🦱","👩🏻‍🦱","👩🏻","👩🏼","👩🏼‍🦰"]
-
 const people = shuffle([
-  'Abraão',
-  'Bartolomeu',
-  'João',
-  'Jacinto',
-  'Paulo',
-  'Lindomar',
-  'Isaías',
-  'Henrique',
-  'Tomás',
-  'Amélia',
-  'Camila',
-  'Benedita',
-  'Madalena',
-  'Teresa',
-  'Lúcia',
-]).reduce((rest, name) => {
-  const $person = $$('div', 'icon', faces.pop())
-  $person.id = name
+  ['Abraão', '👨🏻‍🦱'],
+  ['Bartolomeu', '👨🏼‍🦱'],
+  ['João', '👨🏻'],
+  ['Jacinto', '🧔🏽'],
+  ['Paulo', '👴🏼'],
+  ['Tiago', '👦🏻'],
+  ['Isaías', '🧑🏻'],
+  ['Henrique', '👨🏼‍🦰'],
+  ['Tomás', '🧓🏼'],
+  ['Amélia', '👩🏼‍🦳'],
+  ['Camila', '👩🏾‍🦱'],
+  ['Benedita', '👩🏻‍🦱'],
+  ['Madalena', '👩🏻'],
+  ['Teresa', '👩🏼'],
+  ['Lúcia', '👩🏼‍🦰'],
+]).reduce((rest, el) => {
+  const $person = $$('div', 'icon', el[1])
+  $person.id = el[0]
+  $person.title = el[0]
   $('.people').append($person)
-  rest.push({name: name, alive: true})
+  rest.push({name: el[0], alive: true})
   return rest
 }, [])
+
+const resetPeople = () => {
+  people.map(p => {
+    p.alive = true
+    $(`#${p.name}`).classList.remove('dead')
+  })
+}
 
 let deadPeople = 0
 const getRandomPerson = () => {
