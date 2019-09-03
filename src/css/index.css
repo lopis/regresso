@@ -1,5 +1,6 @@
 html {
   background: #404a4d;
+  height: 100%;
 }
 body {
   margin: 0;
@@ -208,6 +209,28 @@ li + li {
 .caps, button {
   text-transform: capitalize;
   font-variant: small-caps;
+}
+.content {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+.content span {
+  margin-bottom: 1em;
+  padding: 0 2em;
+}
+.content :nth-child(2n) {
+	text-align: right;
+}
+.content p {
+	font-size: 130%;
+	margin-top: 0;
+	color: #c5d680;
+  font-weight: bold;
+  text-align: center;
+}
+.modal button {
+  display: block;
+  margin: auto;
 }
 
 body {

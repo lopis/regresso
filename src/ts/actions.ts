@@ -8,51 +8,6 @@ const buffer = {
   wood: 0,
 }
 
-function fetchWood () {
-  const people = 1
-  p.ready -= people
-  const time = DAY * 0.6
-  timeout(bring('wood', people, 3, 0.05), time)
-  buffer.loggers++
-  initBuffer()
-  updateView()
-  startTrail(time, 'forageTemplate', true)
-}
-
-function pray () {
-  p.ready -= 1
-  isPraying = true
-  timeout(() => {
-    p.ready += 1
-    isPraying = false
-    godsWrath = godsWrath*0.7
-    const person = getRandomPerson()
-    log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
-  }, DAY);
-}
-
-function forage () {
-  const people = 1
-  p.ready -= people
-  const time = DAY * 0.4
-  timeout(bring('foraging', people, foragingReturns, 0), time)
-  buffer.foragers++
-  initBuffer()
-  updateView()
-  startTrail(time, 'forageTemplate', true)
-}
-
-function hunt () {
-  const people = 2
-  p.ready -= people
-  const time = DAY * 1.2
-  timeout(bring('hunting', people, 20, 0.1), time)
-  buffer.hunters += people
-  initBuffer()
-  updateView()
-  startTrail(time, 'huntTrail', true)
-}
-
 const printScore = () => {
   const days = (date.getTime() - initCon.date.getTime()) / (1000 * 60 * 60 * 24)
   const left = $('#leave').disabled
@@ -70,34 +25,12 @@ const printScore = () => {
     score.push(godsWrath <= 0.2 ? 'Yes' : 'No')
   }
 
+  const total = Math.ceil((p.total * 10 + completed - days + (left ? 10 : 0)) * (1 - godsWrath))
 
   $('#score-board .modal .content').innerHTML = score.map(
     value => `<span>${value}</span>`
-  ).join('') + `<p>Final Score: ${(p.total * 10 + completed - days + (left ? 10 : 0)) * (1 - godsWrath)}pts</p>`
+  ).join('') + `<p>Final Score</p><p>${total} pts</p>`
   show('#score-board')
-}
-
-function leave () {
-  log(`${p.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
-  $('#newShip').classList.add('go')
-  p.ready = 0
-  updateView()
-  clearAllTimers()
-
-  if (godsWrath > 0.2) {
-    timeout(() => {
-      log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
-      p.total = 0
-      updateView()
-      stopGame();
-      printScore();
-    }, 7000)
-  } else {
-    timeout(() => {
-      log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
-      log('Fim.', null, '🌅', 'info')
-    }, 7000)
-  }
 }
 
 const bring = (action, partySize, amount, risk) => () => {
@@ -151,9 +84,80 @@ function restart () {
   init()
 }
 
+const handlers = {
+  leave: () => {
+    log(`${p.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
+    $('#newShip').classList.add('go')
+    p.ready = 0
+    updateView()
+    clearAllTimers()
+  
+    if (godsWrath > 0.2) {
+      timeout(() => {
+        log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
+        p.total = 0
+        updateView()
+        stopGame();
+        printScore();
+      }, 7000)
+    } else {
+      timeout(() => {
+        log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
+        log('Fim.', null, '🌅', 'info')
+      }, 7000)
+    }
+  },
+  fetchWood: () => {
+    const people = 1
+    p.ready -= people
+    const time = DAY * 0.6
+    timeout(bring('wood', people, 3, 0.05), time)
+    buffer.loggers++
+    initBuffer()
+    updateView()
+    startTrail(time, 'forageTemplate', true)
+  },
+  
+  pray: () => {
+    p.ready -= 1
+    isPraying = true
+    timeout(() => {
+      p.ready += 1
+      isPraying = false
+      godsWrath = godsWrath*0.7
+      const person = getRandomPerson()
+      log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
+    }, DAY);
+  },
+  
+  forage: () => {
+    const people = 1
+    p.ready -= people
+    const time = DAY * 0.4
+    timeout(bring('foraging', people, foragingReturns, 0), time)
+    buffer.foragers++
+    initBuffer()
+    updateView()
+    startTrail(time, 'forageTemplate', true)
+  },
+  
+  hunt: () => {
+    const people = 2
+    p.ready -= people
+    const time = DAY * 1.2
+    timeout(bring('hunting', people, 20, 0.1), time)
+    buffer.hunters += people
+    initBuffer()
+    updateView()
+    startTrail(time, 'huntTrail', true)
+  },
+
+  restart: restart
+}
+
 const setupClickHandlers = () => {
   $a('.actions button').forEach(b => {
-    on(b, 'click', window[b.id])
+    on(b, 'click', handlers[b.id])
   })
   on($('#projects'), 'click', () => {
     $('.projects').classList.toggle('closed')

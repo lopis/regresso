@@ -39,6 +39,8 @@ const initCon = {
 }
 const svgBackup = $('#island').innerHTML
 
+const faces = ["👨🏻‍🦱","👨🏼‍🦱","👨🏻","🧔🏽","👴🏼","👦🏻","🧑🏻","👨🏼‍🦰","🧓🏼","👩🏼‍🦳","👩🏾‍🦱","👩🏻‍🦱","👩🏻","👩🏼","👩🏼‍🦰"]
+
 const people = shuffle([
   'Abraão',
   'Bartolomeu',
@@ -56,15 +58,18 @@ const people = shuffle([
   'Teresa',
   'Lúcia',
 ]).reduce((rest, el) => {
+  
   rest.push({name: el, alive: true})
   return rest
 }, [])
 
+let deadPeople = 0
 const getRandomPerson = () => {
   const alive = people.filter(p => p.alive)
   return alive[Math.round(Math.random() * (alive.length - 1))]
 }
 const makeDeadPerson = () => {
+  deadPeople++
   const person = getRandomPerson()
   person.alive = false
   return person

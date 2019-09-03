@@ -42,14 +42,14 @@ const startGame = () => {
 
   log('People settled by the sea.', null, '⛺️', 'info')
   timeout(() => {
-    log(`${makeDeadPerson().name} found good foraging grounds nearby.`, 'blue', '🌾', 'info')
+    log(`${getRandomPerson().name} found good foraging grounds nearby.`, 'blue', '🌾', 'info')
     show('#forage')
     show('#restart')
     blink('forage', 'blink')
   }, 2000)
 
   timeout(() => {
-    log(`${makeDeadPerson().name} made somerudimentary axes`, 'blue', '🌳', 'info')
+    log(`${getRandomPerson().name} made some rudimentary axes for logging`, 'blue', '🌳', 'info')
     show('#fetchWood')
     blink('fetchWood', 'blink')
   }, DAY)

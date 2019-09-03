@@ -48,7 +48,11 @@ gulp.task('build-js-dev', (done) => {
 gulp.task('build-js', (done) => {
 	return gulp.src('./build/*.js')
 	.pipe(concat('main.js'))
-	.pipe(uglify())
+	.pipe(uglify({
+    mangle: {
+      toplevel: true
+    },
+  }))
 	.pipe(gulp.dest('./build/'));
 });
 
