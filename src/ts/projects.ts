@@ -14,15 +14,15 @@ const projects = {
     callback: () => {
       log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
       show('#fh') // Fishing house
-      p.ready -= 1
-      p.fishers++
+      population.ready -= 1
+      population.fishers++
 
       interval(() => {
         startTrail(DAY / 3, 'fishTrail', false)
       }, DAY / 3)
 
       dayEvents.push(() => {
-        r.food += 3
+        resources.food += 3
         log(`+3🍒`, 'blue', '🐟', 'tasks')
       })
     }
@@ -43,8 +43,8 @@ const projects = {
     },
     description: 'Build a fishing boat (+5 food per day).',
     callback: () => {
-      p.ready -= 1
-      p.fishers++
+      population.ready -= 1
+      population.fishers++
       show('#boatTrail')
 
       interval(() => {
@@ -52,7 +52,7 @@ const projects = {
       }, DAY / 2)
 
       dayEvents.push(() => {
-        r.food += 5
+        resources.food += 5
         log(`+5🍒`, 'blue', '🐟', 'tasks')
       })
     }
@@ -76,7 +76,7 @@ const projects = {
       renderProject('spinning_wheel')
       renderProject('chapel')
       dayEvents.push(() => {
-        r.wood += 5
+        resources.wood += 5
         log(`+5🌳`, 'blue', '🔨', 'tasks')
       })
     }
@@ -250,7 +250,7 @@ const selectProject = (projectName) => () => {
   }
   
   const missing = ['wood', 'food'].filter(
-    resource => r[resource] < project.cost[resource]
+    resource => resources[resource] < project.cost[resource]
   )
   if (missing.length > 0) {
     blink(projectName, 'no')
@@ -262,7 +262,7 @@ const selectProject = (projectName) => () => {
 
   if (!enoughPeople(project.cost.people)) {
     if (projectName === 'caravela') {
-      const ready = p.ready - p.starving
+      const ready = population.ready - population.starving
       const manHours = project.cost.people * project.cost.days
       const duration = Math.ceil(manHours / ready)
       log(`The Caravela contruction started, but with only ${ready} people, it will take ${duration} days.`, null, '⚒', 'info')
@@ -276,9 +276,9 @@ const selectProject = (projectName) => () => {
     }
   }
 
-  r.wood -= project.cost.wood
-  r.food -= project.cost.food
-  p.ready -= project.cost.people
+  resources.wood -= project.cost.wood
+  resources.food -= project.cost.food
+  population.ready -= project.cost.people
   
   project.done = true
   const $project = $(`.project#${projectName}`)
@@ -292,7 +292,7 @@ const selectProject = (projectName) => () => {
     $project.classList.add('done')
     $project.classList.remove('in-progress')
     $project.style.transition = null
-    p.ready += project.cost.people
+    population.ready += project.cost.people
 
     project.callback()
     updateProjects()

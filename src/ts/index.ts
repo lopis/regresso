@@ -65,3 +65,11 @@ on($('.intro button'), 'click', () => {
   setupClickHandlers();
   init();
 })
+
+// @ts-ignore
+if(document.monetization && document.monetization.state === 'started') {
+  $('#coil').classList.remove('hidden')
+  godsWrathThereshold = 0.3
+  resources.food = 30
+  initCon.resources.food = 30
+}

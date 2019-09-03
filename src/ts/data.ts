@@ -1,8 +1,8 @@
-var r = {
+var resources = {
   wood: 0,
   food: 0,
 }
-var p = {
+var population = {
   total: 15,
   ready: 15,
   hungry: 0,
@@ -17,6 +17,7 @@ var attackChance = 1.0
 var bufferTimeout = 400
 var bufferInterval = null
 var godsWrath = 1
+var godsWrathThereshold = 0.2
 var isPraying = false
 
 var dayEvents = []
@@ -24,8 +25,8 @@ var DAY = 10000
 var date = new Date('1549/08/13')
 
 const initCon = {
-  r: Object.assign({}, r),
-  p: Object.assign({}, p),
+  resources: Object.assign({}, resources),
+  population: Object.assign({}, population),
   foragingReturns,
   huntingEnabled,
   smokeEnabled,

@@ -28,20 +28,20 @@ const startTrail = (time, trail, clone) => {
 }
 
 const updateView = () => {
-  $('#wood .value').innerText = r.wood
-  $('#food .value').innerText = r.food
+  $('#wood .value').innerText = resources.wood
+  $('#food .value').innerText = resources.food
 
-  $('#population .value').innerText = p.total
-  $('#ready .value').innerText = Math.max(0, p.ready - p.starving)
-  $('#starving .value').innerText = p.starving
-  if (p.starving < 1) {
+  $('#population .value').innerText = population.total
+  $('#ready .value').innerText = Math.max(0, population.ready - population.starving)
+  $('#starving .value').innerText = population.starving
+  if (population.starving < 1) {
     $('#starving').classList.add('hidden')
   } else {
     $('#starving').classList.remove('hidden')
   }
 
-  $('#fishers .value').innerText = p.fishers
-  if (p.fishers < 1) {
+  $('#fishers .value').innerText = population.fishers
+  if (population.fishers < 1) {
     $('#fishers').classList.add('hidden')
   } else {
     $('#fishers').classList.remove('hidden')
