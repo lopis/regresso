@@ -158,7 +158,7 @@ const projects = {
     }
   },
   chapel: {
-    description: 'A place where people can gather to support, encorage and service each other (no extra effect).',
+    description: 'A place where people can gather to support, encorage and service each other.',
     requires: ['carpentry'],
     emoji: '🙏',
     cost: {

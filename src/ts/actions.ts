@@ -94,11 +94,11 @@ const handlers = {
   
     if (godsWrath > 0.2) {
       timeout(() => {
-        log('A violent storm suddenly forms. The ship capsizes and sinks. There are no survivors.', null, '⛈', 'info')
+        log('A violent storm suddenly forms. The ship capsizes and sinks. There were no survivors.', null, '⛈', 'info')
         p.total = 0
         updateView()
         stopGame();
-        printScore();
+        timeout(printScore, 2000);
       }, 7000)
     } else {
       timeout(() => {
