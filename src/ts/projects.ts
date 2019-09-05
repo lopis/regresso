@@ -68,7 +68,7 @@ const projects = {
       people: 4,
       days: 2,
     },
-    description: 'Recycle and process wood more efficiently (+5 wood per day)',
+    description: 'Recycle wood and build better buildings (+5 wood per day)',
     callback: () => {
       log('Carpentry was perfected, new buildings are now available.', 'blue', '🔨', 'info')
       blink('projects', 'blink')
@@ -77,6 +77,7 @@ const projects = {
       renderProject('chapel')
       dayEvents.push(() => {
         resources.wood += 5
+        blink('wood', 'green')
         log(`+5🌳`, 'blue', '🔨', 'tasks')
       })
     }
@@ -153,7 +154,8 @@ const projects = {
     },
     callback: () => {
       log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info')
-      show('#newShip')
+      show('#ship')
+      $('#ship').classList.add('new')
       show('#leave')
     }
   },

@@ -1,18 +1,19 @@
 let trailCount = 0
-const startTrail = (time, trail, clone) => {
-  const newTrail = clone ? $(`#${trail}`).cloneNode() : $(`#${trail}`)
-  let id = trail
+const startTrail = (time, trailId, clone) => {
+  const $trail = $(`#${trailId}`)
+  const newTrail = clone ? $trail.cloneNode() : $trail
+  let id = trailId
   if (clone) {
     id = 'trail' + (++trailCount)
     newTrail.id = id
-    $(`#${trail}`).after(newTrail)
+    $trail.after(newTrail)
   }
   setTimeout(() => {
-    const pathLength = Math.round($(`#${trail}`).getTotalLength())
-    if (trail == 'huntTrail') {
+    const pathLength = Math.round($trail.getTotalLength())
+    if (trailId == 'huntTrail') {
       newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
-      newTrail.style.strokeDasharray = `0,${pathLength}px,${trail == 'boatTrail' ? 2 : 1}`
+      newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`
     }
   }, 100)
 
@@ -62,4 +63,7 @@ const sinkBoatAnimation = () => {
   $('#sail').beginElement()
   $('#sink').beginElement()
   $('#sinkRotate').beginElement()
+  setTimeout(() => {
+    hide('#ship')
+  }, $('#sink').getSimpleDuration() * 990) // 1000 minus a little less because timers are unreliable
 }

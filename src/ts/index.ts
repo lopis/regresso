@@ -18,7 +18,6 @@ const stopGame = () => {
 const resumeGame = () => {
   dayInterval = setInterval(nextDay, DAY)
   dayCycleInterval = setInterval(dayCycle, DAY / 2)
-  $('#days').classList.remove('paused')
 }
 
 const init = () => {

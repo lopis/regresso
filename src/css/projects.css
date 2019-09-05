@@ -57,7 +57,15 @@
   border-color: transparent;
 }
 .project.done .icon {
-  box-shadow: 0 0 0 3px #a1c700 inset;
+  box-shadow: 0 0 0 6px #00c652 inset;
+}
+.project.done .title::after {
+	content: "Finished";
+	margin-left: 15px;
+	background: #00c652;
+	padding: 0 8px;
+	font-size: 80%;
+	color: white;
 }
 .icon {
   font-size: 30px;

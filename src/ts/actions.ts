@@ -52,28 +52,32 @@ const bring = (action, partySize, amount, risk) => () => {
     blink('projects', 'blink')
     renderProject('weapons')
   }
-  if (action === 'foraging' && resources.food > 80 && !huntingEnabled) {
+  if (!huntingEnabled && (resources.food + buffer.foraging) > 80) {
     show('#hunt')
     blink('hunt', 'blink')
     huntingEnabled = true
     log('Animals were sighted far in the valleys, hunting may be possible.', 'blue', '🏹', 'info')
   }
-  if (action === 'wood' && !projects.carpentry.unlocked && resources.wood > 5) {
-    projects.carpentry.unlocked = true
-    log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info')
-    renderProject('carpentry')
-    blink('projects', 'blink')
-  }
-  if (!smokeEnabled && action === 'wood') {
-    $('animate').beginElement()
-    smokeEnabled = true
-    log('The crew rejoices the arrival of wood for cooking and heating.', null, '🔥', 'info')
-    dayEvents.push(() => {
-      if (resources.wood > 0) {
-        resources.wood = Math.max(0, resources.wood - 2)
-        blink('wood', 'red')
-      }
-    })
+  if (action === 'wood') {
+    if (!projects.carpentry.unlocked && (resources.wood + buffer.wood) > 5) {
+      projects.carpentry.unlocked = true
+      log('Develop carpentry to process wood more efficiently', 'blue', '🔨', 'info')
+      renderProject('carpentry')
+      blink('projects', 'blink')
+    }
+    if (!smokeEnabled) {
+      $('animate').beginElement()
+      smokeEnabled = true
+      log('The crew rejoices the arrival of wood for cooking and heating.', null, '🔥', 'info')
+      dayEvents.push(() => {
+        if (resources.wood > 0) {
+          resources.wood = Math.max(0, resources.wood - 2)
+          if (!projects.carpentry.done) {
+            blink('wood', 'red')
+          }
+        }
+      })
+    }
   }
 
   updateView()
@@ -87,7 +91,10 @@ function restart () {
 const handlers = {
   leave: () => {
     log(`${population.total} people board the caravela and get ready for departure`, null, '⛵️', 'info')
-    $('#newShip').classList.add('go')
+    $('#ship').classList.add('go')
+    $('#leave').disabled = true
+    hide('#fishTrail')
+    hide('#boatTrail')
     population.ready = 0
     updateView()
     clearAllTimers()
@@ -111,7 +118,7 @@ const handlers = {
     const people = 1
     population.ready -= people
     const time = DAY * 0.6
-    timeout(bring('wood', people, 3, 0.05), time)
+    timeout(bring('wood', people, 3, 0.03), time)
     buffer.loggers++
     initBuffer()
     updateView()

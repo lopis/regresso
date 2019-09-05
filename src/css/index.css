@@ -45,14 +45,6 @@ body {
 .resource-group .resource {
   margin: 0;
 }
-#days.paused::before {
-	content: 'PAUSED';
-	position: absolute;
-	padding: 10px;
-	color: #fe6666;
-	background: rgba(0,0,0,0.5);
-	font-weight: bold;
-}
 
 .hidden {
   display: none;
@@ -78,9 +70,8 @@ button {
 .actions button {
   visibility: hidden;
   vertical-align: middle;
-}
-.actions button {
-  transition: transform 300ms ease-out;
+  top: 0;
+  transition: transform 300ms ease-out, top 100ms ease-out;
 }
 .actions button small {
 	display: block;
@@ -96,7 +87,7 @@ button:hover:not(:disabled) {
   background: #ecff9a;
 }
 button:hover:not(:active):not(:disabled) {
-	top: -2px;
+	top: -3px;
 	position: relative;
 }
 
@@ -139,21 +130,25 @@ button:hover:not(:active):not(:disabled) {
   stroke-dasharray: 0,0%,2,100%;
 }
 
-#sky, svg {
+svg {
   transition: filter 1s linear;
 }
 
-svg, svg.night #sky {
+svg {
   filter: brightness(1.0) contrast(1.0);
 }
 svg.night {
   filter: brightness(0.9) contrast(1.2) saturate(0.7);
 }
+#sky {
+  fill: #a4dff5;
+  transition: fill 1s ease-in-out;
+}
 svg.night #sky {
-  filter: brightness(0.3) contrast(1.8);
+  fill: #000005;
 }
 
-#sy, #fh, #hull, #st, #newShip, #cp, #score-board {
+#sy, #fh, #hull, #st, #cp, #score-board {
   visibility: hidden;
 }
 
@@ -256,9 +251,12 @@ footer {
   opacity: 0.4;
 }
 
-#newShip.go {
+#ship.new {
+  transform: scaleX(-1)
+}
+#ship.go {
   transition: transform 10s cubic-bezier(.5,0,1,1);
-  transform: translate(-40%, 60%);
+  transform: translate(-40%, 60%) scaleX(-1);
 }
 
 .people {
