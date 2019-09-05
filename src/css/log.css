@@ -2,6 +2,9 @@
   display: flex;
   overflow: hidden;
   flex-grow: 1;
+  max-width: 1600px;
+  margin: auto;
+  width: 100%;
 }
 
 .log {
