@@ -1,29 +1,29 @@
 let trailCount = 0
 const startTrail = (time, trailId, clone) => {
   const $trail = $(`#${trailId}`)
-  const newTrail = clone ? $trail.cloneNode() : $trail
+  const $newTrail = clone ? $trail.cloneNode() : $trail
   let id = trailId
   if (clone) {
     id = 'trail' + (++trailCount)
-    newTrail.id = id
-    $trail.after(newTrail)
+    $newTrail.id = id
+    $trail.after($newTrail)
   }
   setTimeout(() => {
     const pathLength = Math.round($trail.getTotalLength())
     if (trailId == 'huntTrail') {
-      newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
+      $newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
-      newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`
+      $newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`
     }
   }, 100)
 
   setTimeout(() => {
-    $trail.style.strokeDasharray = null
+    $newTrail.style.strokeDasharray = null
   }, time/2)
 
   if (clone) {
     timeout(() => {
-      $trail && $trail.remove()
+      $newTrail && $newTrail.remove()
     }, time)
   }
 }
