@@ -97,3 +97,13 @@ const makePeopleDead = (n) => {
   }
   return p
 }
+
+const getPeopleString = (list) => {
+  if (list.length < 2) {
+    return list[0]
+  }
+  const str = list.join(', ')
+  const lastComma = str.lastIndexOf(',')
+
+  return str.substr(0, lastComma) + ' and' + str.substr(lastComma + 1)
+}

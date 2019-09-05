@@ -154,7 +154,7 @@ svg.night #sky {
   fill: #000005;
 }
 
-#sy, #fh, #hull, #st, #cp, #score-board {
+#sy, #fh, #st, #cp, #score-board {
   visibility: hidden;
 }
 

@@ -242,7 +242,7 @@ const updateFood = () => {
   } else {
     const dead = Math.min(population.starving, -diff)
     if (dead > 0) {
-      log(`${makePeopleDead(dead).map(p=>p.name).join(', ')} died from starvation.`, 'red', '💀', 'info')
+      log(`${getPeopleString(makePeopleDead(dead).map(p=>p.name))} died from starvation.`, 'red', '💀', 'info')
       population.total -= dead
       population.ready -= dead
       population.starving = 0

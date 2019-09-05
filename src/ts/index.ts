@@ -36,6 +36,7 @@ const init = () => {
 
 const startGame = () => {
   resetData()
+  initProjects()
   updateDate()
   updateView()
   resumeGame()

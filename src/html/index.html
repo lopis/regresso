@@ -11,6 +11,7 @@
 <body class="blured">
   <div id="score-board" class="popup">
     <div class="modal">
+      <span class="dismiss">&times;</span>
       <img class="logo" src="logo.png">      
       <p>Scoreboard</p>
       <div class="content"></div>
@@ -80,7 +81,7 @@
     </div>
     <div class="projects closed">
       <div class="log" id="requirements"></div>
-      <label id="projects" for="projects-checkbox">
+      <label id="projects">
         <span class="caps">Projects</span>
         <span class="open">+</span>
         <span class="close">×</span>
@@ -128,8 +129,6 @@
       Game
     </button>
   </div>
-  <input type="checkbox" id="projects-checkbox" class="hidden" value="false" autocomplete="off">
-
   <svg style="display: none;">
     <animateMotion fill="freeze" begin="indefinite"
       id="sail"
@@ -142,7 +141,7 @@
       <mpath xlink:href="#st"/>
     </animateMotion>
     <animateTransform xlink:href="#ss"
-      id="sink"
+      id="sink" fill="freeze"
       attributeName="transform"
       type="translate"
       begin="indefinite"
@@ -151,14 +150,14 @@
       from="0 0"
       to="0 10"/>
     <animateTransform xlink:href="#ss"
-      id="sinkRotate"
+      id="sinkRotate" fill="freeze"
       attributeName="transform"
       type="rotate"
       begin="indefinite"
       dur="8s"
       additive="sum"
-      from="0 0 0"
-      to="40 -10 0"/>
+      from="0 120 30"
+      to="30 120 30"/>
   </svg>
   <div id="main-image"><!-- inject:svg --><!-- endinject --></div>
   <div id="logs">

@@ -1,178 +1,182 @@
-const projects = {
-  // FISHING PROJECTS
-  fishing: {
-    emoji: '🎣',
-    done: false,
-    unlocked: true,
-    cost: {
-      wood: 10,
-      food: 10,
-      people: 4,
-      days: 2,
-    },
-    description: 'Develop fishing tools (+3 food per day)',
-    callback: () => {
-      log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
-      show('#fh') // Fishing house
-      population.ready -= 1
-      population.fishers++
+let projects
 
-      interval(() => {
-        startTrail(DAY / 3, 'fishTrail', false)
-      }, DAY / 3)
-
-      dayEvents.push(() => {
-        resources.food += 3
-        log(`+3🍒`, 'blue', '🐟', 'tasks')
-      })
-    }
-  },
-  high_sea_fishing: {
-    emoji: '🚣‍',
-    done: false,
-    unlocked: true,
-    requires: [
-      'shipyard',
-      'fishing'
-    ],
-    cost: {
-      wood: 25,
-      food: 10,
-      people: 5,
-      days: 5
+const initProjects = () => {
+  projects = {
+    // FISHING PROJECTS
+    fishing: {
+      emoji: '🎣',
+      done: false,
+      unlocked: true,
+      cost: {
+        wood: 10,
+        food: 10,
+        people: 4,
+        days: 2,
+      },
+      description: 'Develop fishing tools (+3 food per day)',
+      callback: () => {
+        log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
+        show('#fh') // Fishing house
+        population.ready -= 1
+        population.fishers++
+  
+        interval(() => {
+          startTrail(DAY / 3, 'fishTrail', false)
+        }, DAY / 3)
+  
+        dayEvents.push(() => {
+          resources.food += 3
+          log(`+3🍒`, 'blue', '🐟', 'tasks')
+        })
+      }
     },
-    description: 'Build a fishing boat (+5 food per day).',
-    callback: () => {
-      population.ready -= 1
-      population.fishers++
-      show('#boatTrail')
-
-      interval(() => {
-        startTrail(DAY / 2, 'boatTrail', false)
-      }, DAY / 2)
-
-      dayEvents.push(() => {
-        resources.food += 5
-        log(`+5🍒`, 'blue', '🐟', 'tasks')
-      })
-    }
-  },
-  // FISHING PROJECTS
-  carpentry: {
-    emoji: '🔨',
-    done: false,
-    unlocked: false,
-    cost: {
-      wood: 10,
-      food: 10,
-      people: 4,
-      days: 2,
+    high_sea_fishing: {
+      emoji: '🚣‍',
+      done: false,
+      unlocked: true,
+      requires: [
+        'shipyard',
+        'fishing'
+      ],
+      cost: {
+        wood: 25,
+        food: 10,
+        people: 5,
+        days: 5
+      },
+      description: 'Build a fishing boat (+5 food per day).',
+      callback: () => {
+        population.ready -= 1
+        population.fishers++
+        show('#boatTrail')
+  
+        interval(() => {
+          startTrail(DAY / 2, 'boatTrail', false)
+        }, DAY / 2)
+  
+        dayEvents.push(() => {
+          resources.food += 5
+          log(`+5🍒`, 'blue', '🐟', 'tasks')
+        })
+      }
     },
-    description: 'Recycle wood and build better buildings (+5 wood per day)',
-    callback: () => {
-      log('Carpentry was perfected, new buildings are now available.', 'blue', '🔨', 'info')
-      blink('projects', 'blink')
-      renderProject('shipyard')
-      renderProject('spinning_wheel')
-      renderProject('chapel')
-      dayEvents.push(() => {
-        resources.wood += 5
-        blink('wood', 'green')
-        log(`+5🌳`, 'blue', '🔨', 'tasks')
-      })
-    }
-  },
-  weapons: {
-    emoji: '🛡',
-    done: false,
-    unlocked: false,
-    description: 'Produce weapons and armor (-75% chance of animal attack deaths)',
-    cost: {
-      wood: 50,
-      food: 15,
-      people: 4,
-      days: 2,
+    // FISHING PROJECTS
+    carpentry: {
+      emoji: '🔨',
+      done: false,
+      unlocked: false,
+      cost: {
+        wood: 10,
+        food: 10,
+        people: 4,
+        days: 2,
+      },
+      description: 'Recycle wood and build better buildings (+5 wood per day)',
+      callback: () => {
+        log('Carpentry was perfected, new buildings are now available.', 'blue', '🔨', 'info')
+        blink('projects', 'blink')
+        renderProject('shipyard')
+        renderProject('spinning_wheel')
+        renderProject('chapel')
+        dayEvents.push(() => {
+          resources.wood += 5
+          blink('wood', 'green')
+          log(`+5🌳`, 'blue', '🔨', 'tasks')
+        })
+      }
     },
-    callback: () => {
-      attackChance = attackChance * 0.25
-    }
-  },
-  spinning_wheel: {
-    emoji: '🧶',
-    done: false,
-    unlocked: true,
-    description: 'Some foragers will start gathering fibers, spinning into thread, producing cloth. (-50% food from foraging)',
-    cost: {
-      wood: 10,
-      food: 20,
-      people: 2,
-      days: 3,
+    weapons: {
+      emoji: '🛡',
+      done: false,
+      unlocked: false,
+      description: 'Produce weapons and armor (-75% chance of animal attack deaths)',
+      cost: {
+        wood: 50,
+        food: 15,
+        people: 4,
+        days: 2,
+      },
+      callback: () => {
+        attackChance = attackChance * 0.25
+      }
     },
-    callback: () => {
-      log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info')
-      foragingReturns -= 1
-      $('#forage .return').innerText = foragingReturns
-      blink('foraging', 'blink')
-      unlockCaravela()
-    }
-  },
-  shipyard: {
-    emoji: '⚓',
-    done: false,
-    unlocked: true,
-    requires: [
-      'carpentry'
-    ],
-    cost: {
-      wood: 100,
-      food: 10,
-      people: 5,
-      days: 7
+    spinning_wheel: {
+      emoji: '🧶',
+      done: false,
+      unlocked: true,
+      description: 'Some foragers will start gathering fibers, spinning into thread, producing cloth. (-50% food from foraging)',
+      cost: {
+        wood: 10,
+        food: 20,
+        people: 2,
+        days: 3,
+      },
+      callback: () => {
+        log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info')
+        foragingReturns -= 1
+        $('#forage .return').innerText = foragingReturns
+        blink('foraging', 'blink')
+        unlockCaravela()
+      }
     },
-    description: 'Build a shipyard where boats and ships can be built.',
-    callback: () => {
-      log('The shipyard construction has finished!', 'blue', '⚓', 'info')
-      show('#sy')
-      renderProject('high_sea_fishing')
-      unlockCaravela()
-    }
-  },
-  caravela: {
-    description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
-    emoji: '⛵️',
-    done: false,
-    unlocked: false,
-    requires: [
-      'shipyard',
-      'spinning_wheel',
-    ],
-    cost: {
-      wood: 100,
-      food: 200,
-      people: 10,
-      days: 8,
+    shipyard: {
+      emoji: '⚓',
+      done: false,
+      unlocked: true,
+      requires: [
+        'carpentry'
+      ],
+      cost: {
+        wood: 100,
+        food: 10,
+        people: 5,
+        days: 7
+      },
+      description: 'Build a shipyard where boats and ships can be built.',
+      callback: () => {
+        log('The shipyard construction has finished!', 'blue', '⚓', 'info')
+        show('#sy')
+        renderProject('high_sea_fishing')
+        unlockCaravela()
+      }
     },
-    callback: () => {
-      log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info')
-      show('#ship')
-      $('#ship').classList.add('new')
-      show('#leave')
-    }
-  },
-  chapel: {
-    description: 'A place where people can gather to support, encorage and service each other.',
-    requires: ['carpentry'],
-    emoji: '🙏',
-    cost: {
-      wood: 20,
-      food: 20,
-      people: 3,
-      days: 3,
+    caravela: {
+      description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
+      emoji: '⛵️',
+      done: false,
+      unlocked: false,
+      requires: [
+        'shipyard',
+        'spinning_wheel',
+      ],
+      cost: {
+        wood: 100,
+        food: 200,
+        people: 10,
+        days: 8,
+      },
+      callback: () => {
+        log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info')
+        show('#ship')
+        $('#ship').classList.add('new')
+        show('#leave')
+      }
     },
-    callback: () => {
-      godsWrath -= 0.5
-      show('#pray')
-      show('#cp')
+    chapel: {
+      description: 'A place where people can gather to support, encorage and service each other.',
+      requires: ['carpentry'],
+      emoji: '🙏',
+      cost: {
+        wood: 20,
+        food: 20,
+        people: 3,
+        days: 3,
+      },
+      callback: () => {
+        godsWrath -= 0.5
+        show('#pray')
+        show('#cp')
+      }
     }
   }
 }
@@ -182,20 +186,6 @@ const unlockCaravela = () => {
     log('The caravela construction project is in sight!', 'green', '🌊', 'info')
     projects.caravela.unlocked = true
   }
-}
-
-const projectSets = {
-  foraging: ['foraging'],
-  fishing: ['fishing', 'fish_boat', 'high_sea_fishing'],
-  hunting: ['hunting', 'traps', 'farming']
-}
-
-const createProjects = () => {
-  Object.keys(projects).forEach(key => {
-    if (projects[key].unlocked) {
-      renderProject(key)
-    }
-  })
 }
 
 const resourceEmoji = {

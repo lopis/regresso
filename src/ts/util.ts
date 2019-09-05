@@ -74,7 +74,7 @@ const clearAllTimers = () => {
 const resetGame = () => {
   clearAllTimers()
   document.body.style.setProperty('--v', '0'); //Hide village
-  $a('button').forEach(b => b.style.visibility = 'hidden')
+  $a('.actions button').forEach(b => b.style.visibility = 'hidden')
   $a('.project').forEach(p => p.remove())
   $('#island').innerHTML = svgBackup
   $a('.log').forEach(l => l.innerHTML = '')
@@ -84,6 +84,5 @@ const resetGame = () => {
   $('#ship').classList.remove('go')
   $('#ship').classList.remove('new')
   resetPeople()
-
   resetData()
 }
