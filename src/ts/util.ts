@@ -85,11 +85,5 @@ const resetGame = () => {
   $('#ship').classList.remove('new')
   resetPeople()
 
-  for (const key in initCon) {
-    if (initCon[key] instanceof Object) {
-      Object.assign(window[key], initCon[key])
-    } else {
-      window[key] = initCon[key]
-    }
-  }
+  resetData()
 }

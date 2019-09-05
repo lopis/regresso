@@ -50,7 +50,8 @@ gulp.task('build-js', (done) => {
 	.pipe(concat('main.js'))
 	.pipe(uglify({
     mangle: {
-      toplevel: true
+      toplevel: true,
+      reserved: ['resetData']
     },
   }))
 	.pipe(gulp.dest('./build/'));

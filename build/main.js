@@ -70,14 +70,7 @@ const resetGame = () => {
     $('#ship').classList.remove('go');
     $('#ship').classList.remove('new');
     resetPeople();
-    for (const key in initCon) {
-        if (initCon[key] instanceof Object) {
-            Object.assign(window[key], initCon[key]);
-        }
-        else {
-            window[key] = initCon[key];
-        }
-    }
+    resetData();
 };
 const buffer = {
     foragers: 0,
@@ -88,7 +81,7 @@ const buffer = {
     wood: 0,
 };
 const printScore = () => {
-    const days = (date.getTime() - initCon.date.getTime()) / (1000 * 60 * 60 * 24);
+    const days = (date.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24);
     const left = $('#leave').disabled;
     const completed = $a('.project.done').length;
     const score = [
@@ -104,6 +97,7 @@ const printScore = () => {
     const total = Math.ceil((population.total * 10 + completed - days + (left ? 10 : 0)) * (1 - godsWrath));
     $('#score-board .modal .content').innerHTML = score.map(value => `<span>${value}</span>`).join('') + `<p>Final Score</p><p>${total} pts</p>`;
     show('#score-board');
+    $('body').classList.add('blured');
 };
 const bring = (action, partySize, amount, risk) => () => {
     buffer[action] += amount;
@@ -154,6 +148,7 @@ const bring = (action, partySize, amount, risk) => () => {
     updateView();
 };
 function restart() {
+    $('body').classList.remove('blured');
     resetGame();
     init();
 }
@@ -173,7 +168,7 @@ const handlers = {
                 population.total = 0;
                 updateView();
                 stopGame();
-                timeout(printScore, 2000);
+                timeout(printScore, 5000);
             }, 7000);
         }
         else {
@@ -327,44 +322,48 @@ const nextDay = () => {
 const dayCycle = () => {
     $('#island').classList.toggle('night');
 };
-var resources = {
-    wood: 0,
-    food: 0,
-};
-var population = {
-    total: 15,
-    ready: 15,
-    hungry: 0,
-    starving: 0,
-    fishers: 0
-};
-var foragingReturns = 2;
-var huntingEnabled = false;
-var smokeEnabled = false;
-var attackChance = 1.0;
-var bufferTimeout = 400;
-var bufferInterval = null;
-var godsWrath = 1;
-var godsWrathThereshold = 0.2;
-var isPraying = false;
-var dayEvents = [];
-var DAY = 10000;
-var date = new Date('1549/08/13');
-const initCon = {
-    resources: Object.assign({}, resources),
-    population: Object.assign({}, population),
-    foragingReturns,
-    huntingEnabled,
-    smokeEnabled,
-    attackChance,
-    bufferTimeout,
-    bufferInterval,
-    godsWrath,
-    isPraying,
-    date: new Date(date),
-    dayEvents,
-};
 const svgBackup = $('#island').innerHTML;
+const initialDate = new Date('1549/08/13');
+let initialFood = 0;
+let initialWrath = 1.0;
+let godsWrathThereshold = 0.2;
+let resources;
+let population;
+let foragingReturns;
+let huntingEnabled;
+let smokeEnabled;
+let attackChance;
+let bufferTimeout;
+let bufferInterval;
+let godsWrath;
+let isPraying;
+let dayEvents;
+let DAY;
+let date = new Date(initialDate);
+const resetData = () => {
+    resources = {
+        wood: 0,
+        food: initialFood,
+    };
+    population = {
+        total: 15,
+        ready: 15,
+        hungry: 0,
+        starving: 0,
+        fishers: 0
+    };
+    foragingReturns = 2;
+    huntingEnabled = false;
+    smokeEnabled = false;
+    attackChance = 1.0;
+    bufferTimeout = 400;
+    bufferInterval = null;
+    godsWrath = 1.0;
+    isPraying = false;
+    dayEvents = [];
+    DAY = 10000;
+    date = new Date(initialDate);
+};
 const people = shuffle([
     ['Abraão', '👨🏻‍🦱'],
     ['Bartolomeu', '👨🏼‍🦱'],
@@ -434,11 +433,11 @@ const startTrail = (time, trailId, clone) => {
         }
     }, 100);
     setTimeout(() => {
-        $(`#${id}`).style.strokeDasharray = null;
+        $trail.style.strokeDasharray = null;
     }, time / 2);
     if (clone) {
-        setTimeout(() => {
-            $(`#${id}`).remove();
+        timeout(() => {
+            $trail && $trail.remove();
         }, time);
     }
 };
@@ -770,9 +769,11 @@ const resumeGame = () => {
     dayCycleInterval = setInterval(dayCycle, DAY / 2);
 };
 const init = () => {
+    resetData();
     updateDate();
     updateView();
-    $('.intro').classList.add('closed');
+    $('#intro').classList.add('closed');
+    $('body').classList.remove('blured');
     sinkBoatAnimation();
     setTimeout(() => {
         document.body.style.setProperty('--v', '1');
@@ -780,9 +781,10 @@ const init = () => {
     timeout(startGame, 4000);
 };
 const startGame = () => {
-    resumeGame();
+    resetData();
     updateDate();
     updateView();
+    resumeGame();
     renderProject('caravela');
     initBuffer();
     log('People settled by the sea.', null, '⛺️', 'info');
@@ -803,13 +805,12 @@ const startGame = () => {
         renderProject('fishing');
     }, DAY * 2);
 };
-on($('.intro button'), 'click', () => {
+on($('#intro button'), 'click', () => {
     setupClickHandlers();
     init();
 });
 if (document.monetization && document.monetization.state === 'started') {
     $('#coil').classList.remove('hidden');
     godsWrathThereshold = 0.3;
-    resources.food = 30;
-    initCon.resources.food = 30;
+    initialFood = 30;
 }

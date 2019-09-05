@@ -1,6 +1,8 @@
 html {
-  background: #404a4d;
+  background: linear-gradient(9deg,#2d2020,#624739);
   height: 100%;
+  min-width: 1024px;
+  min-height: 768px;
 }
 body {
   margin: 0;
@@ -8,11 +10,14 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  --red: #c62929;
+  --green: #4b9d4b;
+  --blue: #2a7ec1;
 }
 
 .resources {
   display: flex;
-  background: #666;
   padding: 5px 7px;
 }
 
@@ -20,7 +25,7 @@ body {
   display: flex;
   flex-direction: column;
   text-align: center;
-  background: #2d2929;
+  background: #222;
   color: white;
   line-height: 1.4em;
   margin: 0 2px;
@@ -29,16 +34,16 @@ body {
   transition: background-color 1s;
 }
 .resource.green {
-  background: #4b9d4b;
+  background: var(--green);
   transition: background-color 100ms;
 }
 .resource.red {
-  background: #c62929;
+  background: var(--red);
   transition: background-color 100ms;
 }
 .resource-group {
   display: flex;
-  background: #2d2929;
+  background: #222;
   border-radius: 5px;
   margin: 0 2px;
 }
@@ -51,11 +56,11 @@ body {
 }
 
 button {
-  border-radius: 2px;
+  border-radius: 3px;
   font-size: 20px;
   padding: 0.6em 0.3em;
-  border: 1px solid #666;
-  background: #c5d680;
+  border: 1px solid #929031;
+  background: #d4d259;
   cursor: pointer;
   color: #333;
   width: 200px;
@@ -65,13 +70,13 @@ button {
   flex-shrink: 0;
   padding: 8px;
   text-align: center;
-  background: #9aad4d;
+  background: linear-gradient(2deg, #99ae43, #d7d45a)
 }
 .actions button {
   visibility: hidden;
   vertical-align: middle;
   top: 0;
-  transition: transform 300ms ease-out, top 100ms ease-out;
+  transition: transform 300ms ease-out, top 100ms ease-out, background 100ms ease-out;
 }
 .actions button small {
 	display: block;
@@ -80,11 +85,12 @@ button {
 }
 
 button:disabled {
-  background: #cccccc;
-  color: #444;
+	background: rgba(0,0,0,0.1);
+	color: #333;
+	border-color: transparent;
 }
 button:hover:not(:disabled) {
-  background: #ecff9a;
+  background: #fffd8f;
 }
 button:hover:not(:active):not(:disabled) {
 	top: -3px;
@@ -96,13 +102,12 @@ button:hover:not(:active):not(:disabled) {
 }
 
 #main-image {
-  width: 100%;
-  overflow: hidden;
-  flex-shrink: 0;
+	flex-shrink: 0;
 }
 #main-image svg {
 	width: 100%;
-  height: auto;
+	height: auto;
+	box-shadow: 0 3px 15px -5px black;
 }
 #main-image svg:hover {
   transition: transform 200ms cubic-bezier(.22,.61,.36,1) 200ms;
@@ -166,8 +171,7 @@ svg.night #sky {
   transform: scale(1);
   text-align: justify;
 }
-.intro::before,
-#score-board::before {
+.popup::before {
 	content: "";
 	display: block;
 	position: fixed;
@@ -186,21 +190,22 @@ svg.night #sky {
 li + li {
 	margin-top: 0.5em;
 }
-.intro ~ div {
+
+#intro ~ div {
+  filter: none;
+  transition: filter 500ms;
+}
+.blured #intro ~ div {
   filter: blur(10px) brightness(1.5);
 }
-.intro.closed .modal {
+#intro.closed .modal {
   top: -200%;
   transform: scale(1.5);
   opacity: 0;
   transition: top 0s ease 0.3s, opacity 0.3s ease, transform 0.3s linear;
 }
-.intro.closed::before {
+#intro.closed::before {
   content: unset;
-}
-.intro.closed ~ div {
-  filter: none;
-  transition: filter 500ms;
 }
 .caps, button {
   text-transform: capitalize;
@@ -279,4 +284,14 @@ footer {
 .people .icon:nth-child(n+9) {
 	position: relative;
 	left: 14px;
+}
+
+@media (max-width: 1268px) {
+  .people {
+    display: none;
+  }
+  .actions button {
+    font-size: 16px;
+    width: 150px;
+  }
 }

@@ -1,44 +1,50 @@
-var resources = {
-  wood: 0,
-  food: 0,
-}
-var population = {
-  total: 15,
-  ready: 15,
-  hungry: 0,
-  starving: 0,
-  fishers: 0
-}
-
-var foragingReturns = 2
-var huntingEnabled = false
-var smokeEnabled = false
-var attackChance = 1.0
-var bufferTimeout = 400
-var bufferInterval = null
-var godsWrath = 1
-var godsWrathThereshold = 0.2
-var isPraying = false
-
-var dayEvents = []
-var DAY = 10000
-var date = new Date('1549/08/13')
-
-const initCon = {
-  resources: Object.assign({}, resources),
-  population: Object.assign({}, population),
-  foragingReturns,
-  huntingEnabled,
-  smokeEnabled,
-  attackChance,
-  bufferTimeout,
-  bufferInterval,
-  godsWrath,
-  isPraying,
-  date: new Date(date),
-  dayEvents,
-}
 const svgBackup = $('#island').innerHTML
+const initialDate = new Date('1549/08/13')
+let initialFood = 0
+let initialWrath = 1.0
+let godsWrathThereshold = 0.2
+
+let resources
+let population
+let foragingReturns
+let huntingEnabled
+let smokeEnabled
+let attackChance
+let bufferTimeout
+let bufferInterval
+let godsWrath
+let isPraying
+let dayEvents
+let DAY
+let date = new Date(initialDate)
+
+const resetData = () => {
+  resources = {
+    wood: 0,
+    food: initialFood,
+  }
+  population = {
+    total: 15,
+    ready: 15,
+    hungry: 0,
+    starving: 0,
+    fishers: 0
+  }
+  
+  foragingReturns = 2
+  huntingEnabled = false
+  smokeEnabled = false
+  attackChance = 1.0
+  bufferTimeout = 400
+  bufferInterval = null
+  godsWrath = 1.0
+  isPraying = false
+  
+  dayEvents = []
+  DAY = 10000
+  date = new Date(initialDate)
+}
+
 
 const people = shuffle([
   ['Abraão', '👨🏻‍🦱'],

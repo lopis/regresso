@@ -8,8 +8,16 @@
   <title>Regresso</title>
 </head>
 
-<body>
-  <div class="intro">
+<body class="blured">
+  <div id="score-board" class="popup">
+    <div class="modal">
+      <img class="logo" src="logo.png">      
+      <p>Scoreboard</p>
+      <div class="content"></div>
+      <button>Restart</button>
+    </div>
+  </div>
+  <div id="intro" class="popup">
     <div class="modal">
       <img class="logo" src="logo.png">
       <p>
@@ -36,14 +44,6 @@
       <small>
         Regresso, </i>[hook-re-ssoo]<i>, means "return / the way back" in Portuguese.
       </small>
-    </div>
-  </div>
-  <div id="score-board">
-    <div class="modal">
-      <img class="logo" src="logo.png">      
-      <p>Scoreboard</p>
-      <div class="content"></div>
-      <button>Restart</button>
     </div>
   </div>
   <div class="resources">
@@ -165,10 +165,11 @@
     <div id="info" class="log"></div>
     <div id="tasks" class="log"></div>
   </div>
-  <footer>
-    <img class="logo" src="logo.png">
-  </footer>
-
+  <div>
+    <footer>
+      <img class="logo" src="logo.png">
+    </footer>
+  </div>
   <script type="text/javascript" src="main.js"></script>
 </body>
 

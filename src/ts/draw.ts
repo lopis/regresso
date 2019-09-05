@@ -18,12 +18,12 @@ const startTrail = (time, trailId, clone) => {
   }, 100)
 
   setTimeout(() => {
-    $(`#${id}`).style.strokeDasharray = null
+    $trail.style.strokeDasharray = null
   }, time/2)
 
   if (clone) {
-    setTimeout(() => {
-      $(`#${id}`).remove()
+    timeout(() => {
+      $trail && $trail.remove()
     }, time)
   }
 }

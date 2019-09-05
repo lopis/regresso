@@ -9,7 +9,7 @@ const buffer = {
 }
 
 const printScore = () => {
-  const days = (date.getTime() - initCon.date.getTime()) / (1000 * 60 * 60 * 24)
+  const days = (date.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24)
   const left = $('#leave').disabled
   const completed = $a('.project.done').length
 
@@ -31,6 +31,7 @@ const printScore = () => {
     value => `<span>${value}</span>`
   ).join('') + `<p>Final Score</p><p>${total} pts</p>`
   show('#score-board')
+  $('body').classList.add('blured')
 }
 
 const bring = (action, partySize, amount, risk) => () => {
@@ -84,6 +85,7 @@ const bring = (action, partySize, amount, risk) => () => {
 }
 
 function restart () {
+  $('body').classList.remove('blured')
   resetGame()
   init()
 }
@@ -105,7 +107,7 @@ const handlers = {
         population.total = 0
         updateView()
         stopGame();
-        timeout(printScore, 2000);
+        timeout(printScore, 5000);
       }, 7000)
     } else {
       timeout(() => {

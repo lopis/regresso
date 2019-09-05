@@ -21,9 +21,11 @@ const resumeGame = () => {
 }
 
 const init = () => {
+  resetData()
   updateDate()
   updateView()
-  $('.intro').classList.add('closed')
+  $('#intro').classList.add('closed')
+  $('body').classList.remove('blured')
   sinkBoatAnimation()
   setTimeout(() => {
     document.body.style.setProperty('--v', '1'); //Show village
@@ -33,9 +35,10 @@ const init = () => {
 }
 
 const startGame = () => {
-  resumeGame()
+  resetData()
   updateDate()
   updateView()
+  resumeGame()
   renderProject('caravela')
   initBuffer()
 
@@ -60,7 +63,7 @@ const startGame = () => {
   }, DAY * 2)
 }
 
-on($('.intro button'), 'click', () => {
+on($('#intro button'), 'click', () => {
   setupClickHandlers();
   init();
 })
@@ -69,6 +72,5 @@ on($('.intro button'), 'click', () => {
 if(document.monetization && document.monetization.state === 'started') {
   $('#coil').classList.remove('hidden')
   godsWrathThereshold = 0.3
-  resources.food = 30
-  initCon.resources.food = 30
+  initialFood = 30
 }
