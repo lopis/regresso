@@ -25,7 +25,9 @@ const printScore = () => {
     score.push(godsWrath <= godsWrathThereshold ? 'Yes' : 'No')
   }
 
-  const total = Math.ceil((population.total * 10 + completed - days + (left ? 10 : 0)) * (1 - godsWrath))
+  const total = Math.ceil(
+    (population.total * 25 + completed * 7 + (left ? 10 : 0)) * (1 - godsWrath) * (30 / days)
+  )
 
   $('#score-board .modal .content').innerHTML = score.map(
     value => `<span>${value}</span>`
@@ -113,6 +115,7 @@ const handlers = {
       timeout(() => {
         log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
         log('Fim.', null, '🌅', 'info')
+        timeout(printScore, 5000);
       }, 7000)
     }
   },
@@ -161,7 +164,11 @@ const handlers = {
     startTrail(time, 'huntTrail', true)
   },
 
-  restart: restart
+  restart: () => {
+    if (confirm('Restart current game?')) {
+      restart()
+    }
+  }
 }
 
 const setupClickHandlers = () => {

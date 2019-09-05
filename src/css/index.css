@@ -160,7 +160,7 @@ svg.night #sky {
 
 .modal {
 	position: fixed;
-	background: #404a4d;
+	background: #222;
 	color: #fff;
 	top: 10%;
 	left: calc(50% - 400px);
