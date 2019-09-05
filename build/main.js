@@ -505,7 +505,7 @@ const projects = {
         }
     },
     high_sea_fishing: {
-        emoji: '⛵️',
+        emoji: '🚣‍',
         done: false,
         unlocked: true,
         requires: [
@@ -613,7 +613,7 @@ const projects = {
     },
     caravela: {
         description: 'Build a caravela and return home. Requires a shipyard, carpentry, textiles, as well as food for the trip.',
-        emoji: '🌊',
+        emoji: '⛵️',
         done: false,
         unlocked: false,
         requires: [
