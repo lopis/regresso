@@ -13,6 +13,9 @@ const startTrail = (time, trailId, clone) => {
     if (trailId == 'huntTrail') {
       $newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
+      if (trailId == 'forageTemplate') {
+        $newTrail.style.transform = `scaleX(${1 + Math.random()*0.7 - 0.2})`;
+      }
       $newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`
     }
   }, 100)

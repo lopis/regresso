@@ -124,6 +124,7 @@ button:hover:not(:active):not(:disabled) {
   stroke-dasharray: 0,0,0.5px,2px,0.5px,100%;
 }
 .forageTrail {
+  transform-origin: 39% 50%;
   transition-duration: 1.5s;
 }
 #fishTrail {
