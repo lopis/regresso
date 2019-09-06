@@ -37,7 +37,7 @@ const display = (q) => {
   $(q).classList.remove('hidden')
 }
 const undisplay = (q) => {
-  $(q).classList.remove('hidden')
+  $(q).classList.add('hidden')
 }
 const hide = (q) => {
   $(q).style.visibility = 'hidden'

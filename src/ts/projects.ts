@@ -159,6 +159,7 @@ const initProjects = () => {
         log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info')
         show('#ship')
         $('#ship').classList.add('new')
+        $('#leave').disabled = false
         show('#leave')
       }
     },

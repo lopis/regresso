@@ -32,7 +32,7 @@ const display = (q) => {
     $(q).classList.remove('hidden');
 };
 const undisplay = (q) => {
-    $(q).classList.remove('hidden');
+    $(q).classList.add('hidden');
 };
 const hide = (q) => {
     $(q).style.visibility = 'hidden';
@@ -666,6 +666,7 @@ const initProjects = () => {
                 log('The Caravela construction is complete! Shall we?', 'green', '🌊', 'info');
                 show('#ship');
                 $('#ship').classList.add('new');
+                $('#leave').disabled = false;
                 show('#leave');
             }
         },
