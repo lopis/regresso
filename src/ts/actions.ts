@@ -17,11 +17,11 @@ const printScore = () => {
     'Days taken', days,
     'Population saved', population.total,
     'Projects completed', completed,
-    'Went back to the sea', left ? 'Yes' : 'No',
+    'Went back to the sea?', left ? 'Yes' : 'No',
   ]
 
   if (left) {
-    score.push('Survived wrath of god')
+    score.push('Survived wrath of god?')
     score.push(godsWrath <= godsWrathThereshold ? 'Yes' : 'No')
   }
 
@@ -32,8 +32,7 @@ const printScore = () => {
   $('#score-board .modal .content').innerHTML = score.map(
     value => `<span>${value}</span>`
   ).join('') + `<p>Final Score</p><p>${total} pts</p>`
-  show('#score-board')
-  $('body').classList.add('blured')
+  openModal('score-board')
 }
 
 const bring = (action, partySize, amount, risk) => () => {
@@ -51,7 +50,7 @@ const bring = (action, partySize, amount, risk) => () => {
 
   if (!projects.weapons.unlocked && (die || action === 'hunting')) {
     projects.weapons.unlocked = true
-    log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info')
+    log('Hunters found dangerous animals; you need extra protection', 'blue', '🛡', 'info')
     blink('projects', 'blink')
     renderProject('weapons')
   }
@@ -87,7 +86,6 @@ const bring = (action, partySize, amount, risk) => () => {
 }
 
 function restart () {
-  $('body').classList.remove('blured')
   resetGame()
   init()
 }
@@ -105,7 +103,7 @@ const handlers = {
   
     if (godsWrath > 0.2) {
       timeout(() => {
-        log('A violent storm suddenly forms. The ship capsizes and sinks. There were no survivors.', null, '⛈', 'info')
+        log('A violent storm suddenly formed. The ship sank and there were no survivors.', null, '⛈', 'info')
         population.total = 0
         updateView()
         stopGame();
@@ -113,7 +111,7 @@ const handlers = {
       }, 7000)
     } else {
       timeout(() => {
-        log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info')
+        log('The journey back was long, but the weather was perfect.', null, '🌤', 'info')
         log('Fim.', null, '🌅', 'info')
         timeout(printScore, 5000);
       }, 7000)
@@ -181,8 +179,7 @@ const setupClickHandlers = () => {
   })
   on($('#score-board button'), 'click', restart)
   on($('.dismiss'), 'click', () => {
-    hide('#score-board')
-    document.body.classList.remove('blured')
+    closeModal('score-board')
   })
 }
 

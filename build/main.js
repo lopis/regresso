@@ -28,8 +28,22 @@ const log = (text, color, emoji, type) => {
 const show = (q) => {
     $(q).style.visibility = 'visible';
 };
+const display = (q) => {
+    $(q).classList.remove('hidden');
+};
+const undisplay = (q) => {
+    $(q).classList.remove('hidden');
+};
 const hide = (q) => {
     $(q).style.visibility = 'hidden';
+};
+const openModal = (name) => {
+    show(`#${name}`);
+    $('body').classList.add('blured');
+};
+const closeModal = (name) => {
+    $(`#${name}`).classList.add('closed');
+    $('body').classList.remove('blured');
 };
 const shuffle = (array) => {
     let i = 0, j = 0, temp = null;
@@ -88,16 +102,15 @@ const printScore = () => {
         'Days taken', days,
         'Population saved', population.total,
         'Projects completed', completed,
-        'Went back to the sea', left ? 'Yes' : 'No',
+        'Went back to the sea?', left ? 'Yes' : 'No',
     ];
     if (left) {
-        score.push('Survived wrath of god');
+        score.push('Survived wrath of god?');
         score.push(godsWrath <= godsWrathThereshold ? 'Yes' : 'No');
     }
     const total = Math.ceil((population.total * 25 + completed * 7 + (left ? 10 : 0)) * (1 - godsWrath) * (30 / days));
     $('#score-board .modal .content').innerHTML = score.map(value => `<span>${value}</span>`).join('') + `<p>Final Score</p><p>${total} pts</p>`;
-    show('#score-board');
-    $('body').classList.add('blured');
+    openModal('score-board');
 };
 const bring = (action, partySize, amount, risk) => () => {
     buffer[action] += amount;
@@ -114,7 +127,7 @@ const bring = (action, partySize, amount, risk) => () => {
     }
     if (!projects.weapons.unlocked && (die || action === 'hunting')) {
         projects.weapons.unlocked = true;
-        log('Hunters found dangerous animals; they could use some extra protection', 'blue', '🛡', 'info');
+        log('Hunters found dangerous animals; you need extra protection', 'blue', '🛡', 'info');
         blink('projects', 'blink');
         renderProject('weapons');
     }
@@ -148,7 +161,6 @@ const bring = (action, partySize, amount, risk) => () => {
     updateView();
 };
 function restart() {
-    $('body').classList.remove('blured');
     resetGame();
     init();
 }
@@ -164,7 +176,7 @@ const handlers = {
         clearAllTimers();
         if (godsWrath > 0.2) {
             timeout(() => {
-                log('A violent storm suddenly forms. The ship capsizes and sinks. There were no survivors.', null, '⛈', 'info');
+                log('A violent storm suddenly formed. The ship sank and there were no survivors.', null, '⛈', 'info');
                 population.total = 0;
                 updateView();
                 stopGame();
@@ -173,7 +185,7 @@ const handlers = {
         }
         else {
             timeout(() => {
-                log('The journey back was long. They experienced perfect weather and ideal winds.', null, '🌤', 'info');
+                log('The journey back was long, but the weather was perfect.', null, '🌤', 'info');
                 log('Fim.', null, '🌅', 'info');
                 timeout(printScore, 5000);
             }, 7000);
@@ -236,8 +248,7 @@ const setupClickHandlers = () => {
     });
     on($('#score-board button'), 'click', restart);
     on($('.dismiss'), 'click', () => {
-        hide('#score-board');
-        document.body.classList.remove('blured');
+        closeModal('score-board');
     });
 };
 const mapping = {
@@ -468,17 +479,17 @@ const updateView = () => {
     $('#ready .value').innerText = Math.max(0, population.ready - population.starving);
     $('#starving .value').innerText = population.starving;
     if (population.starving < 1) {
-        $('#starving').classList.add('hidden');
+        undisplay('#starving');
     }
     else {
-        $('#starving').classList.remove('hidden');
+        display('#starving');
     }
     $('#fishers .value').innerText = population.fishers;
     if (population.fishers < 1) {
-        $('#fishers').classList.add('hidden');
+        undisplay('#fishers');
     }
     else {
-        $('#fishers').classList.remove('hidden');
+        display('#fishers');
     }
     $('#forage').disabled = !enoughPeople(1);
     $('#fetchWood').disabled = !enoughPeople(1);
@@ -682,26 +693,17 @@ const unlockCaravela = () => {
         projects.caravela.unlocked = true;
     }
 };
-const resourceEmoji = {
-    wood: '🌳',
-    food: '🍒',
-    days: 'days ⏳',
-    people: '👫'
-};
-const getCostString = (cost) => {
-    return Object.keys(cost)
-        .map(key => `${cost[key]} ${resourceEmoji[key]}`)
-        .join('  ');
-};
 const renderProject = (key) => {
     const project = projects[key];
     const $newProject = $$('div', 'project', null);
     $newProject.id = key;
-    $newProject.innerHTML = `
-  <div class="icon">${project.emoji}</div>
-  <div class="title caps">${key.replace(/_/g, ' ')}</div>
-  <small class="description">${project.description}</small>
-  <div class="cost">${getCostString(project.cost)}</div>`;
+    $newProject.innerHTML =
+        `<div class="icon">${project.emoji}</div>
+<div class="title caps">${key.replace(/_/g, ' ')}</div>
+<small class="description">${project.description}</small>
+<div class="cost">
+  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👫  ${project.cost.days} days ⏳
+</div>`;
     $('.projects').append($newProject);
     on($newProject, 'click', selectProject(key));
 };
@@ -787,8 +789,7 @@ const init = () => {
     resetData();
     updateDate();
     updateView();
-    $('#intro').classList.add('closed');
-    $('body').classList.remove('blured');
+    closeModal('intro');
     sinkBoatAnimation();
     setTimeout(() => {
         document.body.style.setProperty('--v', '1');
@@ -826,7 +827,7 @@ on($('#intro button'), 'click', () => {
     init();
 });
 if (document.monetization && document.monetization.state === 'started') {
-    $('#coil').classList.remove('hidden');
+    display('#coil');
     godsWrathThereshold = 0.3;
     initialFood = 30;
 }

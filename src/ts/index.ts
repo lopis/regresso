@@ -24,8 +24,7 @@ const init = () => {
   resetData()
   updateDate()
   updateView()
-  $('#intro').classList.add('closed')
-  $('body').classList.remove('blured')
+  closeModal('intro')
   sinkBoatAnimation()
   setTimeout(() => {
     document.body.style.setProperty('--v', '1'); //Show village
@@ -71,7 +70,7 @@ on($('#intro button'), 'click', () => {
 
 // @ts-ignore
 if(document.monetization && document.monetization.state === 'started') {
-  $('#coil').classList.remove('hidden')
+  display('#coil')
   godsWrathThereshold = 0.3
   initialFood = 30
 }

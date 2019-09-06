@@ -193,7 +193,8 @@ svg.night #sky {
 	top: 0;
 	right: 0;
 	font-size: 200%;
-	padding: 0.3em 0.5em;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
 }
 li + li {
 	margin-top: 0.5em;
@@ -206,13 +207,13 @@ li + li {
 .blured #intro ~ div {
   filter: blur(10px) brightness(1.5);
 }
-#intro.closed .modal {
+.popup.closed .modal {
   top: -200%;
   transform: scale(1.5);
   opacity: 0;
   transition: top 0s ease 0.3s, opacity 0.3s ease, transform 0.3s linear;
 }
-#intro.closed::before {
+.popup.closed::before {
   content: unset;
 }
 .caps, button {

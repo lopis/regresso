@@ -188,27 +188,17 @@ const unlockCaravela = () => {
   }
 }
 
-const resourceEmoji = {
-  wood: '🌳',
-  food: '🍒',
-  days: 'days ⏳',
-  people: '👫'
-}
-const getCostString = (cost) => {
-  return Object.keys(cost)
-    .map(key => `${cost[key]} ${resourceEmoji[key]}`)
-    .join('  ')
-}
-
 const renderProject = (key) => {
   const project = projects[key]
   const $newProject = $$('div', 'project', null)
   $newProject.id = key
-  $newProject.innerHTML = `
-  <div class="icon">${project.emoji}</div>
-  <div class="title caps">${key.replace(/_/g, ' ')}</div>
-  <small class="description">${project.description}</small>
-  <div class="cost">${getCostString(project.cost)}</div>`
+  $newProject.innerHTML = 
+`<div class="icon">${project.emoji}</div>
+<div class="title caps">${key.replace(/_/g, ' ')}</div>
+<small class="description">${project.description}</small>
+<div class="cost">
+  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👫  ${project.cost.days} days ⏳
+</div>`
 
   $('.projects').append($newProject)
   on($newProject, 'click', selectProject(key))

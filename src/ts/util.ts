@@ -33,8 +33,22 @@ const log = (text, color, emoji, type) => {
 const show = (q) => {
   $(q).style.visibility = 'visible'
 }
+const display = (q) => {
+  $(q).classList.remove('hidden')
+}
+const undisplay = (q) => {
+  $(q).classList.remove('hidden')
+}
 const hide = (q) => {
   $(q).style.visibility = 'hidden'
+}
+const openModal = (name) => {
+  show(`#${name}`)
+  $('body').classList.add('blured')
+}
+const closeModal = (name) => {
+  $(`#${name}`).classList.add('closed')
+  $('body').classList.remove('blured')
 }
 
 const shuffle = (array) => {

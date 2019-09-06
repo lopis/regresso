@@ -39,16 +39,16 @@ const updateView = () => {
   $('#ready .value').innerText = Math.max(0, population.ready - population.starving)
   $('#starving .value').innerText = population.starving
   if (population.starving < 1) {
-    $('#starving').classList.add('hidden')
+    undisplay('#starving')
   } else {
-    $('#starving').classList.remove('hidden')
+    display('#starving')
   }
 
   $('#fishers .value').innerText = population.fishers
   if (population.fishers < 1) {
-    $('#fishers').classList.add('hidden')
+    undisplay('#fishers')
   } else {
-    $('#fishers').classList.remove('hidden')
+    display('#fishers')
   }
   
   $('#forage').disabled = !enoughPeople(1)
