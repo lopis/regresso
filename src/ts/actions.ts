@@ -180,6 +180,10 @@ const setupClickHandlers = () => {
     $('#requirements').innerText = null
   })
   on($('#score-board button'), 'click', restart)
+  on($('.dismiss'), 'click', () => {
+    hide('#score-board')
+    document.body.classList.remove('blured')
+  })
 }
 
 const mapping = {

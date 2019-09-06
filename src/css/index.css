@@ -188,6 +188,13 @@ svg.night #sky {
 	float: right;
 	margin-top: 2em;
 }
+.dismiss {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 200%;
+	padding: 0.3em 0.5em;
+}
 li + li {
 	margin-top: 0.5em;
 }
@@ -258,11 +265,14 @@ footer {
 }
 
 #ship.new {
-  transform: scaleX(-1)
+  position: relative;
+  top: 0;
+  left: 0;
 }
 #ship.go {
-  transition: transform 10s cubic-bezier(.5,0,1,1);
-  transform: translate(-40%, 60%) scaleX(-1);
+  transition: left 7s cubic-bezier(.5,0,1,1), top 7s cubic-bezier(.5,0,1,1);
+  top: 30px;
+  left: -100px;
 }
 
 .people {

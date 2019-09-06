@@ -235,6 +235,10 @@ const setupClickHandlers = () => {
         $('#requirements').innerText = null;
     });
     on($('#score-board button'), 'click', restart);
+    on($('.dismiss'), 'click', () => {
+        hide('#score-board');
+        document.body.classList.remove('blured');
+    });
 };
 const mapping = {
     wood: {
@@ -491,6 +495,10 @@ const sinkBoatAnimation = () => {
     $('#sinkRotate').beginElement();
     setTimeout(() => {
         hide('#ship');
+        $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
+        $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
+        $('#ss').transform.baseVal.getItem(1).setScale(-1, 1);
+        $('#ss').transform.baseVal.getItem(0).setTranslate(-20, 0);
     }, $('#sink').getSimpleDuration() * 990);
 };
 let projects;
