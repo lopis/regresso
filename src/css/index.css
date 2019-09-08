@@ -16,12 +16,12 @@ body {
   --blue: #2a7ec1;
 }
 
-.resources {
+.rs {
   display: flex;
   padding: 5px 7px;
 }
 
-.resource {
+.r {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -33,21 +33,21 @@ body {
   border-radius: 5px;
   transition: background-color 1s;
 }
-.resource.green {
+.r.green {
   background: var(--green);
   transition: background-color 100ms;
 }
-.resource.red {
+.r.red {
   background: var(--red);
   transition: background-color 100ms;
 }
-.resource-group {
+.r-grp {
   display: flex;
   background: #222;
   border-radius: 5px;
   margin: 0 2px;
 }
-.resource-group .resource {
+.r-grp .r {
   margin: 0;
 }
 

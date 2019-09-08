@@ -83,13 +83,11 @@ const resetPeople = () => {
   })
 }
 
-let deadPeople = 0
 const getRandomPerson = () => {
   const alive = people.filter(p => p.alive)
   return alive[Math.round(Math.random() * (alive.length - 1))]
 }
 const makeDeadPerson = () => {
-  deadPeople++
   const person = getRandomPerson()
   person.alive = false
   $(`#${person.name}`).classList.add('dead')

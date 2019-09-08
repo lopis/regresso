@@ -193,9 +193,13 @@ const unlockCaravela = () => {
 const renderProject = (key) => {
   const project = projects[key]
   const $newProject = $$('div', 'project', null)
+  let icon = project.emoji
+  if (key === 'caravela') {
+    icon = `<svg height="50px" viewBox="0 0 50 50" width="50px">${$('#ss').outerHTML.replace('"ss"', '')}</svg>`
+  }
   $newProject.id = key
   $newProject.innerHTML = 
-`<div class="icon">${project.emoji}</div>
+`<div class="icon">${icon}</div>
 <div class="title caps">${key.replace(/_/g, ' ')}</div>
 <small class="description">${project.description}</small>
 <div class="cost">

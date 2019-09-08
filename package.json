@@ -5,9 +5,10 @@
   "main": "index.html",
   "scripts": {
     "clean": "rm -rf build dist",
-    "watch": "gulp build-dev; gulp watch",
+    "watch": "gulp build-dev; gulp --silent watch",
     "build": "gulp build-dev",
     "prod": "gulp build-prod",
+    "gulp": "gulp",
     "test": "jest"
   },
   "repository": {

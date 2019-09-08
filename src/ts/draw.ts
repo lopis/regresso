@@ -65,8 +65,10 @@ const sinkBoatAnimation = () => {
   $shipTop.removeAttribute('transform') // Because Chrome is shit
   $('#sail').beginElement()
   $('#sink').beginElement()
+  const time = Date.now()
   
   setTimeout(() => {
+    console.log('end', Date.now() - time);
     hide('#ship')
     $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
     $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
