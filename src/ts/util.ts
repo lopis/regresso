@@ -15,9 +15,8 @@ const log = (text, color, emoji, type) => {
     return
   }
 
-  const newLog = document.createElement('p')
-  newLog.innerHTML = `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`
-  if (color) newLog.classList.add(color)
+  const newLog = $$('p', `new ${color}`, `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`)
+
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
 
