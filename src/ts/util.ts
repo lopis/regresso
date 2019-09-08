@@ -15,8 +15,7 @@ var log = (text, color, emoji, type) => {
     return
   }
 
-  var newLog = $$('p', `new ${color}`, `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`)
-
+  var newLog = $$('p', `${color}`, `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`)
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
 
