@@ -1,9 +1,10 @@
 .projects.closed #projects {
-	background: white;
+	background: #fff;
 	cursor: pointer;
 	border-radius: 5px;
-	padding: 8px;
+	padding: 12px 18px;
 	margin-right: 14px;
+	width: auto;
 }
 .projects:not(.closed) #projects {
   position: absolute;

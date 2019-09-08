@@ -14,7 +14,7 @@ const initProjects = () => {
         people: 4,
         days: 2,
       },
-      description: 'Develop fishing tools (+3 food per day)',
+      description: 'Develop fishing tools (+3🍒/day, -1 ready 👤)',
       callback: () => {
         log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
         show('#fh') // Fishing house
@@ -45,7 +45,7 @@ const initProjects = () => {
         people: 5,
         days: 5
       },
-      description: 'Build a fishing boat (+5 food per day).',
+      description: 'Build a fishing boat (+5🍒/day, -1 ready 👤).',
       callback: () => {
         populationReady -= 1
         populationFishers++
@@ -199,7 +199,7 @@ const renderProject = (key) => {
 <div class="title caps">${key.replace(/_/g, ' ')}</div>
 <small class="description">${project.description}</small>
 <div class="cost">
-  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👫  ${project.cost.days} days ⏳
+  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👥  ${project.cost.days} days ⏳
 </div>`
 
   $projects.append($newProject)

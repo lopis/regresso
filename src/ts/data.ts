@@ -1,6 +1,6 @@
 const initialDate = new Date('1549/08/13')
 let svgBackup
-let initialFood = 9990
+let initialFood = 0
 let initialWrath = 1.0
 let godsWrathThereshold = 0.2
 
