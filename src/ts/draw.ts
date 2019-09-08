@@ -65,12 +65,12 @@ const updateDate = () => {
 const sinkBoatAnimation = () => {
   $('#sail').beginElement()
   $('#sink').beginElement()
-  $('#sinkRotate').beginElement()
+  // $('#sinkRotate').beginElement()
   setTimeout(() => {
-    hide('#ship')
-    $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
-    $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
-    $('#ss').transform.baseVal.getItem(1).setScale(-1, 1);
-    $('#ss').transform.baseVal.getItem(0).setTranslate(-20,0);
+    // hide('#ship')
+    // $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
+    // $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
+    // $('#ss').transform.baseVal.getItem(1).setScale(-1, 1);
+    // $('#ss').transform.baseVal.getItem(0).setTranslate(-20,0);
   }, $('#sink').getSimpleDuration() * 990) // 1000 minus a little less because timers are unreliable
 }

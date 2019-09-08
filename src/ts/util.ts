@@ -90,7 +90,10 @@ const resetGame = () => {
   document.body.style.setProperty('--v', '0'); //Hide village
   $a('.actions button').forEach(b => b.style.visibility = 'hidden')
   $a('.project').forEach(p => p.remove())
-  $('#island').innerHTML = svgBackup
+  $('#island').remove()
+  const animClone = $('#anims').cloneNode(true)
+  $('#main-image').append(svgBackup.cloneNode(true))
+  $('#main-image').append(animClone)
   $a('.log').forEach(l => l.innerHTML = '')
   $('#island').style.filter = null
   hide('#score-board')

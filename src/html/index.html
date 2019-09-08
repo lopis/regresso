@@ -129,37 +129,30 @@
       Game
     </button>
   </div>
-  <svg style="display: none;">
-    <animateMotion fill="freeze" begin="indefinite"
-      id="sail"
-      dur="3s"
-      xlink:href="#ship"
-      calcMode="linear"
-      keyTimes="0;0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9;1"
-      keyPoints="0;0.20;0.37;0.51;0.62;0.72;0.80;0.86;0.92;0.97;1"
-      animation-direction="reverse" >
-      <mpath xlink:href="#st"/>
-    </animateMotion>
-    <animateTransform xlink:href="#ss"
-      id="sink"
-      attributeName="transform"
-      type="translate"
-      begin="indefinite"
-      dur="8s"
-      additive="sum"
-      from="0 0"
-      to="0 10"/>
-    <animateTransform xlink:href="#ss"
-      id="sinkRotate"
-      attributeName="transform"
-      type="rotate"
-      begin="indefinite"
-      dur="8s"
-      additive="sum"
-      from="0 0 0"
-      to="40 -10 0"/>
-  </svg>
-  <div id="main-image"><!-- inject:svg --><!-- endinject --></div>
+  <div id="main-image">
+    <svg id="anims" style="display: none;">
+      <animateMotion begin="indefinite"
+        fill="freeze"
+        id="sail"
+        dur="8s"
+        xlink:href="#ship"
+        calcMode="linear"
+        keyTimes="0;0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9;1"
+        keyPoints="0;0.37;0.62;0.80;0.92;1;1;1;1;1;1"
+        animation-direction="reverse" >
+        <mpath xlink:href="#st"/>
+      </animateMotion>
+      <animateTransform xlink:href="#ss"
+        id="sink"
+        attributeName="transform"
+        type="translate"
+        begin="indefinite"
+        dur="8s"
+        from="0 0"
+        to="0 10"/>
+    </svg>
+    <!-- inject:svg --><!-- endinject -->
+  </div>
   <div id="logs">
     <div id="info" class="log"></div>
     <div id="tasks" class="log"></div>

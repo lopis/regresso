@@ -76,7 +76,10 @@ const resetGame = () => {
     document.body.style.setProperty('--v', '0');
     $a('.actions button').forEach(b => b.style.visibility = 'hidden');
     $a('.project').forEach(p => p.remove());
-    $('#island').innerHTML = svgBackup;
+    $('#island').remove();
+    const animClone = $('#anims').cloneNode(true);
+    $('#main-image').append(svgBackup.cloneNode(true));
+    $('#main-image').append(animClone);
     $a('.log').forEach(l => l.innerHTML = '');
     $('#island').style.filter = null;
     hide('#score-board');
@@ -342,8 +345,8 @@ const nextDay = () => {
 const dayCycle = () => {
     $('#island').classList.toggle('night');
 };
-const svgBackup = $('#island').innerHTML;
 const initialDate = new Date('1549/08/13');
+let svgBackup;
 let initialFood = 0;
 let initialWrath = 1.0;
 let godsWrathThereshold = 0.2;
@@ -383,6 +386,7 @@ const resetData = () => {
     dayEvents = [];
     DAY = 10000;
     date = new Date(initialDate);
+    svgBackup = $('#island').cloneNode(true);
 };
 const people = shuffle([
     ['Abraão', '👨🏻‍🦱'],
@@ -503,13 +507,7 @@ const updateDate = () => {
 const sinkBoatAnimation = () => {
     $('#sail').beginElement();
     $('#sink').beginElement();
-    $('#sinkRotate').beginElement();
     setTimeout(() => {
-        hide('#ship');
-        $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
-        $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
-        $('#ss').transform.baseVal.getItem(1).setScale(-1, 1);
-        $('#ss').transform.baseVal.getItem(0).setTranslate(-20, 0);
     }, $('#sink').getSimpleDuration() * 990);
 };
 let projects;
