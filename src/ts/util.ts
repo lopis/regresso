@@ -1,21 +1,21 @@
-const $ = q => document.querySelector(q)
-const $a = q => document.querySelectorAll(q)
-const on = (elem, event, callback) => elem.addEventListener(event, callback)
-const $$ = (tag, className, innerHTML) => {
-  const el = document.createElement(tag)
+var $ = q => document.querySelector(q)
+var $a = q => document.querySelectorAll(q)
+var on = (elem, event, callback) => elem.addEventListener(event, callback)
+var $$ = (tag, className, innerHTML) => {
+  var el = document.createElement(tag)
   el.classList.add(className)
   el.innerHTML = innerHTML
   
   return el
 }
 
-const log = (text, color, emoji, type) => {
+var log = (text, color, emoji, type) => {
   if ($(`.log#${type} .new`)) {
     setTimeout(() => log(text, color, emoji, type), 500)
     return
   }
 
-  const newLog = $$('p', `new ${color}`, `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`)
+  var newLog = $$('p', `new ${color}`, `<span class="icon">${emoji}</span><span class="${color}">${text}</span>`)
 
   newLog.classList.add('new')
   $(`.log#${type}`).prepend(newLog)
@@ -29,28 +29,28 @@ const log = (text, color, emoji, type) => {
   }, 200)
 }
 
-const show = (q) => {
+var show = (q) => {
   $(q).style.visibility = 'visible'
 }
-const display = (q) => {
+var display = (q) => {
   $(q).classList.remove('hidden')
 }
-const undisplay = (q) => {
+var undisplay = (q) => {
   $(q).classList.add('hidden')
 }
-const hide = (q) => {
+var hide = (q) => {
   $(q).style.visibility = 'hidden'
 }
-const openModal = (name) => {
+var openModal = (name) => {
   show(`#${name}`)
   $('body').classList.add('blured')
 }
-const closeModal = (name) => {
+var closeModal = (name) => {
   $(`#${name}`).classList.add('closed')
   $('body').classList.remove('blured')
 }
 
-const shuffle = (array) => {
+var shuffle = (array) => {
   let i = 0
     , j = 0
     , temp = null
@@ -66,16 +66,16 @@ const shuffle = (array) => {
 }
 
 let timeouts = []
-const timeout = (fn, dur) => {
+var timeout = (fn, dur) => {
   timeouts.push(setTimeout(fn, dur))
 }
 
 let intervals = []
-const interval = (fn, dur) => {
+var interval = (fn, dur) => {
   intervals.push(setInterval(fn, dur))
 }
 
-const clearAllTimers = () => {
+var clearAllTimers = () => {
   timeouts.forEach(clearTimeout)
   timeouts = []
   intervals.forEach(clearInterval)
@@ -84,13 +84,13 @@ const clearAllTimers = () => {
   clearInterval(dayCycleInterval);
 }
 
-const resetGame = () => {
+var resetGame = () => {
   clearAllTimers()
   document.body.style.setProperty('--v', '0'); //Hide village
   $a('.actions button').forEach(b => b.style.visibility = 'hidden')
   $a('.project').forEach(p => p.remove())
   $('#island').remove()
-  // const animClone = $('#anims').cloneNode(true)
+  // var animClone = $('#anims').cloneNode(true)
   $('#main-image').append(svgBackup.cloneNode(true))
   // $('#main-image').append(animClone)
   $a('.log').forEach(l => l.innerHTML = '')

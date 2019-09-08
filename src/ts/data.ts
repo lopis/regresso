@@ -1,4 +1,4 @@
-const initialDate = new Date('1549/08/13')
+var initialDate = new Date('1549/08/13')
 let svgBackup
 let initialFood = 0
 let initialWrath = 1.0
@@ -24,7 +24,7 @@ let dayEvents
 let DAY
 let date = new Date(initialDate)
 
-const resetData = () => {
+var resetData = () => {
   resources = {
     wood: 0,
     food: initialFood,
@@ -51,7 +51,7 @@ const resetData = () => {
 }
 
 
-const people = shuffle([
+var people = shuffle([
   ['Abraão', '👨🏻‍🦱'],
   ['Simão', '👨🏼‍🦱'],
   ['João', '👨🏻'],
@@ -68,45 +68,45 @@ const people = shuffle([
   ['Teresa', '👩🏼'],
   ['Lúcia', '👩🏼‍🦰'],
 ]).reduce((rest, el) => {
-  const $person = $$('div', 'icon', el[1])
+  var $person = $$('div', 'icon', el[1])
   $person.id = el[0]
   $person.title = el[0]
-  $('.people').append($person)
+  $('.ppl').append($person)
   rest.push({name: el[0], alive: true})
   return rest
 }, [])
 
-const resetPeople = () => {
+var resetPeople = () => {
   people.map(p => {
     p.alive = true
     $(`#${p.name}`).classList.remove('dead')
   })
 }
 
-const getRandomPerson = () => {
-  const alive = people.filter(p => p.alive)
+var getRandomPerson = () => {
+  var alive = people.filter(p => p.alive)
   return alive[Math.round(Math.random() * (alive.length - 1))]
 }
-const makeDeadPerson = () => {
-  const person = getRandomPerson()
+var makeDeadPerson = () => {
+  var person = getRandomPerson()
   person.alive = false
   $(`#${person.name}`).classList.add('dead')
   return person
 }
-const makePeopleDead = (n) => {
-  const p = []
+var makePeopleDead = (n) => {
+  var p = []
   for (let i = 0; i < n; i++) {
     p.push(makeDeadPerson())
   }
   return p
 }
 
-const getPeopleString = (list) => {
+var getPeopleString = (list) => {
   if (list.length < 2) {
     return list[0]
   }
-  const str = list.join(', ')
-  const lastComma = str.lastIndexOf(',')
+  var str = list.join(', ')
+  var lastComma = str.lastIndexOf(',')
 
   return str.substr(0, lastComma) + ' and' + str.substr(lastComma + 1)
 }

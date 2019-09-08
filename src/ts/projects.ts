@@ -1,7 +1,7 @@
-const $projects = $('.projects')
+var $projects = $('.projects')
 let projects
 
-const initProjects = () => {
+var initProjects = () => {
   projects = {
     // FISHING PROJECTS
     fishing: {
@@ -11,7 +11,7 @@ const initProjects = () => {
       cost: {
         wood: 10,
         food: 10,
-        people: 4,
+        ppl: 4,
         days: 2,
       },
       description: 'Develop fishing tools (+3🍒/day, -1 ready 👤)',
@@ -42,7 +42,7 @@ const initProjects = () => {
       cost: {
         wood: 25,
         food: 10,
-        people: 5,
+        ppl: 5,
         days: 5
       },
       description: 'Build a fishing boat (+5🍒/day, -1 ready 👤).',
@@ -69,7 +69,7 @@ const initProjects = () => {
       cost: {
         wood: 10,
         food: 10,
-        people: 4,
+        ppl: 4,
         days: 2,
       },
       description: 'Recycle wood and build better buildings (+5 wood per day)',
@@ -94,7 +94,7 @@ const initProjects = () => {
       cost: {
         wood: 50,
         food: 15,
-        people: 4,
+        ppl: 4,
         days: 2,
       },
       callback: () => {
@@ -109,7 +109,7 @@ const initProjects = () => {
       cost: {
         wood: 10,
         food: 20,
-        people: 2,
+        ppl: 2,
         days: 3,
       },
       callback: () => {
@@ -130,7 +130,7 @@ const initProjects = () => {
       cost: {
         wood: 100,
         food: 10,
-        people: 5,
+        ppl: 5,
         days: 7
       },
       description: 'Build a shipyard where boats and ships can be built.',
@@ -153,7 +153,7 @@ const initProjects = () => {
       cost: {
         wood: 100,
         food: 200,
-        people: 10,
+        ppl: 10,
         days: 8,
       },
       callback: () => {
@@ -171,7 +171,7 @@ const initProjects = () => {
       cost: {
         wood: 20,
         food: 20,
-        people: 3,
+        ppl: 3,
         days: 3,
       },
       callback: () => {
@@ -183,16 +183,16 @@ const initProjects = () => {
   }
 }
 
-const unlockCaravela = () => {
+var unlockCaravela = () => {
   if (projects.spinning_wheel.done && projects.shipyard.done) {
     log('The caravela construction project is in sight!', 'green', '🌊', 'info')
     projects.caravela.unlocked = true
   }
 }
 
-const renderProject = (key) => {
-  const project = projects[key]
-  const $newProject = $$('div', 'project', null)
+var renderProject = (key) => {
+  var project = projects[key]
+  var $newProject = $$('div', 'project', null)
   let icon = project.emoji
   if (key === 'caravela') {
     icon = `<svg height="50px" viewBox="0 0 50 50" width="50px">${$('#ss').outerHTML.replace('"ss"', '')}</svg>`
@@ -203,57 +203,57 @@ const renderProject = (key) => {
 <div class="title caps">${key.replace(/_/g, ' ')}</div>
 <small class="description">${project.description}</small>
 <div class="cost">
-  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👥  ${project.cost.days} days ⏳
+  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.ppl} 👥  ${project.cost.days} days ⏳
 </div>`
 
   $projects.append($newProject)
   on($newProject, 'click', selectProject(key))
 }
 
-const selectProject = (projectName) => () => {
+var selectProject = (projectName) => () => {
   if ($projects.classList.contains('closed')) {
     $projects.classList.remove('closed')
     return
   }
 
-  const project = projects[projectName]
+  var project = projects[projectName]
   if (project.done) {
     return
   }
   if (projectName === 'caravela' && !project.unlocked) {
-    const missing = projects.caravela.requires
+    var missing = projects.caravela.requires
       .filter(r => !projects[r].done)
       .map(r => `[${r.replace(/_/g, ' ')}]`)
     if (missing.length > 0) {
       blink(projectName, 'no')
-      const msg = `Construction of the new caravela requires ${missing.join(' and ')}.`
+      var msg = `Construction of the new caravela requires ${missing.join(' and ')}.`
       $('#requirements').innerText = msg
       log(msg, null, '❌', 'info')
       return
     }
   }
   
-  const missing = ['wood', 'food'].filter(
+  missing = ['wood', 'food'].filter(
     resource => resources[resource] < project.cost[resource]
   )
   if (missing.length > 0) {
     blink(projectName, 'no')
-    const msg = `There is not enough ${missing.join(' and ')} to start the ${projectName} project`
+    var msg = `There is not enough ${missing.join(' and ')} to start the ${projectName} project`
     $('#requirements').innerText = msg
     log(msg, null, '❌', 'info')
     return
   }
 
-  if (!enoughPeople(project.cost.people)) {
+  if (!enoughPeople(project.cost.ppl)) {
     if (projectName === 'caravela') {
-      const ready = populationReady - populationStarving
-      const manHours = project.cost.people * project.cost.days
-      const duration = Math.ceil(manHours / ready)
+      var ready = populationReady - populationStarving
+      var manHours = project.cost.ppl * project.cost.days
+      var duration = Math.ceil(manHours / ready)
       log(`The Caravela contruction started, but with only ${ready} people, it will take ${duration} days.`, null, '⚒', 'info')
-      project.cost.people = ready
+      project.cost.ppl = ready
       project.cost.days = duration
     } else {
-      const msg = `Not enough people ready to start the ${projectName} project`
+      var msg = `Not enough people ready to start the ${projectName} project`
       $('#requirements').innerText = msg
       log(msg, null, '❌', 'info')
       return 
@@ -262,11 +262,11 @@ const selectProject = (projectName) => () => {
 
   resources.wood -= project.cost.wood
   resources.food -= project.cost.food
-  populationReady -= project.cost.people
+  populationReady -= project.cost.ppl
   
   project.done = true
-  const $project = $(`.project#${projectName}`)
-  const duration = project.cost.days * DAY
+  var $project = $(`.project#${projectName}`)
+  var duration = project.cost.days * DAY
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
   $projects.classList.add('closed')
@@ -276,7 +276,7 @@ const selectProject = (projectName) => () => {
     $project.classList.add('done')
     $project.classList.remove('in-progress')
     $project.style.transition = null
-    populationReady += project.cost.people
+    populationReady += project.cost.ppl
 
     project.callback()
   }, duration)

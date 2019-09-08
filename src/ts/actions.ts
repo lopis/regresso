@@ -1,5 +1,5 @@
 ///<reference path="util.ts"/>
-const buffer = {
+var buffer = {
   foragers: 0,
   foraging: 0,
   hunters: 0,
@@ -8,12 +8,12 @@ const buffer = {
   wood: 0,
 }
 
-const printScore = () => {
-  const days = (date.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24)
-  const left = $('#leave').disabled
-  const completed = $a('.project.done').length
+var printScore = () => {
+  var days = (date.getTime() - initialDate.getTime()) / (1000 * 60 * 60 * 24)
+  var left = $('#leave').disabled
+  var completed = $a('.project.done').length
 
-  const score = [
+  var score = [
     'Days taken', days,
     'Population saved', populationTotal,
     'Projects completed', completed,
@@ -25,7 +25,7 @@ const printScore = () => {
     score.push(godsWrath <= godsWrathThereshold ? 'Yes' : 'No')
   }
 
-  const total = Math.ceil(
+  var total = Math.ceil(
     (populationTotal * 25 + completed * 7 + (left ? 10 : 0)) * (1 - godsWrath) * (30 / days)
   )
 
@@ -35,10 +35,10 @@ const printScore = () => {
   openModal('score-board')
 }
 
-const bring = (action, partySize, amount, risk) => () => {
+var bring = (action, partySize, amount, risk) => () => {
   buffer[action] += amount
   initBuffer()
-  const die = Math.random() < risk * attackChance
+  var die = Math.random() < risk * attackChance
   if (!die) {
     populationReady += partySize
   } else {
@@ -90,7 +90,7 @@ function restart () {
   init()
 }
 
-const handlers = {
+var handlers = {
   leave: () => {
     log(`${populationTotal} people board the caravela and get ready for departure`, null, '⛵️', 'info')
     $('#ship').classList.add('go')
@@ -118,9 +118,9 @@ const handlers = {
     }
   },
   fetchWood: () => {
-    const people = 1
+    var people = 1
     populationReady -= people
-    const time = DAY * 0.6
+    var time = DAY * 0.6
     timeout(bring('wood', people, 3, 0.03), time)
     buffer.loggers++
     initBuffer()
@@ -135,15 +135,15 @@ const handlers = {
       populationReady += 1
       isPraying = false
       godsWrath = godsWrath*0.7
-      const person = getRandomPerson()
+      var person = getRandomPerson()
       log(`${person.name} is feeling envigorated after a day at the house of God. Praise the Lord!`, null, '✝️', 'info')
     }, DAY);
   },
   
   forage: () => {
-    const people = 1
+    var people = 1
     populationReady -= people
-    const time = DAY * 0.4
+    var time = DAY * 0.4
     timeout(bring('foraging', people, foragingReturns, 0), time)
     buffer.foragers++
     initBuffer()
@@ -152,9 +152,9 @@ const handlers = {
   },
   
   hunt: () => {
-    const people = 2
+    var people = 2
     populationReady -= people
-    const time = DAY * 1.2
+    var time = DAY * 1.2
     timeout(bring('hunting', people, 20, 0.1), time)
     buffer.hunters += people
     initBuffer()
@@ -169,7 +169,7 @@ const handlers = {
   }
 }
 
-const setupClickHandlers = () => {
+var setupClickHandlers = () => {
   $a('.actions button').forEach(b => {
     on(b, 'click', handlers[b.id])
   })
@@ -183,7 +183,7 @@ const setupClickHandlers = () => {
   })
 }
 
-const mapping = {
+var mapping = {
   wood: {
     r: 'wood', e: '🌳'
   },
@@ -194,7 +194,7 @@ const mapping = {
     r: 'food', e: '🏹'
   }
 }
-const logTask = (value) => {
+var logTask = (value) => {
   if (buffer[value] < 1) return
 
   log(`+${buffer[value]}`, 'green', mapping[value].e, 'tasks')
@@ -203,7 +203,7 @@ const logTask = (value) => {
   blink(mapping[value].r, 'green')
 }
 
-const initBuffer = () => {
+var initBuffer = () => {
   clearInterval(bufferInterval)
   bufferInterval = setInterval(() => {
     ['foraging', 'hunting', 'wood'].forEach(logTask)
@@ -225,14 +225,14 @@ const initBuffer = () => {
   }, bufferTimeout)
 }
 
-const blink = (resource, name) => {
+var blink = (resource, name) => {
   $(`#${resource}`).classList.add(name)
   timeout(() => {
     $(`#${resource}`).classList.remove(name)
   }, name === 'no' ? 400 : 100);
 }
 
-const updateFood = () => {
+var updateFood = () => {
   let diff = resources.food - populationTotal
   blink('food', 'red')
 
@@ -241,7 +241,7 @@ const updateFood = () => {
     populationStarving = 0
     resources.food = diff
   } else {
-    const dead = Math.min(populationStarving, -diff)
+    var dead = Math.min(populationStarving, -diff)
     if (dead > 0) {
       log(`${getPeopleString(makePeopleDead(dead).map(p=>p.name))} died from starvation.`, 'red', '💀', 'info')
       populationTotal -= dead
@@ -250,7 +250,7 @@ const updateFood = () => {
       blink('population', 'red')
     }
     
-    const starving = Math.min(populationHungry, -diff)
+    var starving = Math.min(populationHungry, -diff)
     populationHungry = Math.min(populationTotal - starving, -diff)
     if (starving > 0) {
       populationStarving = starving
@@ -262,11 +262,11 @@ const updateFood = () => {
   }
 }
 
-const enoughPeople = (min) => {
+var enoughPeople = (min) => {
   return (populationReady - populationStarving) >= min
 }
 
-const nextDay = () => {
+var nextDay = () => {
   updateDate()
   updateFood()
   
@@ -283,6 +283,6 @@ const nextDay = () => {
   updateView()
 }
 
-const dayCycle = () => {
+var dayCycle = () => {
   $('#island').classList.toggle('night')
 }

@@ -5,22 +5,22 @@
 ///<reference path="projects.ts"/>
 let dayInterval, dayCycleInterval
 
-const stopDays = () => {
+var stopDays = () => {
   clearInterval(dayInterval)
   clearInterval(dayCycleInterval)
 }
 
-const stopGame = () => {
+var stopGame = () => {
   stopDays()
   $('#island').style.filter = 'brightness(.5) contrast(1.0) saturate(0)'
 }
 
-const resumeGame = () => {
+var resumeGame = () => {
   dayInterval = setInterval(nextDay, DAY)
   dayCycleInterval = setInterval(dayCycle, DAY / 2)
 }
 
-const init = () => {
+var init = () => {
   resetData()
   updateDate()
   updateView()
@@ -33,7 +33,7 @@ const init = () => {
   timeout(startGame, 4000)
 }
 
-const startGame = () => {
+var startGame = () => {
   resetData()
   initProjects()
   updateDate()

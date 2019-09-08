@@ -1,7 +1,7 @@
 let trailCount = 0
-const startTrail = (time, trailId, clone) => {
-  const $trail = $(`#${trailId}`)
-  const $newTrail = clone ? $trail.cloneNode() : $trail
+var startTrail = (time, trailId, clone) => {
+  var $trail = $(`#${trailId}`)
+  var $newTrail = clone ? $trail.cloneNode() : $trail
   let id = trailId
   if (clone) {
     id = 'trail' + (++trailCount)
@@ -9,7 +9,7 @@ const startTrail = (time, trailId, clone) => {
     $trail.after($newTrail)
   }
   setTimeout(() => {
-    const pathLength = Math.round($trail.getTotalLength())
+    var pathLength = Math.round($trail.getTotalLength())
     if (trailId == 'huntTrail') {
       $newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
@@ -31,7 +31,7 @@ const startTrail = (time, trailId, clone) => {
   }
 }
 
-const updateView = () => {
+var updateView = () => {
   $('#wood .value').innerText = resources.wood
   $('#food .value').innerText = resources.food
 
@@ -55,17 +55,17 @@ const updateView = () => {
   $('#pray').disabled = !enoughPeople(1) || isPraying
 }
 
-const updateDate = () => {
+var updateDate = () => {
   date.setDate(date.getDate() + 1)
   $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`
 }
 
-const sinkBoatAnimation = () => {
-  const $shipTop = $('#ss')
+var sinkBoatAnimation = () => {
+  var $shipTop = $('#ss')
   $shipTop.removeAttribute('transform') // Because Chrome is shit
   $('#sail').beginElement()
   $('#sink').beginElement()
-  const time = Date.now()
+  var time = Date.now()
   
   setTimeout(() => {
     console.log('end', Date.now() - time);

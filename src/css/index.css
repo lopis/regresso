@@ -290,11 +290,11 @@ footer {
   }
 }
 
-.people {
+.ppl {
 	display: grid;
   grid-template-columns: repeat(8, 1fr);
 }
-.people .icon {
+.ppl .icon {
 	margin: -1px 1px -4px 1px;
 	font-size: 25px;
 	height: 1.1em;
@@ -303,17 +303,17 @@ footer {
   background: none;
   overflow: visible;
 }
-.people .dead {
+.ppl .dead {
   opacity: 0.5;
   filter: saturate(0);
 }
-.people .icon:nth-child(n+9) {
+.ppl .icon:nth-child(n+9) {
 	position: relative;
 	left: 14px;
 }
 
 @media (max-width: 1268px) {
-  .people {
+  .ppl {
     display: none;
   }
   .actions button {
