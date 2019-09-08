@@ -5,7 +5,13 @@ let initialWrath = 1.0
 let godsWrathThereshold = 0.2
 
 let resources
-let population
+let populationTotal
+let populationReady
+let populationHungry
+let populationStarving
+let populationFishers
+
+
 let foragingReturns
 let huntingEnabled
 let smokeEnabled
@@ -23,13 +29,11 @@ const resetData = () => {
     wood: 0,
     food: initialFood,
   }
-  population = {
-    total: 15,
-    ready: 15,
-    hungry: 0,
-    starving: 0,
-    fishers: 0
-  }
+  populationTotal = 15
+  populationReady = 15
+  populationHungry = 0
+  populationStarving = 0
+  populationFishers = 0
   
   foragingReturns = 2
   huntingEnabled = false

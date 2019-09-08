@@ -18,8 +18,8 @@ const initProjects = () => {
       callback: () => {
         log('Fishing preparations have been developed (+3 food per day).', 'blue', '🎣', 'info')
         show('#fh') // Fishing house
-        population.ready -= 1
-        population.fishers++
+        populationReady -= 1
+        populationFishers++
   
         interval(() => {
           startTrail(DAY / 3, 'fishTrail', false)
@@ -47,8 +47,8 @@ const initProjects = () => {
       },
       description: 'Build a fishing boat (+5 food per day).',
       callback: () => {
-        population.ready -= 1
-        population.fishers++
+        populationReady -= 1
+        populationFishers++
         show('#boatTrail')
   
         interval(() => {
@@ -242,7 +242,7 @@ const selectProject = (projectName) => () => {
 
   if (!enoughPeople(project.cost.people)) {
     if (projectName === 'caravela') {
-      const ready = population.ready - population.starving
+      const ready = populationReady - populationStarving
       const manHours = project.cost.people * project.cost.days
       const duration = Math.ceil(manHours / ready)
       log(`The Caravela contruction started, but with only ${ready} people, it will take ${duration} days.`, null, '⚒', 'info')
@@ -258,7 +258,7 @@ const selectProject = (projectName) => () => {
 
   resources.wood -= project.cost.wood
   resources.food -= project.cost.food
-  population.ready -= project.cost.people
+  populationReady -= project.cost.people
   
   project.done = true
   const $project = $(`.project#${projectName}`)
@@ -272,7 +272,7 @@ const selectProject = (projectName) => () => {
     $project.classList.add('done')
     $project.classList.remove('in-progress')
     $project.style.transition = null
-    population.ready += project.cost.people
+    populationReady += project.cost.people
 
     project.callback()
   }, duration)

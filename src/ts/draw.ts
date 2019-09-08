@@ -35,17 +35,17 @@ const updateView = () => {
   $('#wood .value').innerText = resources.wood
   $('#food .value').innerText = resources.food
 
-  $('#population .value').innerText = population.total
-  $('#ready .value').innerText = Math.max(0, population.ready - population.starving)
-  $('#starving .value').innerText = population.starving
-  if (population.starving < 1) {
+  $('#population .value').innerText = populationTotal
+  $('#ready .value').innerText = Math.max(0, populationReady - populationStarving)
+  $('#starving .value').innerText = populationStarving
+  if (populationStarving < 1) {
     undisplay('#starving')
   } else {
     display('#starving')
   }
 
-  $('#fishers .value').innerText = population.fishers
-  if (population.fishers > 1) {
+  $('#fishers .value').innerText = populationFishers
+  if (populationFishers > 1) {
     display('#fishers')
   }
   
