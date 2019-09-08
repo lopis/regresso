@@ -65,11 +65,12 @@ const sinkBoatAnimation = () => {
   $shipTop.removeAttribute('transform') // Because Chrome is shit
   $('#sail').beginElement()
   $('#sink').beginElement()
+  
   setTimeout(() => {
     hide('#ship')
     $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
     $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
     $shipTop.transform.baseVal.getItem(1).setScale(-1, 1);
     $shipTop.transform.baseVal.getItem(0).setTranslate(-20,0);
-  }, $('#sink').getSimpleDuration() * 790) // 800 minus a little less because timers are unreliable
+  }, $('#sink').getSimpleDuration() * 990) // Duration minus a little less because timers are unreliable
 }

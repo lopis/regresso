@@ -512,7 +512,7 @@ const sinkBoatAnimation = () => {
         $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
         $shipTop.transform.baseVal.getItem(1).setScale(-1, 1);
         $shipTop.transform.baseVal.getItem(0).setTranslate(-20, 0);
-    }, $('#sink').getSimpleDuration() * 790);
+    }, $('#sink').getSimpleDuration() * 990);
 };
 const $projects = $('.projects');
 let projects;
