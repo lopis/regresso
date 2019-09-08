@@ -1,3 +1,4 @@
+const $projects = $('.projects')
 let projects
 
 const initProjects = () => {
@@ -60,7 +61,7 @@ const initProjects = () => {
         })
       }
     },
-    // FISHING PROJECTS
+    // CONSTRUCTION PROJECTS
     carpentry: {
       emoji: '🔨',
       done: false,
@@ -201,17 +202,13 @@ const renderProject = (key) => {
   ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👫  ${project.cost.days} days ⏳
 </div>`
 
-  $('.projects').append($newProject)
+  $projects.append($newProject)
   on($newProject, 'click', selectProject(key))
 }
 
-const updateProjects = () => {
-
-}
-
 const selectProject = (projectName) => () => {
-  if ($('.projects').classList.contains('closed')) {
-    $('.projects').classList.remove('closed')
+  if ($projects.classList.contains('closed')) {
+    $projects.classList.remove('closed')
     return
   }
 
@@ -268,7 +265,7 @@ const selectProject = (projectName) => () => {
   const duration = project.cost.days * DAY
   $project.style.transition = `height ${duration}ms linear`
   $project.classList.add('in-progress')
-  $('.projects').classList.add('closed')
+  $projects.classList.add('closed')
 
   timeout(() => {
     // log(`Project ${projectName.toUpperCase()} has has been completed`, 'blue', project.emoji)
@@ -278,6 +275,5 @@ const selectProject = (projectName) => () => {
     population.ready += project.cost.people
 
     project.callback()
-    updateProjects()
   }, duration)
 }

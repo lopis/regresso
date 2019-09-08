@@ -13,7 +13,7 @@ const startTrail = (time, trailId, clone) => {
     if (trailId == 'huntTrail') {
       $newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`      
     } else {
-      if (trailId == 'forageTemplate') {
+      if (trailId == 'ft') { // Forage Trail
         $newTrail.style.transform = `scaleX(${1 + Math.random()*0.7 - 0.2})`;
       }
       $newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`
@@ -45,9 +45,7 @@ const updateView = () => {
   }
 
   $('#fishers .value').innerText = population.fishers
-  if (population.fishers < 1) {
-    undisplay('#fishers')
-  } else {
+  if (population.fishers > 1) {
     display('#fishers')
   }
   
@@ -63,14 +61,15 @@ const updateDate = () => {
 }
 
 const sinkBoatAnimation = () => {
+  const $shipTop = $('#ss')
+  $shipTop.removeAttribute('transform') // Because Chrome is shit
   $('#sail').beginElement()
   $('#sink').beginElement()
-  // $('#sinkRotate').beginElement()
   setTimeout(() => {
-    // hide('#ship')
-    // $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
-    // $('#ss').transform.baseVal.appendItem($('#ss').transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
-    // $('#ss').transform.baseVal.getItem(1).setScale(-1, 1);
-    // $('#ss').transform.baseVal.getItem(0).setTranslate(-20,0);
-  }, $('#sink').getSimpleDuration() * 990) // 1000 minus a little less because timers are unreliable
+    hide('#ship')
+    $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
+    $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()))
+    $shipTop.transform.baseVal.getItem(1).setScale(-1, 1);
+    $shipTop.transform.baseVal.getItem(0).setTranslate(-20,0);
+  }, $('#sink').getSimpleDuration() * 790) // 800 minus a little less because timers are unreliable
 }

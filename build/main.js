@@ -77,9 +77,7 @@ const resetGame = () => {
     $a('.actions button').forEach(b => b.style.visibility = 'hidden');
     $a('.project').forEach(p => p.remove());
     $('#island').remove();
-    const animClone = $('#anims').cloneNode(true);
     $('#main-image').append(svgBackup.cloneNode(true));
-    $('#main-image').append(animClone);
     $a('.log').forEach(l => l.innerHTML = '');
     $('#island').style.filter = null;
     hide('#score-board');
@@ -202,7 +200,7 @@ const handlers = {
         buffer.loggers++;
         initBuffer();
         updateView();
-        startTrail(time, 'forageTemplate', true);
+        startTrail(time, 'ft', true);
     },
     pray: () => {
         population.ready -= 1;
@@ -223,7 +221,7 @@ const handlers = {
         buffer.foragers++;
         initBuffer();
         updateView();
-        startTrail(time, 'forageTemplate', true);
+        startTrail(time, 'ft', true);
     },
     hunt: () => {
         const people = 2;
@@ -246,7 +244,7 @@ const setupClickHandlers = () => {
         on(b, 'click', handlers[b.id]);
     });
     on($('#projects'), 'click', () => {
-        $('.projects').classList.toggle('closed');
+        $projects.classList.toggle('closed');
         $('#requirements').innerText = null;
     });
     on($('#score-board button'), 'click', restart);
@@ -347,7 +345,7 @@ const dayCycle = () => {
 };
 const initialDate = new Date('1549/08/13');
 let svgBackup;
-let initialFood = 0;
+let initialFood = 9990;
 let initialWrath = 1.0;
 let godsWrathThereshold = 0.2;
 let resources;
@@ -390,7 +388,7 @@ const resetData = () => {
 };
 const people = shuffle([
     ['Abraão', '👨🏻‍🦱'],
-    ['Bartolomeu', '👨🏼‍🦱'],
+    ['Simão', '👨🏼‍🦱'],
     ['João', '👨🏻'],
     ['Jacinto', '🧔🏽'],
     ['Paulo', '👴🏼'],
@@ -461,7 +459,7 @@ const startTrail = (time, trailId, clone) => {
             $newTrail.style.strokeDasharray = `0,${pathLength}px,0.5,1,0.5,1,0.5,1,0.5,100%`;
         }
         else {
-            if (trailId == 'forageTemplate') {
+            if (trailId == 'ft') {
                 $newTrail.style.transform = `scaleX(${1 + Math.random() * 0.7 - 0.2})`;
             }
             $newTrail.style.strokeDasharray = `0,${pathLength}px,${trailId == 'boatTrail' ? 2 : 1}`;
@@ -489,10 +487,7 @@ const updateView = () => {
         display('#starving');
     }
     $('#fishers .value').innerText = population.fishers;
-    if (population.fishers < 1) {
-        undisplay('#fishers');
-    }
-    else {
+    if (population.fishers > 1) {
         display('#fishers');
     }
     $('#forage').disabled = !enoughPeople(1);
@@ -505,11 +500,19 @@ const updateDate = () => {
     $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`;
 };
 const sinkBoatAnimation = () => {
+    const $shipTop = $('#ss');
+    $shipTop.removeAttribute('transform');
     $('#sail').beginElement();
     $('#sink').beginElement();
     setTimeout(() => {
-    }, $('#sink').getSimpleDuration() * 990);
+        hide('#ship');
+        $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
+        $shipTop.transform.baseVal.appendItem($shipTop.transform.baseVal.createSVGTransformFromMatrix($('#island').createSVGMatrix()));
+        $shipTop.transform.baseVal.getItem(1).setScale(-1, 1);
+        $shipTop.transform.baseVal.getItem(0).setTranslate(-20, 0);
+    }, $('#sink').getSimpleDuration() * 790);
 };
+const $projects = $('.projects');
 let projects;
 const initProjects = () => {
     projects = {
@@ -703,14 +706,12 @@ const renderProject = (key) => {
 <div class="cost">
   ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.people} 👫  ${project.cost.days} days ⏳
 </div>`;
-    $('.projects').append($newProject);
+    $projects.append($newProject);
     on($newProject, 'click', selectProject(key));
 };
-const updateProjects = () => {
-};
 const selectProject = (projectName) => () => {
-    if ($('.projects').classList.contains('closed')) {
-        $('.projects').classList.remove('closed');
+    if ($projects.classList.contains('closed')) {
+        $projects.classList.remove('closed');
         return;
     }
     const project = projects[projectName];
@@ -761,14 +762,13 @@ const selectProject = (projectName) => () => {
     const duration = project.cost.days * DAY;
     $project.style.transition = `height ${duration}ms linear`;
     $project.classList.add('in-progress');
-    $('.projects').classList.add('closed');
+    $projects.classList.add('closed');
     timeout(() => {
         $project.classList.add('done');
         $project.classList.remove('in-progress');
         $project.style.transition = null;
         population.ready += project.cost.people;
         project.callback();
-        updateProjects();
     }, duration);
 };
 let dayInterval, dayCycleInterval;

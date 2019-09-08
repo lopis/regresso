@@ -91,9 +91,9 @@ const resetGame = () => {
   $a('.actions button').forEach(b => b.style.visibility = 'hidden')
   $a('.project').forEach(p => p.remove())
   $('#island').remove()
-  const animClone = $('#anims').cloneNode(true)
+  // const animClone = $('#anims').cloneNode(true)
   $('#main-image').append(svgBackup.cloneNode(true))
-  $('#main-image').append(animClone)
+  // $('#main-image').append(animClone)
   $a('.log').forEach(l => l.innerHTML = '')
   $('#island').style.filter = null
   hide('#score-board')

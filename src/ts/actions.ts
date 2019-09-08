@@ -125,7 +125,7 @@ const handlers = {
     buffer.loggers++
     initBuffer()
     updateView()
-    startTrail(time, 'forageTemplate', true)
+    startTrail(time, 'ft', true) // Forage Trail
   },
   
   pray: () => {
@@ -148,7 +148,7 @@ const handlers = {
     buffer.foragers++
     initBuffer()
     updateView()
-    startTrail(time, 'forageTemplate', true)
+    startTrail(time, 'ft', true) // Forage Trail
   },
   
   hunt: () => {
@@ -174,7 +174,7 @@ const setupClickHandlers = () => {
     on(b, 'click', handlers[b.id])
   })
   on($('#projects'), 'click', () => {
-    $('.projects').classList.toggle('closed')
+    $projects.classList.toggle('closed')
     $('#requirements').innerText = null
   })
   on($('#score-board button'), 'click', restart)

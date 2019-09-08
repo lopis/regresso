@@ -276,6 +276,20 @@ footer {
   left: -100px;
 }
 
+/* Stupid hack for stupid Chrome */
+@supports (not (-moz-appearance:none))
+{ 
+  #ship.new {
+    transform: translate(0%, 0%);
+  }
+  #ship.go {
+    transition: transform 7s cubic-bezier(.5,0,1,1);
+    /* top: 30px;
+    left: -100px; */
+    transform: translate(-20%, 60%)
+  }
+}
+
 .people {
 	display: grid;
   grid-template-columns: repeat(8, 1fr);
