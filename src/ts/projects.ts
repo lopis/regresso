@@ -116,7 +116,7 @@ var initProjects = () => {
         log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info')
         foragingReturns -= 1
         $('#forage .return').innerText = foragingReturns
-        blink('foraging', 'blink')
+        blink('forage', 'blink')
         unlockCaravela()
       }
     },
@@ -203,7 +203,7 @@ var renderProject = (key) => {
 <div class="title caps">${key.replace(/_/g, ' ')}</div>
 <small class="description">${project.description}</small>
 <div class="cost">
-  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${project.cost.ppl} 👥  ${project.cost.days} days ⏳
+  ${project.cost.wood} 🌳  ${project.cost.food} 🍒  ${key == 'caravela' ? '1 - 10' : project.cost.ppl} 👥  ${project.cost.days} days ⏳
 </div>`
 
   $projects.append($newProject)

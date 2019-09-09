@@ -173,10 +173,11 @@
   font-weight: bold;
 }
 
-#caravela .icon {
-  background: #60bdff;
-}
 #caravela svg > g {
 	transform: scale(3);
 	transform-origin: -45% -37%;
+}
+#caravela path, #caravela rect {
+	stroke: #865c27;
+	stroke-width: 0.3;
 }
