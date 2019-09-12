@@ -115,7 +115,6 @@ var initProjects = () => {
       callback: () => {
         log('Foragers have started producing cloth from fibers.', 'blue', '🧶', 'info')
         foragingReturns -= 1
-        $('#forage .return').innerText = foragingReturns
         blink('forage', 'blink')
         unlockCaravela()
       }
