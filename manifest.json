@@ -1,14 +1,14 @@
 {
-  "name": "Title of the game",
-  "description": "Description of the game, including controls and optional extras for Coil subscribers if you participate in the Web Monetization category.",
+  "name": "Regresso",
+  "description": "Your ship wrecked in an unkown land. Keep your crew well fed while you strugle your way through finding the resources to rebuild the caravel and get back to the sea. As the game progresses, you will find different actions are available to you. Try to reach the goal as fast as possible and with the least deaths for the best score. \n Coil users have a headstart of food, as well as a little help from god.",
   "images" : {
-    "image_large": "image-big.jpg",
-    "image_thumbnail": "image-small.jpg"
+    "image_large": "images/image_large.png",
+    "image_thumbnail": "images/thumbnail.png"
   },
-  "categories": ["Desktop", "Mobile", "Server", "Web Monetization", "WebXR"],
+  "categories": ["Desktop", "Web Monetization"],
   "user" : {
-    "name": "optional",
-    "website": "optional",
-    "twitter": "optional"
+    "name": "lopis",
+    "website": "https://github.com/lopis/regresso",
+    "twitter": "mrlopis"
   }
 }
