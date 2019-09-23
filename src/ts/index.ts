@@ -70,7 +70,7 @@ on($('#intro button'), 'click', () => {
 
 // @ts-ignore
 if(document.monetization && document.monetization.state === 'started') {
-  display('#coil')
+  display('#monetization')
   godsWrathThereshold = 0.3
   initialFood = 30
 }
